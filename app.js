@@ -22,10 +22,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-console.log('所处环境是：'+app.get('env'));
 
 app.use('/', routes);
-app.use('/users', users);
+app.use('/admin', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -62,4 +61,4 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 
-http://idlelife.org/archives/808
+//http://idlelife.org/archives/808

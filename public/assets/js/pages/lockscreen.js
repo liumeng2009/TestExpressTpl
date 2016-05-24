@@ -1,13 +1,13 @@
 //------------- lockscreen.js -------------//
 $(document).ready(function() {
-	//add class to body for login styling
+	//add class to body for log styling
 	$('body').addClass('login-page');
 
-	//add css animation to login container
-	$('#login').addClass('animated bounceIn');
+	//add css animation to log container
+	$('#log').addClass('animated bounceIn');
 
-	//validate login form 
-	$("#login-form").validate({
+	//validate log form
+	$("#log-form").validate({
 		ignore: null,
 		ignore: 'input[type="hidden"]',
 		errorPlacement: function(error, element) {

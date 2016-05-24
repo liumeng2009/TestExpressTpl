@@ -6,8 +6,8 @@ $(document).ready(function() {
         checkboxClass: 'icheckbox_flat-green'
     });
 
-	//validate login form 
-	$("#login-form").validate({
+	//validate log form
+	$("#log-form").validate({
 		ignore: null,
 		ignore: 'input[type="hidden"]',
 		errorPlacement: function(error, element) {
