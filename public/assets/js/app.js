@@ -62,7 +62,7 @@ $(document).ready(function() {
             fixed: true //fixed header
         },
         breadcrumbs: {
-            auto: true //auto populate breadcrumbs via js if is false you need to provide own markup see for example.
+            auto: false //auto populate breadcrumbs via js if is false you need to provide own markup see for example.
         },
         sidebar: {
             fixed: true,//fixed sidebar
