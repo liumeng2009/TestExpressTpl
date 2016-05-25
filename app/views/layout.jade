@@ -1,0 +1,20 @@
+doctype html
+html(lang="zh_CN")
+  head
+    meta(charset="utf-8")
+    title= title
+    meta(name="viewport",content="width=device-width,initial-scale=1,maximum-scale=1")
+    <!-- Force IE9 to render in normal mode -->
+    <!--[if IE]>
+    meta(http-equiv="x-ua-compatible",content="IE=9")
+    <![endif]-->
+    meta(name="author",content="liumeng")
+    meta(name="application-name",content="SFProject")
+    include ./includes/head
+  body
+    include ./includes/header
+    include ./includes/slidebar
+    #content
+      block content
+    include ./includes/FScript
+      block bottom

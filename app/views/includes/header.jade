@@ -1,0 +1,38 @@
+#header
+    .container-fluid
+        .navbar
+            .navbar-header
+                a.navbar-brand(href="index.html")
+                    i.im-window8.text-logo-element.animated.bounceIn
+                    span.text-logo SF
+                    span.text-slogan project
+            nav.top-nav(role="navigation")
+                ul.nav.navbar-nav.pull-left
+                    li#toggle-sidebar-li
+                        a#toggle-sidebar(href="#")
+                            i.en-arrow-left2
+                    li
+                        a.full-screen(href="#")
+                            i.fa-fullscreen
+                ul.nav.navbar-nav.pull-right
+                    li.dropdown
+                        a(href="#",data-toggle="dropdown")
+                            img.user-avatar(src="/assets/img/avatars/48.jpg",alt="SuggeElson")
+                            | SuggeElson
+                        ul.dropdown-menu.right(role="menu")
+                            li
+                                a(href="profile.html")
+                                    i.st-user
+                                    | Profile
+                            li
+                                a(href="file.html")
+                                    i.st-cloud
+                                    | Files
+                            li
+                                a(href="#")
+                                    i.st-settings
+                                    | Settings
+                            li
+                                a(href="logon.html")
+                                    i.im-exit
+                                    | Logout

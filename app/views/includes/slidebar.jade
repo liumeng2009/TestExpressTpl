@@ -1,0 +1,35 @@
+#sidebar
+    .sidebar-inner
+        ul#sideNav.nav.nav-pills.nav-stacked
+            li.top-search
+                form
+                    input(type="text",name="search",placeholder="检索 ...")
+                    button(type="submit")
+                        i.ec-search.s20
+            li
+                a(href="#") 组织管理
+                    i.br-grid
+                ul.nav.sub
+                    li
+                        a(href="/admin/school_list")
+                            i.en-house
+                            | 学校管理
+                    li
+                        a(href="/admin/grade_list")
+                            i.en-graduation
+                            | 班级管理
+            li
+                a(href="#") 用户管理
+                    i.st-users
+                ul.nav.sub
+                    li
+                        a(href="/admin/admin/list")
+                            i.im-user4
+                            | 管理员
+                    li
+                        a(href="/admin/user/list")
+                            i.im-users2
+                            | 网站用户
+            li
+                a(href="#") 消息管理
+                    i.br-comment

@@ -1,0 +1,11 @@
+extends ../../layout
+
+block content
+    h1= title
+    p Welcome to #{title}
+block bottom
+    script(src="/javascripts/app.js")
+    script.
+        setTimeout(function(){
+            checkSideNav('管理员');
+        },0);
