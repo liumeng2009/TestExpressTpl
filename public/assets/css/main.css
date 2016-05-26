@@ -1279,6 +1279,7 @@ body.full-screen #header {
   float: left;
   width: 100%;
   position: relative;
+  top:25px;
 }
 #content .content-wrapper .outlet {
   position: relative;

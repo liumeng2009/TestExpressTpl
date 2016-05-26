@@ -1,8 +1,18 @@
 extends ../../layout
 
 block content
-    h1= title
-    p Welcome to #{title}
+    .content-wrapper
+        .row
+            .col-lg-12.heading
+                ul#crumb.breadcrumb
+                    li
+                        i.im-home
+                        a(href="/admin") 首页
+                        i.en-arrow-right7
+                    li
+                        i.im-user4
+                        a(href="/admin/admin/list") 网站管理员列表
+
 block bottom
     script(src="/javascripts/app.js")
     script.
