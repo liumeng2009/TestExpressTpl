@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var adminUserController=require('../app/controllers/admin_user');
 
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
@@ -11,10 +12,8 @@ router.get('/login',function(req,res,next){
   });
 });
 
-router.get('/admin/list',function(req,res,next){
-  res.render('pages/users/admin_list',{
-    title:'管理员列表'
-  });
-})
+router.get('/admin/list',adminUserController.admin_user_list);
+router.get('/admin',adminUserController.admin_user);
+router.get('/admin/:id',adminUserController.admin_user);
 
 module.exports = router;

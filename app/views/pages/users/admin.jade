@@ -1,0 +1,47 @@
+extends ../../layout
+
+block content
+    .content-wrapper
+        .row
+            .col-lg-12.heading
+                ul#crumb.breadcrumb
+                    li
+                        i.im-home
+                        a(href="/admin") 首页
+                        i.en-arrow-right7
+                    li
+                        i.im-user4
+                        a(href="/admin/admin/list") 网站管理员列表
+                        i.en-arrow-right7
+                    li
+                        i.en-user-add
+                        a(href="#") #{action}管理员
+        .outlet
+            .row
+                .col-lg-12
+                    .panel.panel-default.toggle
+                        .panel-heading
+                            h3.panel-title #{action}管理员
+                        .panel-body
+                            form.form-horizontal.group-border.hover-stripped(role="form",id="validate",method="post",action="/admin/admin/new",enctype="multipart/form-data")
+                                .form-group
+                                    if admin_user&&admin_user._id
+                                        input(type="hidden",value="#{admin_user._id}",name="admin_user[_id]")
+                                    label.col-lg-2.control-label 用户名
+                                    .col-lg-10
+                                        input.form-control.required(type="text",placeholder="请输入用户名...",value=admin_user.name,name="admin_user[name]")
+                                .form-group
+                                    label.col-lg-2.control-label 密码
+                                    .col-lg-10
+                                        input#password.form-control(type="password",name="admin_user[password]",placeholder="输入密码...",value=admin_user.password)
+                                        input#confirm_password.form-control.mt15(type="password",name="admin_user[confirm_password]",placeholder="确认密码...")
+
+block componentScript
+    include ../../includes/formScript
+block bottom
+    script(src="/assets/js/pages/form-validation.js")
+    script(src="/javascripts/app.js")
+    script.
+        setTimeout(function(){
+            checkSideNav('管理员');
+        },0);
