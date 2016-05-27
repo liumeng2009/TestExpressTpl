@@ -38,13 +38,17 @@ $("#validate").validate({
 	errorClass: 'help-block',
 	rules: {
 		email: {
-			required: true,
 			email: true
+		},
+		phone:{
+			required:false,
+			minlength:11,
 		},
 		select2: "required",
 		password: {
 			required: true,
-			minlength: 5
+			minlength: 5,
+			equalTo: "#confirm_password"
 		},
 		confirm_password: {
 			required: true,
@@ -104,17 +108,18 @@ $("#validate").validate({
 	},
 	messages: {
 		password: {
-			required: "Please provide a password",
-			minlength: "Your password must be at least 5 characters long"
+			required: "请输入密码",
+			minlength: "请输入一个至少5位的密码"
 		},
 		confirm_password: {
-			required: "Please provide a password",
-			minlength: "Your password must be at least 5 characters long",
-			equalTo: "Please enter the same password as above"
+			required: "请输入密码",
+			minlength: "请输入一个至少5位的密码",
+			equalTo: "两次输入的密码不一致"
 		},
+		phone:"请输入正确的手机号码",
 		agree: "Please accept our policy",
 		textarea: "Write some info for you",
-		file: "File must be JPG, GIF or PNG, less than 2MB"
+		file: "文件格式必须为JPG，GIF或者PNG，并且小于2MB"
 	},
 	highlight: function(element) {
 		if ($(element).offsetParent().parent().hasClass('form-group')) {
@@ -130,10 +135,10 @@ $("#validate").validate({
     unhighlight: function(element,errorClass) {
     	if ($(element).offsetParent().parent().hasClass('form-group')) {
     		$(element).offsetParent().parent().removeClass('has-error').addClass('has-success');
-	    	$(element.form).find("label[for=" + element.id + "]").removeClass(errorClass);
+	    	//$(element.form).find("label[for=" + element.id + "]").removeClass(errorClass);
     	} else if ($(element).offsetParent().parent().hasClass('checkbox')) {
     		$(element).offsetParent().parent().parent().parent().removeClass('has-error').addClass('has-success');
-    		$(element.form).find("label[for=" + element.id + "]").removeClass(errorClass);
+    		//$(element.form).find("label[for=" + element.id + "]").removeClass(errorClass);
     	} else if ($(element).next().hasClass('bootstrap-filestyle')) {
     		$(element).parent().parent().removeClass('has-error').addClass('has-success');
     	}

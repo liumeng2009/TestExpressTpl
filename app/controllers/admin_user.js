@@ -41,3 +41,113 @@ exports.admin_user=function(req,res){
     });
 }
 
+exports.new=function(req,res){
+    var id=req.body._id;
+    var adminUserObj={
+        name:req.body.name,
+        password:req.body.password,
+        status:true,
+        phone:req.body.phone,
+        email:req.body.email
+    }
+
+    AdminUser.find({name:adminUserObj.name},function(err,adminuser){
+        if(err){
+            res.render('./pages/users/admin',{
+                title:'新增管理员',
+                admin_user:[],
+                action:'新增',
+                opinfo:{
+                    error:err
+                }
+            });
+        }
+        else{
+            if(adminuser&&adminuser.length>0){
+                res.render('./pages/users/admin',{
+                    title:'新增管理员',
+                    admin_user:[],
+                    action:'新增',
+                    opinfo:{
+                        error:'该用户已存在'
+                    }
+                });
+
+            }else{
+                var adminuser=new AdminUser(adminUserObj);
+                adminuser.save(function(err,user){
+                    if(err){
+                        res.render('./pages/users/admin',{
+                            title:'新增管理员',
+                            admin_user:[],
+                            action:'新增',
+                            opinfo:{
+                                error:err
+                            }
+                        });
+                    }
+                    else{
+                        res.redirect('/admin/admin/list');
+                    }
+                });
+            }
+        }
+    })
+
+
+
+    var movieObj=req.body.movie;
+    var _movie=emptyMovie;
+
+
+
+    if(id){
+        Movie.findById(id,function(err,movie){
+            if(err){
+                console.log(err);
+            }
+            _movie= _.extend(movie,movieObj);
+            //res.send('对象underscore:'+_);
+            //res.send('对象movie:'+movieObj);
+            _movie.save(function(err,movie){
+                if(err){
+                    console.log(err);
+                }
+                res.redirect('/movie/'+movie._id);
+            });
+        });
+    }
+    else{
+        _movie=new Movie(movieObj);
+        var categoryId=movieObj.category;
+        console.log('我选择的是这个分类：'+categoryId);
+        _movie.save(function(err,movie){
+            if(err){
+                res.send(err);
+            }
+            else {
+                Category.findById(categoryId,function(err,category){
+                    if(err){
+                        console.log(err);
+                    }
+                    else{
+                        category.movies.push(movie._id);
+                        category.save(function(err,category){
+                            if(err){
+
+                            }
+                            else{
+                                res.redirect('/movie/' + movie._id);
+                            }
+                        });
+                    }
+
+
+                });
+
+
+            }
+        });
+    }
+}
+

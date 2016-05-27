@@ -26,21 +26,33 @@ block content
                             form.form-horizontal.group-border.hover-stripped(role="form",id="validate",method="post",action="/admin/admin/new",enctype="multipart/form-data")
                                 .form-group
                                     if admin_user&&admin_user._id
-                                        input(type="hidden",value="#{admin_user._id}",name="admin_user[_id]")
-                                    label.col-lg-2.control-label 用户名
-                                    .col-lg-10
-                                        input.form-control.required(type="text",placeholder="请输入用户名...",value=admin_user.name,name="admin_user[name]")
+                                        input(type="hidden",value="#{admin_user._id}",name="_id")
+                                    label.col-lg-2.col-md-2.control-label 用户名
+                                    .col-lg-10.col-md-10
+                                        input.form-control.required(type="text",placeholder="请输入用户名...",value=admin_user.name,name="name")
                                 .form-group
-                                    label.col-lg-2.control-label 密码
-                                    .col-lg-10
-                                        input#password.form-control(type="password",name="admin_user[password]",placeholder="输入密码...",value=admin_user.password)
-                                        input#confirm_password.form-control.mt15(type="password",name="admin_user[confirm_password]",placeholder="确认密码...")
-
+                                    label.col-lg-2.col-md-2.control-label 密码
+                                    .col-lg-10.col-md-10
+                                        input#password.form-control(type="password",name="password",placeholder="输入密码...",value=admin_user.password)
+                                        input#confirm_password.form-control.mt15(type="password",name="confirm_password",placeholder="确认密码...")
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 电话
+                                    .col-lg-10.col-md-10
+                                        input#phone.form-control.phone.required(type="text",name="phone",placeholder="手机号",value=admin_user.phone)
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 电子邮箱
+                                    .col-lg-10.col-md-10
+                                        input#email.form-control.email(type="text",name="email",ignore="ignore",placeholder="电子邮箱",value=admin_user.email)
+                                .form-group
+                                    .col-lg-1.col-md-1
+                                        button.btn.btn-default.ml15(type="submit") 保存
+                                    .col-lg-11.col-md-11
+                                        include ../../includes/notification
 block componentScript
     include ../../includes/formScript
 block bottom
-    script(src="/assets/js/pages/form-validation.js")
     script(src="/javascripts/app.js")
+    script(src="/assets/js/pages/form-validation.js")
     script.
         setTimeout(function(){
             checkSideNav('管理员');

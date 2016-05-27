@@ -2,28 +2,43 @@ doctype html
 html(lang="zh_CN")
     head
         meta(charset="utf-8")
-        meta(http-euiv="X-UA-Compatible",content="IE=edge,chrome=1")
-        meta(name="viewport",content="width=device-width,initial-scale=1.0")
-        title #{title}
-        link(href="/login/css/styles.css",rel="stylesheet",type="text/css")
-    body
-        .wrapper
-            .container
-                h1 Welcome
-                form.form
-                    input(type="text",placeholder="Username")
-                    input(type="password",placeholder="Password")
-                    button#login-button(type="submit") Login
-            ul.bg-bubbles
-                li
-                li
-                li
-                li
-                li
-                li
-                li
-                li
-                li
-                li
-        script(src="/assets/js/libs/jquery-2.1.1.min.js")
-        script(src="/login/js/login.js")
+        title= title
+        meta(name="viewport",content="width=device-width,initial-scale=1,maximum-scale=1")
+        <!-- Force IE9 to render in normal mode -->
+        <!--[if IE]>
+        meta(http-equiv="x-ua-compatible",content="IE=9")
+        <![endif]-->
+        meta(name="author",content="liumeng")
+        meta(name="application-name",content="SFProject")
+        include ../../includes/head
+    body.login-page
+        #login.animated.bounceIn
+            img#logo(src="/assets/img/logo.png",alt="sprFlat Logo")
+            .login-wrapper
+                #myTabContent.tab-content.bn
+                    #log-in.tab-pane.fade.active.in
+                        form#login-form.form-horizontal.mt10(acton="/admin/login",role="form")
+                            .form-group
+                                .col-lg-12
+                                    input.form-control.left-icon(type="text",name="email",placeholder="用户名 ...")
+                                    i.ec-user.s16.left-input-icon
+                            .form-group
+                                .col-lg-12
+                                    input.form-control.left-icon(type="password",name="password",placeholder="密码 ...")
+                                    i.ec-locked.s16.left-input-icon
+                                    span.help-block
+                                        a(href="#")
+                                            small 忘记密码?
+                            .form-group
+                                .col-lg-6.col-md-6.col-sm-6.col-xs-8
+                                    label.checkbox
+                                        input#remember(type="checkbox",name="remember",value="option")
+                                        | 记住我
+                                .col-lg-6.col-md-6.col-sm-6.col-xs-4
+                                    button.btn.btn-success.pull-right(type="submit") 登录
+        include ../../includes/FScript
+        <script src="/assets/plugins/forms/icheck/jquery.icheck.js"></script>
+        <script src="/assets/plugins/forms/validation/jquery.validate.js"></script>
+        <script src="/assets/plugins/forms/validation/additional-methods.min.js"></script>
+        <!-- Init plugins olny for this page -->
+        <script src="/assets/js/pages/login.js"></script>

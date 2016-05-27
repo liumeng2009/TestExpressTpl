@@ -1,0 +1,8 @@
+if opinfo&&opinfo.error
+    span.label.label-danger.mt5 #{opinfo.error}
+if opinfo&&opinfo.warning
+    span.label.label-warning.mt5 #{opinfo.warning}
+if opinfo&&opinfo.success
+    span.label.label-success.mt5 #{opinfo.success}
+else
+    label

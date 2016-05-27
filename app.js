@@ -11,6 +11,9 @@ var admin = require('./routes/admin');
 
 var app = express();
 
+var dbUrl='mongodb://127.0.0.1:12345/dbSF';
+mongoose.connect(dbUrl);
+
 // view engine setup
 app.set('views', path.join(__dirname, '/app/views'));
 app.set('view engine', 'jade');
