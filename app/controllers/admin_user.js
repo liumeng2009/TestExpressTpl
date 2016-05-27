@@ -50,7 +50,7 @@ exports.new=function(req,res){
         phone:req.body.phone,
         email:req.body.email
     }
-
+    console.log('提交的对象是：'+adminUserObj);
     AdminUser.find({name:adminUserObj.name},function(err,adminuser){
         if(err){
             res.render('./pages/users/admin',{
@@ -75,6 +75,7 @@ exports.new=function(req,res){
 
             }else{
                 var adminuser=new AdminUser(adminUserObj);
+                console.log('保存前'+adminuser);
                 adminuser.save(function(err,user){
                     if(err){
                         res.render('./pages/users/admin',{
