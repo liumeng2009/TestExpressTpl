@@ -13,7 +13,7 @@ router.get('/login',function(req,res,next){
 });
 
 router.get('/admin/list',adminUserController.admin_user_list);
-router.get('/admin/new',adminUserController.new);
+router.post('/admin/new',adminUserController.new);
 router.get('/admin',adminUserController.admin_user);
 router.get('/admin/:id',adminUserController.admin_user);
 
