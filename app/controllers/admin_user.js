@@ -92,62 +92,6 @@ exports.new=function(req,res){
                 });
             }
         }
-    })
-
-
-
-    var movieObj=req.body.movie;
-    var _movie=emptyMovie;
-
-
-
-    if(id){
-        Movie.findById(id,function(err,movie){
-            if(err){
-                console.log(err);
-            }
-            _movie= _.extend(movie,movieObj);
-            //res.send('对象underscore:'+_);
-            //res.send('对象movie:'+movieObj);
-            _movie.save(function(err,movie){
-                if(err){
-                    console.log(err);
-                }
-                res.redirect('/movie/'+movie._id);
-            });
-        });
-    }
-    else{
-        _movie=new Movie(movieObj);
-        var categoryId=movieObj.category;
-        console.log('我选择的是这个分类：'+categoryId);
-        _movie.save(function(err,movie){
-            if(err){
-                res.send(err);
-            }
-            else {
-                Category.findById(categoryId,function(err,category){
-                    if(err){
-                        console.log(err);
-                    }
-                    else{
-                        category.movies.push(movie._id);
-                        category.save(function(err,category){
-                            if(err){
-
-                            }
-                            else{
-                                res.redirect('/movie/' + movie._id);
-                            }
-                        });
-                    }
-
-
-                });
-
-
-            }
-        });
-    }
+    });
 }
 
