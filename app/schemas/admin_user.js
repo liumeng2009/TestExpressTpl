@@ -35,14 +35,9 @@ AdminUserSchema.pre('save', function(next) {
     else {
         this.meta.updateAt = Date.now()
     }
-    console.log('111111111111111111');
     bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
-        console.log('22222222222222222222');
         if (err) return next(err)
-        console.log(user.password);
-        console.log(salt);
-        bcrypt.hash(user.password, salt, function(err, hash) {
-            console.log('3333333333333333');
+        bcrypt.hash(user.password, salt, function(){},function(err, hash) {
             if (err) return next(err)
 
             user.password = hash;

@@ -29,7 +29,7 @@ block content
                                         input(type="hidden",value="#{admin_user._id}",name="_id")
                                     label.col-lg-2.col-md-2.control-label 用户名
                                     .col-lg-10.col-md-10
-                                        input.form-control.required(type="text",placeholder="请输入用户名...",value=admin_user.name,name="name")
+                                        input#name.form-control.required(type="text",placeholder="请输入用户名...",value=admin_user.name,name="name")
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 密码
                                     .col-lg-10.col-md-10

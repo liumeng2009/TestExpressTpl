@@ -7,15 +7,15 @@ exports.admin_user_list=function(req,res){
 
     AdminUser.fetch(function(err,adminUsers){
         if(err){
-            res.render('./pages/user/admin_list',{
+            res.render('./pages/users/admin_list',{
                 title:'管理员列表',
                 err:err
             });
         }
         else{
-            res.render('./pages/user/admin_list',{
+            res.render('./pages/users/admin_list',{
                 title:'管理员列表',
-                admin_user:adminUser
+                admin_users:adminUsers
             });
         }
     });
@@ -50,7 +50,6 @@ exports.new=function(req,res){
         phone:req.body.phone,
         email:req.body.email
     }
-    console.log('提交的对象是：'+adminUserObj);
     AdminUser.find({name:adminUserObj.name},function(err,adminuser){
         if(err){
             res.render('./pages/users/admin',{
@@ -94,5 +93,55 @@ exports.new=function(req,res){
             }
         }
     });
+}
+
+// signin
+exports.signin = function(req, res) {
+    var name = req.body.name;
+    var password = req.body.password;
+
+    console.log('用户名：'+name);
+    console.log('密码：'+password);
+
+    AdminUser.findOne({name: name}, function(err, user) {
+        if (err) {
+            res.render('./pages/auth/login',{
+                title:'请先登录',
+                opinfo:{
+                    error:err
+                }
+            });
+        }
+
+        if (!user) {
+            res.render('./pages/auth/login',{
+                title:'请先登录',
+                opinfo:{
+                    error:'用户名不存在'
+                }
+            });
+        }
+
+        user.comparePassword(password, function(err, isMatch) {
+            if (err) {
+                res.render('./pages/auth/login',{
+                    title:'请先登录',
+                    opinfo:{
+                        error:err
+                    }
+                });
+            }
+
+            if (isMatch) {
+                console.log('成功啦');
+                req.session.user = user
+
+                return res.redirect('./admin')
+            }
+            else {
+                res.redirect('./login?err=用户名和密码不匹配');
+            }
+        })
+    })
 }
 

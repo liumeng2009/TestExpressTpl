@@ -12,9 +12,32 @@ block content
                     li
                         i.im-user4
                         a(href="/admin/admin/list") 网站管理员列表
-
+        .outlet
+            .row
+                .col-lg-12
+                    .panel.panel-default.plain.toggle.panelClose.panelRefresh
+                        .panel-heading.white-bg
+                            h4.panel-title 管理员列表
+                        .panel-body
+                            table.table.table-bordered
+                                thead
+                                    tr
+                                        th.per5 用户名
+                                        th.per40 角色组
+                                        th.per40 建立时间
+                                        th.per15 操作
+                                tbody
+                                    each admin_user in admin_users
+                                        tr
+                                            td #{admin_user.name}
+                                            td 系统管理员
+                                            td #{moment(admin_user.meta.createAt).format('MM/DD/YYYY')}
+                                            td
+block componentScript
+    include ../../includes/table
 block bottom
     script(src="/javascripts/app.js")
+    script(src="/assets/js/pages/tables.js")
     script.
         setTimeout(function(){
             checkSideNav('管理员');
