@@ -59,7 +59,7 @@ AdminUserSchema.methods = {
 AdminUserSchema.statics = {
     fetch: function(cb) {
         return this
-            .find({})
+            .find({status:true})
             .sort('meta.updateAt')
             .exec(cb)
     },

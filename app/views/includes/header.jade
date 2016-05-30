@@ -17,13 +17,13 @@
                 ul.nav.navbar-nav.pull-right
                     li.dropdown
                         a(href="#",data-toggle="dropdown")
-                            img.user-avatar(src="/assets/img/avatars/48.jpg",alt="SuggeElson")
-                            | SuggeElson
+                            img.user-avatar(src="/assets/img/avatars/48.jpg",alt="#{user.name}")
+                            | #{user.name}
                         ul.dropdown-menu.right(role="menu")
                             li
                                 a(href="profile.html")
                                     i.st-user
-                                    | Profile
+                                    | 我的资料
                             li
                                 a(href="file.html")
                                     i.st-cloud
@@ -31,8 +31,8 @@
                             li
                                 a(href="#")
                                     i.st-settings
-                                    | Settings
+                                    | 设置
                             li
-                                a(href="logon.html")
+                                a(href="/admin/signout")
                                     i.im-exit
-                                    | Logout
+                                    | 退出登录

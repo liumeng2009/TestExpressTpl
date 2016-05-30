@@ -6,6 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var multiparty=require('connect-multiparty');
 var mongoose=require('mongoose');
+var session=require('express-session');
+var mongoStore=require('connect-mongo')(session);
 
 var routes = require('./routes/index');
 var admin = require('./routes/admin');
@@ -29,8 +31,24 @@ app.use(multiparty());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(cookieParser());
+app.use(session({
+  secret:'dbSF',
+  store:new mongoStore({
+    url:dbUrl,
+    collection:'sessions'
+  })
+}));
+app.use(function(req,res,next){
+  var _user=req.session.user;
+  app.locals.user=_user;
+  next();
+});
+
+
 app.use('/', routes);
 app.use('/admin', admin);
+
 
 app.locals.moment=require('moment');
 

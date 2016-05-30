@@ -19,20 +19,29 @@ block content
                         .panel-heading.white-bg
                             h4.panel-title 管理员列表
                         .panel-body
-                            table.table.table-bordered
+                            .row.mb15
+                                .col-lg-12
+                                    a.btn.btn-primary(href="/admin/admin") 新增管理员
+                            table#adminUserList.table.table-bordered
                                 thead
                                     tr
-                                        th.per5 用户名
-                                        th.per40 角色组
-                                        th.per40 建立时间
-                                        th.per15 操作
+                                        th.per20 用户名
+                                        th.per20 电话
+                                        th.per15 角色组
+                                        th.per15 建立时间
+                                        th.per30 操作
                                 tbody
                                     each admin_user in admin_users
-                                        tr
+                                        tr(class="item-id-#{admin_user._id}")
                                             td #{admin_user.name}
+                                            td #{admin_user.phone}
                                             td 系统管理员
                                             td #{moment(admin_user.meta.createAt).format('MM/DD/YYYY')}
                                             td
+                                                a.btn.btn-primary(href="/admin/admin?id=#{admin_user._id}") 编辑
+                                                | &nbsp;&nbsp;
+                                                if admin_user.name!='liumeng' && admin_user.name!='admin'
+                                                    a.del.btn.btn-danger(href="#",data-id="#{admin_user._id}") 删除
 block componentScript
     include ../../includes/table
 block bottom

@@ -17,3 +17,39 @@ var checkSideNav=function(navName){
         }
     })
 }
+$(function(){
+    $('#adminUserList .del').click(function(e){
+        var target=$(e.target);
+        var id=target.data('id');
+        var tr=$('.item-id-'+id);
+        bootbox.confirm({
+            message:'确认删除吗',
+            size:'small',
+            callback:function (result) {
+                if(result) {
+                    $.ajax({
+                            type: 'DELETE',
+                            url: '/admin/list?id=' + id
+                        })
+                        .done(function (results) {
+                            if (results.success === 1) {
+                                if (tr.length > 0) {
+                                    tr.remove();
+                                }
+                            }
+                        });
+                }
+            },
+            buttons:{
+                'confirm':{
+                    label:'确定'
+                },
+                'cancel':{
+                    label:'取消'
+                }
+            }
+
+
+        });
+    });
+});
