@@ -70,25 +70,20 @@ exports.new=function(req,res){
     else{
         AdminUser.find({name:adminUserObj.name},function(err,adminuser){
             if(err){
-                res.redirect('/admin/admin?err=server inner error');
+                console.log(err);
             }
             else{
-                if(adminuser){
-                    res.redirect('/admin/admin?err=name is exist');
+                console.log('这个对象是：'+adminuser);
+                if(adminuser&&adminuser.length>0){
+                    res.redirect('/admin/admin?err=exist');
                 }else{
                     var adminuser=new AdminUser(adminUserObj);
                     adminuser.save(function(err,user){
                         if(err){
-                            res.render('./pages/users/admin',{
-                                title:'新增管理员',
-                                admin_user:[],
-                                action:'新增',
-                                opinfo:{
-                                    error:err
-                                }
-                            });
+                            console.log(err);
                         }
                         else{
+
                             res.redirect('/admin/admin/list');
                         }
                     });
@@ -106,35 +101,23 @@ exports.signin = function(req, res) {
 
     AdminUser.findOne({name: name}, function(err, user) {
         if (err) {
-            res.render('./pages/auth/login',{
-                title:'请先登录',
-                opinfo:{
-                    error:err
-                }
-            });
+            console.log(err);
         }
-        console.log('用户名不存在的情况：'+user);
         if (!user) {
-            res.redirect('./login?err=the count is not exist');
+            res.redirect('./login?err=notexist');
         }
         else{
             user.comparePassword(password, function(err, isMatch) {
                 if (err) {
-                    res.render('./pages/auth/login',{
-                        title:'请先登录',
-                        opinfo:{
-                            error:err
-                        }
-                    });
+                    console.log(err);
                 }
 
                 if (isMatch) {
-                    console.log('成功啦');
                     req.session.user = user
                     return res.redirect('./')
                 }
                 else {
-                    res.redirect('./login?err=wrong username or password');
+                    res.redirect('./login?err=wrong');
                 }
             });
         }
@@ -148,20 +131,10 @@ exports.signout=function(req,res){
 
 //登录界面
 exports.showSignIn=function(req,res){
-    var info=req.query.err;
-    if(info){
-        res.render('pages/auth/login',{
-            title:'请先登录',
-            opinfo:{
-                error:info
-            }
-        });
-    }
-    else{
-        res.render('pages/auth/login',{
-            title:'请先登录'
-        });
-    }
+    res.render('pages/auth/login',{
+        title:'请先登录'
+    });
+
 }
 
 //删除用户
