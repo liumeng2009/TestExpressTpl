@@ -1,0 +1,58 @@
+extends ../../layout
+
+block content
+    .content-wrapper
+        .row
+            .col-lg-12.heading
+                ul#crumb.breadcrumb
+                    li
+                        i.im-home
+                        a(href="/admin") 首页
+                        i.en-arrow-right7
+                    li
+                        i.im-user4
+                        a(href="/admin/school/list") 学校列表
+                        i.en-arrow-right7
+                    li
+                        i.en-user-add
+                        a(href="#") #{action}学校
+        .outlet
+            .row
+                .col-lg-12
+                    .panel.panel-default.toggle
+                        .panel-heading
+                            h3.panel-title #{action}学校
+                        .panel-body
+                            form.form-horizontal.group-border.hover-stripped(role="form",id="validate",method="post",action="/admin/school/new",enctype="multipart/form-data")
+                                .form-group
+                                    if admin_user&&admin_user._id
+                                        input(type="hidden",value="#{school._id}",name="_id")
+                                    label.col-lg-2.col-md-2.control-label 学校名称
+                                    .col-lg-10.col-md-10
+                                        input#name.form-control.required(type="text",placeholder="请输入学校名称...",value=school.name,name="name")
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 所在省区县
+                                    .col-lg-10.col-md-10
+                                        input#phone.form-control.phone.required(type="text",name="phone",placeholder="手机号",value=admin_user.phone)
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 详细地址
+                                    .col-lg-10.col-md-10
+                                        input#address.form-control.email(type="text",name="address",placeholder="请输入详细地址 ...",value=school.address)
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 学校描述
+                                    .col-lg-10.col-md-10
+                                        textarea#intro.form-control.email(type="text",name="intro",placeholder="请输入学校描述 ...",value=school.intro)
+                                .form-group
+                                    .col-lg-1.col-md-1
+                                        button.btn.btn-default.ml15(type="submit") 保存
+                                    .col-lg-11.col-md-11
+                                        include ../../includes/notification
+block componentScript
+    include ../../includes/formScript
+block bottom
+    script(src="/javascripts/app.js")
+    script(src="/assets/js/pages/form-validation.js")
+    script.
+        setTimeout(function(){
+            checkSideNav('学校管理');
+        },0);

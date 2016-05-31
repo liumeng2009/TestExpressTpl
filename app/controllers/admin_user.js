@@ -5,13 +5,9 @@ var AdminUser=require('../models/admin_user');
 
 //用户列表
 exports.admin_user_list=function(req,res){
-
     AdminUser.fetch(function(err,adminUsers){
         if(err){
-            res.render('./pages/users/admin_list',{
-                title:'管理员列表',
-                err:err
-            });
+            console.log(err);
         }
         else{
             res.render('./pages/users/admin_list',{
@@ -20,7 +16,6 @@ exports.admin_user_list=function(req,res){
             });
         }
     });
-
 }
 //用户信息
 exports.admin_user=function(req,res){
