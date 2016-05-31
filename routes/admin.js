@@ -14,6 +14,6 @@ router.get('/admin/:id',adminUserController.signinRequired ,adminUserController.
 router.post('/signin',adminUserController.signin);
 router.get('/signout',adminUserController.signinRequired,adminUserController.signout);
 
-router.get('/user/list',adminUserController.signinRequired,)
+router.get('/user/list',adminUserController.signinRequired,userController.user_list);
 
 module.exports = router;
