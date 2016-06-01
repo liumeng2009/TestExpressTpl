@@ -1,0 +1,51 @@
+extends ../../layout
+
+block content
+    .content-wrapper
+        .row
+            .col-lg-12.heading
+                ul#crumb.breadcrumb
+                    li
+                        i.im-home
+                        a(href="/admin") 首页
+                        i.en-arrow-right7
+                    li
+                        i.im-user4
+                        a(href="/admin/admin/list") 校长用户列表
+        .outlet
+            .row
+                .col-lg-12
+                    .panel.panel-default.plain.toggle.panelClose.panelRefresh
+                        .panel-heading.white-bg
+                            h4.panel-title 校长用户列表
+                        .panel-body
+                            .row.mb15
+                                .col-lg-12
+                                    a.btn.btn-primary(href="/admin/president") 新增校长用户
+                            table#presidentList.table.table-bordered
+                                thead
+                                    tr
+                                        th.per20 用户名
+                                        th.per20 电话
+                                        th.per15 建立时间
+                                        th.per45 操作
+                                tbody
+                                    each president in presidents
+                                        tr(class="item-id-#{president._id}")
+                                            td #{president.name}
+                                            td #{president.phone}
+                                            td #{moment(president.meta.createAt).format('MM/DD/YYYY')}
+                                            td
+                                                a.btn.btn-primary(href="/admin/president?id=#{president._id}") 编辑
+                                                | &nbsp;&nbsp;
+                                                a.del.btn.btn-danger(href="#",data-id="#{president._id}") 删除
+                            include ../../includes/notification
+block componentScript
+    include ../../includes/table
+block bottom
+    script(src="/javascripts/app.js")
+    script(src="/assets/js/pages/tables.js")
+    script.
+        setTimeout(function(){
+            checkSideNav('校长管理');
+        },0);

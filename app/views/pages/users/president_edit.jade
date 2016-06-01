@@ -1,0 +1,54 @@
+extends ../../layout
+
+block content
+    .content-wrapper
+        .row
+            .col-lg-12.heading
+                ul#crumb.breadcrumb
+                    li
+                        i.im-home
+                        a(href="/admin") 首页
+                        i.en-arrow-right7
+                    li
+                        i.im-user4
+                        a(href="/admin/admin/list") 校长用户列表
+                        i.en-arrow-right7
+                    li
+                        i.en-user-add
+                        a(href="#") #{action}校长用户
+        .outlet
+            .row
+                .col-lg-12
+                    .panel.panel-default.toggle
+                        .panel-heading
+                            h3.panel-title #{action}校长用户
+                        .panel-body
+                            form.form-horizontal.group-border.hover-stripped(role="form",id="validate",method="post",action="/admin/president/new",enctype="multipart/form-data")
+                                .form-group
+                                    if president&&president._id
+                                        input(type="hidden",value="#{president._id}",name="_id")
+                                    label.col-lg-2.col-md-2.control-label 用户名
+                                    .col-lg-10.col-md-10
+                                        input#name.form-control.required(type="text",placeholder="请输入用户名...",value=president.name,name="name",disabled="disabled")
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 电话
+                                    .col-lg-10.col-md-10
+                                        input#phone.form-control.phone.required(type="text",name="phone",placeholder="手机号",value=president.phone)
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 电子邮箱
+                                    .col-lg-10.col-md-10
+                                        input#email.form-control.email(type="text",name="email",ignore="ignore",placeholder="电子邮箱",value=president.email)
+                                .form-group
+                                    .col-lg-1.col-md-1
+                                        button.btn.btn-default.ml15(type="submit") 保存
+                                    .col-lg-11.col-md-11
+                                        include ../../includes/notification
+block componentScript
+    include ../../includes/formScript
+block bottom
+    script(src="/javascripts/app.js")
+    script(src="/assets/js/pages/form-validation.js")
+    script.
+        setTimeout(function(){
+            checkSideNav('校长管理');
+        },0);

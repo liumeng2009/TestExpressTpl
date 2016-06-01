@@ -37,7 +37,53 @@ $(function(){
                                     tr.remove();
                                 }
                             }
+                        }).fail(function(err){
+                        bootbox.alert({
+                            title:'错误',
+                            message:err.statusText,
+                            callback:function(){}
                         });
+                    });
+                }
+            },
+            buttons:{
+                'confirm':{
+                    label:'确定'
+                },
+                'cancel':{
+                    label:'取消'
+                }
+            }
+
+
+        });
+    });
+    $('#presidentList .del').click(function(e){
+        var target=$(e.target);
+        var id=target.data('id');
+        var tr=$('.item-id-'+id);
+        bootbox.confirm({
+            message:'确认删除吗',
+            size:'small',
+            callback:function (result) {
+                if(result) {
+                    $.ajax({
+                            type: 'DELETE',
+                            url: '/admin/president/list?id=' + id
+                        })
+                        .done(function (results) {
+                            if (results.success === 1) {
+                                if (tr.length > 0) {
+                                    tr.remove();
+                                }
+                            }
+                        }).fail(function(err){
+                        bootbox.alert({
+                            title:'错误',
+                            message:err.statusText,
+                            callback:function(){}
+                        });
+                    });
                 }
             },
             buttons:{

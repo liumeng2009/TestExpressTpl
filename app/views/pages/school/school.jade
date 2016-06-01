@@ -31,17 +31,31 @@ block content
                                     .col-lg-10.col-md-10
                                         input#name.form-control.required(type="text",placeholder="请输入学校名称...",value=school.name,name="name")
                                 .form-group
-                                    label.col-lg-2.col-md-2.control-label 所在省区县
+                                    label.col-lg-2.col-md-2.control-label 学校建立者
                                     .col-lg-10.col-md-10
-                                        input#phone.form-control.phone.required(type="text",name="phone",placeholder="手机号",value=admin_user.phone)
+                                        select.form-control.required(name="president")
+                                            if school.ower
+                                                each pre in presidents
+                                                    option(value=pre._id,select=school.owner.toString()==pre._id)
+                                                        | #{pre.name}
+                                            else
+                                                each pre in presidents
+                                                    option(value=pre._id)
+                                                        | #{pre.name}
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 所在省区县
+                                    .col-lg-10.col-md-10#city1
+                                        select.prov.form-control.required(name="province")
+                                        select.city.form-control.mt15.required(disabled="disabled",name="city")
+                                        select.dist.form-control.mt15.required(disabled="disabled",name="country")
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 详细地址
                                     .col-lg-10.col-md-10
-                                        input#address.form-control.email(type="text",name="address",placeholder="请输入详细地址 ...",value=school.address)
+                                        input#address.form-control.required(type="text",name="address",placeholder="请输入详细地址 ...",value=school.address)
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 学校描述
                                     .col-lg-10.col-md-10
-                                        textarea#intro.form-control.email(type="text",name="intro",placeholder="请输入学校描述 ...",value=school.intro)
+                                        textarea#intro.form-control.required(type="text",name="intro",placeholder="请输入学校描述 ...",value=school.intro)
                                 .form-group
                                     .col-lg-1.col-md-1
                                         button.btn.btn-default.ml15(type="submit") 保存
@@ -52,7 +66,10 @@ block componentScript
 block bottom
     script(src="/javascripts/app.js")
     script(src="/assets/js/pages/form-validation.js")
+    script(src="/citylist/js/jquery.cityselect.js")
     script.
         setTimeout(function(){
             checkSideNav('学校管理');
+            $("#city1").citySelect({nodata: "none", required: false});
         },0);
+

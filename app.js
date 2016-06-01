@@ -44,14 +44,12 @@ app.use(session({
 app.use(function(req,res,next){
   var _user=req.session.user;
   app.locals.user=_user;
-
   if(req.query.err){
     app.locals.err=req.query.err;
   }
   else{
     delete app.locals.err;
   }
-
   next();
 });
 

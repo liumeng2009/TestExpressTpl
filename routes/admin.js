@@ -4,6 +4,7 @@ var adminUserController=require('../app/controllers/admin_user');
 var indexController=require('../app/controllers/index');
 var userController=require('../app/controllers/user');
 var schoolController=require('../app/controllers/school');
+var presidentController=require('../app/controllers/president');
 
 router.get('/',adminUserController.signinRequired ,indexController.index);
 router.get('/login',adminUserController.showSignIn);
@@ -15,5 +16,17 @@ router.post('/signin',adminUserController.signin);
 router.get('/signout',adminUserController.signinRequired,adminUserController.signout);
 
 router.get('/user/list',adminUserController.signinRequired,userController.user_list);
+
+router.get('/president/list',adminUserController.signinRequired,presidentController.president_list);
+router.get('/president',adminUserController.signinRequired,presidentController.president);
+router.get('/president/:id',adminUserController.signinRequired,presidentController.president);
+router.post('/president/new',adminUserController.signinRequired ,presidentController.new);
+router.delete('/president/list',adminUserController.signinRequired ,presidentController.del);
+
+router.get('/school/list',adminUserController.signinRequired,schoolController.school_list);
+router.get('/school',adminUserController.signinRequired,schoolController.school);
+router.get('/school/:id',adminUserController.signinRequired,schoolController.school);
+router.post('/school/new',adminUserController.signinRequired ,schoolController.new);
+router.delete('/school/list',adminUserController.signinRequired ,schoolController.del);
 
 module.exports = router;

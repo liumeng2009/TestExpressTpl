@@ -7,7 +7,7 @@ var ObjectId=Schema.Types.ObjectId;
 var bcrypt = require('bcrypt-node')
 var SALT_WORK_FACTOR = 10
 
-var UserSchema = new mongoose.Schema({
+var PresidentSchema = new mongoose.Schema({
     name: {
         unique: true,
         type: String
@@ -34,9 +34,8 @@ var UserSchema = new mongoose.Schema({
     ]
 })
 
-UserSchema.pre('save', function(next) {
+PresidentSchema.pre('save', function(next) {
     var user = this;
-
     if (this.isNew) {
         this.meta.createAt = this.meta.updateAt = Date.now()
     }
@@ -54,7 +53,7 @@ UserSchema.pre('save', function(next) {
     })
 })
 
-UserSchema.methods = {
+PresidentSchema.methods = {
     comparePassword: function(_password, cb) {
         bcrypt.compare(_password, this.password, function(err, isMatch) {
             if (err) return cb(err)
@@ -64,7 +63,7 @@ UserSchema.methods = {
     }
 }
 
-UserSchema.statics = {
+PresidentSchema.statics = {
     fetch: function(cb) {
         return this
             .find({status:true})
@@ -78,4 +77,4 @@ UserSchema.statics = {
     }
 }
 
-module.exports = UserSchema
+module.exports = PresidentSchema;
