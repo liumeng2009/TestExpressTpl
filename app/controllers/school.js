@@ -1,6 +1,7 @@
 /**
  * Created by Administrator on 2016/5/31.
  */
+var mongoose=require('mongoose');
 var School=require('../models/school');
 var President=require('../models/president');
 
@@ -50,58 +51,70 @@ exports.school_list=function(req,res){
 
 exports.new=function(req,res){
     var id=req.body._id;
-    console.log("能取到吗？"+req.body.president);
-    var schoolObj={
-        name:req.body.name,
-        owner:req.body.president,
-        status:true,
-        province:req.body.province,
-        city:req.body.city,
-        country:req.body.country,
-        address:req.body.address,
-        intro:req.body.intro
-    };
-    //id存在就是编辑 不存在就是新增
-    if(id){
-        School.update({_id:id},{
-            owner:schoolObj.president,
-            province:schoolObj.province,
-            city:schoolObj.city,
-            country:schoolObj.country,
-            address:schoolObj.address,
-            intro:schoolObj.intro
-        },function(err,school){
-            if(err){
-                console.log(err)
+    console.log('23232323'+req.body.president);
+
+    President.findById({_id:req.body.president},function(err,__pre){
+        if(err){
+            return console.log(err);
+        }
+        else{
+            console.log('xingmingshi:'+__pre.name);
+            var schoolObj={
+                name:req.body.name,
+                status:true,
+                province:req.body.province,
+                city:req.body.city,
+                country:req.body.country,
+                address:req.body.address,
+                intro:req.body.intro,
+                owner:__pre
+            };
+            //id存在就是编辑 不存在就是新增
+            if(id){
+                School.update({_id:id},{
+                    owner:schoolObj.president,
+                    province:schoolObj.province,
+                    city:schoolObj.city,
+                    country:schoolObj.country,
+                    address:schoolObj.address,
+                    intro:schoolObj.intro,
+                },function(err,school){
+                    if(err){
+                        console.log(err)
+                    }
+                    else{
+                        res.redirect('/admin/school/list');
+                    }
+                });
             }
             else{
-                res.redirect('/admin/school/list');
-            }
-        });
-    }
-    else{
-        School.find({name:schoolObj.name},function(err,school){
-            if(err){
-                console.log(err);
-            }
-            else{
-                if(school&&school.length>0){
-                    res.redirect('/admin/school?err=exist');
-                }else{
-                    var _school=new School(schoolObj);
-                    console.log("保存前:"+_school);
-                    _school.save(function(err,school){
-                        if(err){
-                            console.log(err);
+                School.find({name:schoolObj.name},function(err,school){
+                    if(err){
+                        console.log(err);
+                    }
+                    else{
+                        if(school&&school.length>0){
+                            res.redirect('/admin/school?err=exist');
+                        }else{
+                            var _school=new School(schoolObj);
+                            console.log("保存前:"+_school);
+                            _school.save(function(err,school){
+                                if(err){
+                                    console.log(err);
+                                }
+                                else{
+                                    res.redirect('/admin/School/list');
+                                }
+                            });
                         }
-                        else{
-                            res.redirect('/admin/School/list');
-                        }
-                    });
-                }
+                    }
+                });
             }
-        });
-    }
+        }
+    });
+
+
+
 }
 exports.del=function(req,res){
 
