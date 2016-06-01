@@ -11,12 +11,12 @@ var SchoolSchema = new mongoose.Schema({
         type: String
     },
     province: String,
-    city:Boolean,
+    city:String,
     country:String,
     address:String,
     owner:{
         type:ObjectId,
-        ref:'user'
+        ref:'President'
     },
     status:Boolean,
     intro:String,
