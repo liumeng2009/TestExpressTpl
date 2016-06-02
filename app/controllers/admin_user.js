@@ -92,6 +92,9 @@ exports.new=function(req,res){
 exports.signin = function(req, res) {
     var name = req.body.name;
     var password = req.body.password;
+
+    console.log('姓名'+name);
+    console.log('密码'+password);
     AdminUser.findOne({name: name}, function(err, user) {
         if (err) {
             console.log(err);

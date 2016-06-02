@@ -1,6 +1,7 @@
 /**
  * Created by Administrator on 2016/5/31.
  */
+var mongoose=require('mongoose');
 var School=require('../models/school');
 var President=require('../models/president');
 
@@ -58,9 +59,11 @@ exports.school_list=function(req,res){
 
 exports.new=function(req,res){
     var id=req.body._id;
-
     President.findById({_id:req.body.president},function(err,_pre){
-        var schoolObj= {
+        if(err)
+            return console.log(err)
+
+        var schoolObj=new School({
             name: req.body.name,
             owner:_pre,
             status:true,
@@ -69,7 +72,7 @@ exports.new=function(req,res){
             country:req.body.country,
             address:req.body.address,
             intro:req.body.intro
-        };
+        });
 
         //id存在就是编辑 不存在就是新增
         if(id){
@@ -98,9 +101,7 @@ exports.new=function(req,res){
                     if(school&&school.length>0){
                         res.redirect('/admin/school?err=exist');
                     }else{
-                        var __school=new School(schoolObj);
-                        console.log('保存前：'+__school);
-                        __school.save(function(err,school){
+                        schoolObj.save(function(err,school){
                             if(err){
                                 console.log(err);
                             }

@@ -9,6 +9,9 @@ var mongoose=require('mongoose');
 var session=require('express-session');
 var mongoStore=require('connect-mongo')(session);
 
+
+var SchoolModel=require('./app/models/school');
+
 var routes = require('./routes/index');
 var admin = require('./routes/admin');
 
@@ -16,6 +19,9 @@ var app = express();
 
 var dbUrl='mongodb://127.0.0.1:12345/dbSF';
 mongoose.connect(dbUrl);
+
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, '/app/views'));
@@ -97,6 +103,9 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
+
+
+
 
 
 module.exports = app;

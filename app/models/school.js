@@ -3,5 +3,5 @@
  */
 var mongoose=require('mongoose');
 var SchoolSchema = require('../schemas/school')
-var School = mongoose.model('School', SchoolSchema)
+var School = mongoose.model('school', SchoolSchema)
 module.exports = School;
