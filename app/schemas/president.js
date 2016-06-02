@@ -29,7 +29,7 @@ var PresidentSchema = new mongoose.Schema({
     schools:[
         {
             type:ObjectId,
-            ref:'school'
+            ref:'School'
         }
     ]
 })

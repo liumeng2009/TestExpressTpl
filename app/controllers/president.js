@@ -70,6 +70,9 @@ exports.new=function(req,res){
                     res.redirect('/admin/president?err=exist');
                 }else{
                     var _president=new President(presidentObj);
+
+                    console.log('增加的校长是：'+_president);
+
                     _president.save(function(err,user){
                         if(err){
                             console.log(err);

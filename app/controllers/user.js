@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2016/5/31.
  */
-var User=require('../models/user');
+var User=require('../models/user')
 
 //用户列表
 exports.user_list=function(req,res){

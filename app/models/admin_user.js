@@ -3,5 +3,5 @@
  */
 var mongoose=require('mongoose');
 var AdminUserSchema = require('../schemas/admin_user')
-var AdminUser = mongoose.model('admin_user', AdminUserSchema)
+var AdminUser = mongoose.model('AdminUser', AdminUserSchema)
 module.exports = AdminUser;

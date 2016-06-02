@@ -33,8 +33,6 @@ var SchoolSchema = new mongoose.Schema({
 })
 
 SchoolSchema.pre('save', function(next) {
-    var user = this;
-
     if (this.isNew) {
         this.meta.createAt = this.meta.updateAt = Date.now()
     }
@@ -43,9 +41,6 @@ SchoolSchema.pre('save', function(next) {
     }
 })
 
-SchoolSchema.methods = {
-
-}
 
 SchoolSchema.statics = {
     fetch: function(cb) {

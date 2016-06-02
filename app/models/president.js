@@ -3,5 +3,5 @@
  */
 var mongoose=require('mongoose');
 var PresidentSchema = require('../schemas/president')
-var President = mongoose.model('president', PresidentSchema)
+var President = mongoose.model('President', PresidentSchema)
 module.exports = President;

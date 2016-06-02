@@ -25,8 +25,8 @@ block content
                         .panel-body
                             form.form-horizontal.group-border.hover-stripped(role="form",id="validate",method="post",action="/admin/school/new",enctype="multipart/form-data")
                                 .form-group
-                                    if admin_user&&admin_user._id
-                                        input(type="hidden",value="#{school._id}",name="_id")
+                                    if school&&school._id
+                                        input(type="hidden",value=school._id,name="_id")
                                     label.col-lg-2.col-md-2.control-label 学校名称
                                     .col-lg-10.col-md-10
                                         input#name.form-control.required(type="text",placeholder="请输入学校名称...",value=school.name,name="name")
