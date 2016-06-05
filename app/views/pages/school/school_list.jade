@@ -20,20 +20,37 @@ block content
                             h4.panel-title 学校列表
                         .panel-body
                             .row.mb15
-                                .col-lg-12
-                                    a.btn.btn-primary(href="/admin/school") 新增学校
+                                .col-lg-8.col-md-8
+                                    form.form-inline(method="get",role="form",action="/admin/school/list",enctype="multipart/form-data")
+                                        .form-group
+                                            label(for="president") 校长：
+                                            select.form-control(name="president")
+                                                option(value="0") 所有校长
+                                                each pre in presidents
+                                                    option(value="#{pre._id}") #{pre.name}
+                                        .form-group
+                                            label(for="name") 学校名称
+                                            input.form-control(type="text",placeholder="学校名称",name="name")
+                                        button.btn.btn-primary(type="submit") 搜索
+                                .col-lg-4.col-md-4
+                                    a.btn.btn-default.pull-right(href="/admin/school")
+                                        i.br-plus
+                                        |     新增学校
+
                             table#presidentList.table.table-bordered
                                 thead
                                     tr
-                                        th.per20 用户名
+                                        th.per20 学校名称
                                         th.per20 所有者
-                                        th.per15 建立时间
-                                        th.per45 操作
+                                        th.per20 班级数
+                                        th.per20 建立时间
+                                        th.per20 操作
                                 tbody
                                     each school in schools
                                         tr(class="item-id-#{school._id}")
                                             td #{school.name}
-                                            td 哈哈
+                                            td #{school.owner.name}
+                                            td 20人
                                             td #{moment(school.meta.createAt).format('MM/DD/YYYY')}
                                             td
                                                 a.btn.btn-primary(href="/admin/president?id=#{school._id}") 编辑

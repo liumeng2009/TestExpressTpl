@@ -36,25 +36,31 @@ exports.school=function(req,res){
 }
 
 exports.school_list=function(req,res){
-    School.fetch(function(err,school){
-        if(err){
-            console.log(err);
-        }
-        else {
-            if (school && school.length > 0) {
-                res.render('./pages/school/school_list', {
-                    title: '管理员列表',
-                    schools: school
+    var searchObj={};
+    if(req.query.president&&req.query.president!=0){
+        searchObj.owner=req.query.president;
+    }
+    if(req.query.name&&req.query.name!=""){
+        searchObj.name=req.query.name;
+    }
+    searchObj.status=true;
+
+    School.find(searchObj)
+        .populate('owner')
+        .exec(function(err,schools){
+            if(err)
+                return console.log(err);
+            President.find({status:true},function(err,presidents){
+                if(err)
+                    return console.log(err);
+
+                res.render('./pages/school/school_list',{
+                    title:'管理员列表',
+                    schools:schools,
+                    presidents:presidents
                 });
-            }
-            else{
-                res.render('./pages/school/school_list', {
-                    title: '管理员列表',
-                    schools: []
-                });
-            }
-        }
-    });
+            })
+        });
 }
 
 exports.new=function(req,res){

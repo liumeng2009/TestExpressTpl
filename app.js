@@ -44,7 +44,7 @@ app.use(session({
     url:dbUrl,
     collection:'sessions'
   }),
-  resave:false,
+  resave:true,
   saveUninitialized:false
 }));
 
