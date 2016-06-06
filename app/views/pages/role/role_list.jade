@@ -1,0 +1,65 @@
+extends ../../layout
+
+block content
+    .content-wrapper
+        .row
+            .col-lg-12.heading
+                ul#crumb.breadcrumb
+                    li
+                        i.im-home
+                        a(href="/admin") 首页
+                        i.en-arrow-right7
+                    li
+                        i.im-user4
+                        a(href="/admin/grade/list") 角色列表
+        if school
+            .outlet
+                .row
+                    .col-lg-12
+                        .panel.panel-default.plain.toggle.panelClose.panelRefresh
+                            .panel-heading.white-bg
+                                h4.panel-title #{school.name}的角色列表
+                            .panel-body
+                                .row.mb15
+                                    .col-lg-8.col-md-8
+                                    .col-lg-4.col-md-4
+                                        a.btn.btn-default.pull-right(href="/admin/role?sid=#{school._id}")
+                                            i.br-plus
+                                            | 新增角色
+
+                                table#presidentList.table.table-bordered
+                                    thead
+                                        tr
+                                            th.per20 角色名称
+                                            th.per20 建立时间
+                                            th.per20 操作
+                                    tbody
+                                        each role in roles
+                                            tr(class="item-id-#{role._id}")
+                                                td #{role.name}
+                                                td #{role.owner.name}
+                                                td #{moment(role.meta.createAt).format('MM/DD/YYYY')}
+                                                td
+                                                    a.btn.btn-primary(href="/admin/role?id=#{role._id}&sid=#{school._id}") 编辑权限
+                                include ../../includes/notification
+        else
+            .row
+                each sch in schools
+                    .col-lg-3.col-md-3.col-sm-6.col-xs-12
+                        .tile-stats.b.brall.mb25.teal-bg
+                            a(href="/admin/role/list?sid=#{sch._id}")
+                                .tile-stats-icon
+                                    .st-cube.color-white.s48
+                                .tile-stats-content
+                                    .tile-stats-number.color-white #{sch.name}
+                                    .tile-stats-text.color-white #{sch.owner.name}
+                                .clearfix
+block componentScript
+    include ../../includes/table
+block bottom
+    script(src="/javascripts/app.js")
+    script(src="/assets/js/pages/tables.js")
+    script.
+        setTimeout(function(){
+            checkSideNav('角色管理');
+        },0);

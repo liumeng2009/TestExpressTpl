@@ -50,6 +50,9 @@ h6 small,
 .s32 {
   font-size: 32px !important;
 }
+.s48 {
+  font-size: 48px !important;
+}
 .s64 {
   font-size: 64px !important;
 }

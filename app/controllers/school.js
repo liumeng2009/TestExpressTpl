@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2016/5/31.
  */
-var mongoose=require('mongoose');
+//var mongoose=require('mongoose');
 var School=require('../models/school');
 var President=require('../models/president');
 
@@ -83,6 +83,7 @@ exports.new=function(req,res){
         //id存在就是编辑 不存在就是新增
         if(id){
             School.update({_id:id},{
+                name:schoolObj.name,
                 owner:_pre,
                 province:schoolObj.province,
                 city:schoolObj.city,

@@ -53,9 +53,7 @@ block content
                                             td 20人
                                             td #{moment(school.meta.createAt).format('MM/DD/YYYY')}
                                             td
-                                                a.btn.btn-primary(href="/admin/president?id=#{school._id}") 编辑
-                                                | &nbsp;&nbsp;
-                                                a.del.btn.btn-danger(href="#",data-id="#{school._id}") 删除
+                                                a.btn.btn-primary(href="/admin/school?id=#{school._id}") 编辑
                             include ../../includes/notification
 block componentScript
     include ../../includes/table

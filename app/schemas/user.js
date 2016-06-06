@@ -26,14 +26,6 @@ var UserSchema = new mongoose.Schema({
             default: Date.now()
         }
     },
-    //和哪个student
-    rela_student:{
-        type:ObjectId,
-        ref:'student'
-    },
-    //和student是什么关系
-    rela:String,
-    //属于什么角色
     role:{
         type:ObjectId,
         ref:'role'

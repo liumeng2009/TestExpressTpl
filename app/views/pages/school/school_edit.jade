@@ -34,9 +34,9 @@ block content
                                     label.col-lg-2.col-md-2.control-label 学校建立者
                                     .col-lg-10.col-md-10
                                         select.form-control.required(name="president")
-                                                each pre in presidents
-                                                    option(value=pre._id)
-                                                        | #{pre.name}
+                                            each pre in presidents
+                                                option(value=pre._id,selected=school.owner.toString()===pre._id.toString())
+                                                    | #{pre.name}
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 所在省区县
                                     .col-lg-10.col-md-10#city1
@@ -50,7 +50,7 @@ block content
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 学校描述
                                     .col-lg-10.col-md-10
-                                        textarea#intro.form-control.required(type="text",name="intro",placeholder="请输入学校描述 ...",value=school.intro)
+                                        textarea#intro.form-control.required(type="text",name="intro",placeholder="请输入学校描述 ...",value=school.intro) #{school.intro}
                                 .form-group
                                     .col-lg-1.col-md-1
                                         button.btn.btn-default.ml15(type="submit") 保存
@@ -65,6 +65,6 @@ block bottom
     script.
         setTimeout(function(){
             checkSideNav('学校管理');
-            $("#city1").citySelect({nodata: "none", required: false});
+            $("#city1").citySelect({prov: '#{school.province}',city:'#{school.city}',dist:'#{school.country}'});
         },0);
 

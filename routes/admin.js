@@ -5,6 +5,7 @@ var indexController=require('../app/controllers/index');
 var userController=require('../app/controllers/user');
 var schoolController=require('../app/controllers/school');
 var presidentController=require('../app/controllers/president');
+var gradeController=require('../app/controllers/grade');
 
 router.get('/',adminUserController.signinRequired ,indexController.index);
 router.get('/login',adminUserController.showSignIn);
@@ -28,5 +29,8 @@ router.get('/school',adminUserController.signinRequired,schoolController.school)
 router.get('/school/:id',adminUserController.signinRequired,schoolController.school);
 router.post('/school/new',adminUserController.signinRequired ,schoolController.new);
 router.delete('/school/list',adminUserController.signinRequired ,schoolController.del);
+
+router.get('/grade/list',adminUserController.signinRequired,gradeController.grade_list);
+router.get('/grade',adminUserController.signinRequired,gradeController.grade)
 
 module.exports = router;
