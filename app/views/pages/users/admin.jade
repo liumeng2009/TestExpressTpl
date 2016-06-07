@@ -36,6 +36,10 @@ block content
                                         input#password.form-control(type="password",name="password",placeholder="输入密码...",value=admin_user.password)
                                         input#confirm_password.form-control.mt15(type="password",name="confirm_password",placeholder="确认密码...")
                                 .form-group
+                                    label.col-lg-2.col-md-2.control-label 权重
+                                    .col-lg-10.col-md-10
+                                        input#weight.form-control.number(type="text",name="weight",min="0",max="999",placeholder="请输入0-999的整数。数值越大，权限越高。",value=admin_user.weight)
+                                .form-group
                                     label.col-lg-2.col-md-2.control-label 电话
                                     .col-lg-10.col-md-10
                                         input#phone.form-control.phone.required(type="text",name="phone",placeholder="手机号",value=admin_user.phone)

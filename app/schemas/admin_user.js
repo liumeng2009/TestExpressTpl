@@ -14,6 +14,7 @@ var AdminUserSchema = new mongoose.Schema({
     status:Boolean,
     phone:String,
     email:String,
+    weight:Number,
     meta: {
         createAt: {
             type: Date,
@@ -47,11 +48,10 @@ AdminUserSchema.pre('save', function(next) {
 })
 
 AdminUserSchema.methods = {
-    comparePassword: function(_password, cb) {
-        bcrypt.compare(_password, this.password, function(err, isMatch) {
+    comparePassword: function(_password,__password, cb) {
+        bcrypt.compare(_password, __password, function(err, isMatch) {
             if (err) return cb(err)
-
-            cb(null, isMatch)
+            cb(null, isMatch);
         })
     }
 }

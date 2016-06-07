@@ -2,6 +2,7 @@
  * Created by Administrator on 2016/5/26.
  */
 var AdminUser=require('../models/admin_user');
+var _ = require('underscore')
 
 //用户列表
 exports.admin_user_list=function(req,res){
@@ -40,26 +41,35 @@ exports.admin_user=function(req,res){
 }
 //新增用户
 exports.new=function(req,res){
+
     var id=req.body._id;
     var adminUserObj={
         name:req.body.name,
         password:req.body.password,
+        weight:req.body.weight,
         status:true,
         phone:req.body.phone,
         email:req.body.email
     };
     //id存在就是编辑 不存在就是新增
     if(id){
-        AdminUser.update({_id:id},{
-            phone:req.body.phone,
-            email:req.body.email
-        },function(err,adminuser){
-            if(err){
-                res.redirect(req.url);
-            }
-            else{
-                res.redirect('/admin/admin/list');
-            }
+        AdminUser.findById({_id:id},function(err,adminuser) {
+            if (err)
+                return console.log(err);
+
+            //编辑页面，name属性不可修改，所以删除掉
+            delete adminUserObj.name;
+            delete adminUserObj.password;
+
+            var _adminuser = _.extend(adminuser, adminUserObj);
+            _adminuser.save(function (err, adminuser) {
+                if (err) {
+                    res.redirect(req.url);
+                }
+                else {
+                    res.redirect('/admin/admin/list');
+                }
+            });
         });
     }
     else{
@@ -72,8 +82,8 @@ exports.new=function(req,res){
                 if(adminuser&&adminuser.length>0){
                     res.redirect('/admin/admin?err=exist');
                 }else{
-                    var adminuser=new AdminUser(adminUserObj);
-                    adminuser.save(function(err,user){
+                    var _adminuser=new AdminUser(adminUserObj);
+                    _adminuser.save(function(err,user){
                         if(err){
                             console.log(err);
                         }
@@ -92,9 +102,6 @@ exports.new=function(req,res){
 exports.signin = function(req, res) {
     var name = req.body.name;
     var password = req.body.password;
-
-    console.log('姓名'+name);
-    console.log('密码'+password);
     AdminUser.findOne({name: name}, function(err, user) {
         if (err) {
             console.log(err);
@@ -103,11 +110,11 @@ exports.signin = function(req, res) {
             res.redirect('./login?err=notexist');
         }
         else{
-            user.comparePassword(password, function(err, isMatch) {
+            user.comparePassword(password,user.password, function(err, isMatch) {
                 if (err) {
                     console.log(err);
                 }
-
+                console.log('正确吗？'+isMatch)
                 if (isMatch) {
                     req.session.user = user
                     return res.redirect('./')
@@ -153,8 +160,35 @@ exports.del=function(req,res){
 //mid ware for user
 exports.signinRequired=function(req,res,next){
     var user=req.session.user;
+
     if(!user){
         res.redirect('/admin/login');
+    }
+    else{
+        AdminUser.findById({_id:user._id},function(err,adminuser){
+            if(err)
+                console.log(err);
+            if(adminuser){
+
+            }
+            else{
+                res.redirect('/admin/login?err=wrong');
+            }
+        });
+    }
+    next();
+}
+
+exports.maxRequired=function(req,res,next){
+    var user=req.session.user;
+    if(user.weight===999){
+
+    }
+    else{
+        var err = new Error('拒绝访问');
+        err.status = 403;
+        err.message='您没有权限访问此功能';
+        next(err);
     }
     next();
 }

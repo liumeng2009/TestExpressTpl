@@ -1,0 +1,85 @@
+extends ../../layout
+
+block content
+    .content-wrapper
+        .row
+            .col-lg-12.heading
+                ul#crumb.breadcrumb
+                    li
+                        i.im-home
+                        a(href="/admin") 首页
+                        i.en-arrow-right7
+                    li
+                        i.im-user4
+                        a(href="/admin/function/list") 网站功能列表
+        .outlet
+            .row
+                .col-lg-12
+                    .panel.panel-default.plain.toggle.panelClose.panelRefresh
+                        .panel-heading.white-bg
+                            h4.panel-title 网站功能列表
+                        .panel-body
+                            .row.mb15
+                                .col-lg-8.col-md-8
+                                .col-lg-4.col-md-4
+                                    a.btn.btn-default.pull-right(href="/admin/function")
+                                        i.br-plus
+                                        | 新增功能
+
+                            table#presidentList.table.table-bordered
+                                thead
+                                    tr
+                                        th.per20 功能名称
+                                        th.per20 功能简称
+                                        th.per40 拥有功能权限
+                                        th.per20 操作
+                                tbody
+                                    each functionname in functions
+                                        tr(class="item-id-#{functionname._id}")
+                                            td #{functionname.name}
+                                            td #{functionname.index}
+                                            td
+                                                if functionname.actions.create
+                                                    span.label.label-success.mr10
+                                                        | 新增
+                                                else
+                                                    span.label.label-default.mr10
+                                                        | 新增
+                                                if functionname.actions.delete
+                                                    span.label.label-success.mr10
+                                                        | 删除
+                                                else
+                                                    span.label.label-default.mr10
+                                                        | 删除
+                                                if functionname.actions.show
+                                                    span.label.label-success.mr10
+                                                        | 显示
+                                                else
+                                                    span.label.label-default.mr10
+                                                        | 显示
+                                                if functionname.actions.edit
+                                                    span.label.label-success.mr10
+                                                        | 编辑
+                                                else
+                                                    span.label.label-default.mr10
+                                                        | 编辑
+                                                if functionname.actions.confirm
+                                                    span.label.label-success.mr10
+                                                        | 审核
+                                                else
+                                                    span.label.label-default.mr10
+                                                        | 审核
+                                            td
+                                                a.btn.btn-primary(href="/admin/function?id=#{functionname._id}") 编辑
+                                                | &nbsp;&nbsp;
+                                                a.del.btn.btn-danger(href="#",data-id="#{functionname._id}") 删除
+                            include ../../includes/notification
+block componentScript
+    include ../../includes/table
+block bottom
+    script(src="/javascripts/app.js")
+    script(src="/assets/js/pages/tables.js")
+    script.
+        setTimeout(function(){
+            checkSideNav('功能管理');
+        },0);

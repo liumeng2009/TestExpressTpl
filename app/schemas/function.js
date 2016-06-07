@@ -9,10 +9,26 @@ var FunctionSchema = new mongoose.Schema({
     name: {
         type: String
     },
+    index:{
+        type:String
+    },
     status:Boolean,
     actions:{
-        type:String,
-        default:'SHOW|EDIT|DELETE|CREATE|CONFIRM|PRINT'
+        show:{
+            type:Boolean
+        },
+        edit:{
+            type:Boolean
+        },
+        delete:{
+            type:Boolean
+        },
+        create:{
+            type:Boolean
+        },
+        confirm:{
+            type:Boolean
+        }
     },
     meta: {
         createAt: {

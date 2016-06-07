@@ -1,0 +1,90 @@
+extends ../../layout
+
+block content
+    .content-wrapper
+        .row
+            .col-lg-12.heading
+                ul#crumb.breadcrumb
+                    li
+                        i.im-home
+                        a(href="/admin") 首页
+                        i.en-arrow-right7
+                    li
+                        i.im-user4
+                        a(href="/admin/school/list") 学校列表
+                        i.en-arrow-right7
+                    li
+                        i.en-user-add
+                        a(href="#") #{action}学校
+        .outlet
+            .row
+                .col-lg-12
+                    .panel.panel-default.toggle
+                        .panel-heading
+                            h3.panel-title #{action}学校
+                        .panel-body
+                            form.form-horizontal.group-border.hover-stripped(role="form",id="validate",method="post",action="/admin/function/new",enctype="multipart/form-data")
+                                .form-group
+                                    if function_obj&&function_obj._id
+                                        input(type="hidden",value=function_obj._id,name="_id")
+                                    label.col-lg-2.col-md-2.control-label 功能名称
+                                    .col-lg-10.col-md-10
+                                        input#name.form-control.required(type="text",disabled="disabled",placeholder="请输入功能名称...",value=function_obj.name,name="name")
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 英文简称
+                                    .col-lg-10.col-md-10
+                                        input#address.form-control.required(type="text",disabled="disabled",name="index",placeholder="请输入英文简称 ...",value=function_obj.index)
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 拥有权限种类
+                                    .col-lg-10.col-md-10
+                                        label.checkbox-inline
+                                            if function_obj.actions.create
+                                                input(type="checkbox",checked="checked" ,name="chkCreate")
+                                                | 新增
+                                            else
+                                                input(type="checkbox",name="chkCreate")
+                                                | 新增
+                                        label.checkbox-inline
+                                            if function_obj.actions.delete
+                                                input(type="checkbox",checked="checked" ,name="chkDelete")
+                                                | 删除
+                                            else
+                                                input(type="checkbox",name="chkDelete")
+                                                | 删除
+                                        label.checkbox-inline
+                                            if function_obj.actions.show
+                                                input(type="checkbox",checked="checked" ,name="chkShow")
+                                                | 显示
+                                            else
+                                                input(type="checkbox",name="chkShow")
+                                                | 显示
+                                        label.checkbox-inline
+                                            if function_obj.actions.edit
+                                                input(type="checkbox",checked="checked" ,name="chkEdit")
+                                                | 编辑
+                                            else
+                                                input(type="checkbox",name="chkEdit")
+                                                | 编辑
+                                        label.checkbox-inline
+                                            if function_obj.actions.confirm
+                                                input(type="checkbox",checked="checked",name="chkConfirm")
+                                                | 审核
+                                            else
+                                                input(type="checkbox",name="chkConfirm")
+                                                | 审核
+                                .form-group
+                                    .col-lg-1.col-md-1
+                                        button.btn.btn-default.ml15(type="submit") 保存
+                                    .col-lg-11.col-md-11
+                                        include ../../includes/notification
+block componentScript
+    include ../../includes/formScript
+block bottom
+    script(src="/javascripts/app.js")
+    script(src="/assets/js/pages/form-validation.js")
+    script(src="/citylist/js/jquery.cityselect.js")
+    script.
+        setTimeout(function(){
+            checkSideNav('功能管理');
+        },0);
+
