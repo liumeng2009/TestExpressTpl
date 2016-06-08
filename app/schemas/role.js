@@ -16,8 +16,15 @@ var RoleSchema = new mongoose.Schema({
     status:Boolean,
     functions:[
         {
-            type:ObjectId,
-            ref:'function'
+            name:String,
+            index:String,
+            actions:{
+                create:Boolean,
+                delete:Boolean,
+                show:Boolean,
+                edit:Boolean,
+                confirm:Boolean
+            }
         }
     ],
     users:[

@@ -10,8 +10,13 @@ block content
                         a(href="/admin") 首页
                         i.en-arrow-right7
                     li
-                        i.im-user4
-                        a(href="/admin/grade/list") 角色列表
+                        i.im-home
+                        a(href="/admin/role/list") 选择学校
+                        i.en-arrow-right7
+                    if sid
+                        li
+                            i.im-user4
+                            a(href="/admin/role/list?sid=#{sid}") 角色列表
         if school
             .outlet
                 .row
@@ -31,13 +36,14 @@ block content
                                     thead
                                         tr
                                             th.per20 角色名称
+                                            th.per20 所属学校
                                             th.per20 建立时间
                                             th.per20 操作
                                     tbody
                                         each role in roles
                                             tr(class="item-id-#{role._id}")
                                                 td #{role.name}
-                                                td #{role.owner.name}
+                                                td #{role.school.name}
                                                 td #{moment(role.meta.createAt).format('MM/DD/YYYY')}
                                                 td
                                                     a.btn.btn-primary(href="/admin/role?id=#{role._id}&sid=#{school._id}") 编辑权限
@@ -54,6 +60,7 @@ block content
                                     .tile-stats-number.color-white #{sch.name}
                                     .tile-stats-text.color-white #{sch.owner.name}
                                 .clearfix
+            include ../../includes/notification
 block componentScript
     include ../../includes/table
 block bottom

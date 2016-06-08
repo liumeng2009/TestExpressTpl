@@ -18,6 +18,12 @@ var SchoolSchema = new mongoose.Schema({
         type:ObjectId,
         ref:'president'
     },
+    roles:[
+        {
+            type:ObjectId,
+            ref:'role'
+        }
+    ],
     status:Boolean,
     intro:String,
     meta: {

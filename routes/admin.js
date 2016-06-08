@@ -36,6 +36,9 @@ router.get('/grade/list',adminUserController.signinRequired,gradeController.grad
 router.get('/grade',adminUserController.signinRequired,gradeController.grade);
 
 router.get('/role/list',adminUserController.signinRequired,roleController.role_list);
+router.get('/role',adminUserController.signinRequired,roleController.role);
+router.get('/role/:id',adminUserController.signinRequired,roleController.role);
+router.post('/role/new',adminUserController.signinRequired,roleController.new);
 
 router.get('/function/list',adminUserController.signinRequired,functionController.function_list);
 router.get('/function',adminUserController.signinRequired,functionController.function);
