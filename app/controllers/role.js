@@ -57,19 +57,6 @@ exports.role=function(req,res){
                     FunctionModel.find({status:true},function(err,func){
                         if(err)
                             return console.log(err);
-                        //根据 role里面functions的值，给func赋值 如果func false，结果false 如果func true并且 role也true 结果true
-                        for(var m=0;m<func.length;m++){
-                            for(var n=0;n<role.functions.length;n++){
-                                if(func[m].index===role.functions[n].index){
-                                    for(var prop in func[m].actions){
-
-                                    }
-                                }
-                            }
-                        }
-
-
-
                         res.render('./pages/role/role_edit',{
                             title:'编辑角色',
                             role:role,
@@ -106,10 +93,12 @@ exports.new=function(req,res){
     var sid=req.body.sid;
     var id=req.body.id;
 
+    console.log("sid="+sid);
+    console.log('id='+id);
+
     var obj=req.body;
 
     var funs=[];
-
     School.findById({status:true,_id:sid},function(err,school){
         if(err)
             return console.log(err)
@@ -155,35 +144,34 @@ exports.new=function(req,res){
                     weight:req.body.weight,
                     functions:funs
                 };
-
-                var _role=new Role(roleObj);
-
-                console.log('存储前对象：'+_role);
-
-                _role.save(function(err,role){
-                    if(err)
-                        return console.log(err);
-                    //将role添加进school的roles数组
-                    //var _school=new School();
-                    //var schoolSave= _.extend(_school,school);
-                    //schoolSave.roles.push(role._id);
-
-                    ///!!!!坚决不能new啊，new了id就变了，save就insert了，而不是update
-                    var schoolObj={
-                        roles:[
-
-                        ]
-                    }
-                    schoolObj.roles.push(role._id);
-                    var _school= _.extend(school,schoolObj);
-                    _school.save(function(err,school){
+                if(id){
+                    Role.findById({_id:id,status:true},function(err,role){
                         if(err)
+                            console.log(err);
+                        console.log('到这里了吗1111111111111111111？');
+                        var _roleObj= _.extend(role,roleObj);
+                        _roleObj.save(function(err,role){
+                            if (err)
+                                return console.log(err);
+                            res.redirect('/admin/role/list?sid=' + sid);
+                        });
+                    });
+                }
+                else {
+                    console.log('到这里了吗222222222222222222222222？');
+                    var _role = new Role(roleObj);
+                    _role.save(function (err, role) {
+                        if (err)
                             return console.log(err);
-                        res.redirect('/admin/role/list?sid='+sid);
-                    })
+                        school.roles.push(role._id);
+                        school.save(function (err, school) {
+                            if (err)
+                                return console.log(err);
+                            res.redirect('/admin/role/list?sid=' + sid);
+                        })
 
-                });
-
+                    });
+                }
             });
         }
         else{

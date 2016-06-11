@@ -182,7 +182,7 @@ exports.signinRequired=function(req,res,next){
 exports.maxRequired=function(req,res,next){
     var user=req.session.user;
     if(user.weight===999){
-
+        console.log('到这里了，权限正确');
     }
     else{
         var err = new Error('拒绝访问');

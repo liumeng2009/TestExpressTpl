@@ -12,7 +12,7 @@ var functionController=require('../app/controllers/function');
 router.get('/',adminUserController.signinRequired ,indexController.index);
 router.get('/login',adminUserController.showSignIn);
 router.get('/admin/list',adminUserController.signinRequired ,adminUserController.admin_user_list);
-router.post('/admin/new',adminUserController.signinRequired ,adminUserController.maxRequired,adminUserController.new);
+router.post('/admin/new',adminUserController.signinRequired ,adminUserController.new);
 router.get('/admin',adminUserController.signinRequired ,adminUserController.admin_user);
 router.get('/admin/:id',adminUserController.signinRequired ,adminUserController.admin_user);
 router.post('/signin',adminUserController.signin);

@@ -28,7 +28,7 @@ block content
                             form.form-horizontal.group-border.hover-stripped(role="form",id="validate",method="post",action="/admin/role/new",enctype="multipart/form-data")
                                 .form-group
                                     if role&&role._id
-                                        input(type="hidden",value="#{role._id}",name="_id")
+                                        input(type="hidden",value=role._id,name="id")
                                     label.col-lg-2.col-md-2.control-label 角色名
                                     .col-lg-10.col-md-10
                                         input#name.form-control.required(type="text",placeholder="请输入角色名称...",value=role.name,name="name")
@@ -52,26 +52,75 @@ block content
                                                             | #{fun.name}
                                                 .col-lg-8.col-md-8
                                                     if fun.actions.create
-                                                        label.checkbox-inline
-                                                            input(type="checkbox",name="chkCreate_#{fun.index}")
-                                                            | 新增
+                                                        - var i=0
+                                                        each rolefun in role.functions
+                                                            if fun.index===rolefun.index&&rolefun.actions.create
+                                                                label.checkbox-inline
+                                                                    input(type="checkbox",name="chkCreate_#{fun.index}",checked="checked")
+                                                                    | 新增
+                                                                - break
+                                                            else
+                                                                if i===role.functions.length-1
+                                                                    label.checkbox-inline
+                                                                        input(type="checkbox",name="chkCreate_#{fun.index}")
+                                                                        | 新增
+                                                            - i=i+1
                                                     if fun.actions.delete
-                                                        label.checkbox-inline
-                                                            input(type="checkbox",name="chkDelete_#{fun.index}")
-                                                            | 删除
+                                                        - var i=0
+                                                        each rolefun in role.functions
+                                                            if fun.index === rolefun.index && rolefun.actions.delete
+                                                                label.checkbox-inline
+                                                                    input(type="checkbox",name="chkDelete_#{fun.index}",checked="checked")
+                                                                    | 删除
+                                                                - break
+                                                            else
+                                                                if i === role.functions.length-1
+                                                                    label.checkbox-inline
+                                                                        input(type="checkbox",name="chkDelete_#{fun.index}")
+                                                                        | 删除
+                                                            - i=i+1
                                                     if fun.actions.show
-                                                        label.checkbox-inline
-                                                            input(type="checkbox",name="chkShow_#{fun.index}")
-                                                            | 显示
+                                                        - var i=0
+                                                        each rolefun in role.functions
+                                                            if fun.index === rolefun.index && rolefun.actions.show
+                                                                label.checkbox-inline
+                                                                    input(type="checkbox",name="chkShow_#{fun.index}",checked="checked")
+                                                                    | 显示
+                                                                - break
+                                                            else
+                                                                if i === role.functions.length-1
+                                                                    label.checkbox-inline
+                                                                        input(type="checkbox",name="chkShow_#{fun.index}")
+                                                                        | 显示
+                                                            - i=i+1
                                                     if fun.actions.edit
-                                                        label.checkbox-inline
-                                                            input(type="checkbox",name="chkEdit_#{fun.index}")
-                                                            | 编辑
+                                                        - var i=0
+                                                        each rolefun in role.functions
+                                                            if fun.index === rolefun.index && rolefun.actions.edit
+                                                                label.checkbox-inline
+                                                                    input(type="checkbox",name="chkEdit_#{fun.index}",checked="checked")
+                                                                    | 编辑
+                                                                - break
+                                                            else
+                                                                if i === role.functions.length-1
+                                                                    label.checkbox-inline
+                                                                        input(type="checkbox",name="chkEdit_#{fun.index}")
+                                                                        | 编辑
+                                                            - i=i+1
                                                     if fun.actions.confirm
-                                                        label.checkbox-inline
-                                                            input(type="checkbox",name="chkConfirm_#{fun.index}")
-                                                            | 审核
-
+                                                        - var i=0
+                                                        each rolefun in role.functions
+                                                            if fun.index === rolefun.index && rolefun.actions.confirm
+                                                                label.checkbox-inline
+                                                                    input(type="checkbox",name="chkConfirm_#{fun.index}",checked="checked")
+                                                                    | 审核
+                                                                - break
+                                                            else
+                                                                if i === role.functions.length-1
+                                                                    label.checkbox-inline
+                                                                        input(type="checkbox",name="chkConfirm_#{fun.index}")
+                                                                        | 审核
+                                                            - i=i+1
                                 .form-group
                                     .col-lg-1.col-md-1
                                         button.btn.btn-default.ml15(type="submit") 保存
