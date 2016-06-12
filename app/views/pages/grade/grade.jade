@@ -33,33 +33,30 @@ block content
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 所属学校
                                     .col-lg-10.col-md-10
-                                        if grade&&grade._id
-                                            select.form-control.required(name="school",disabled="disabled")
-                                                    each school in schools
-                                                        option(value=school._id,selected=school._id.toString()===grade.school._id.toString())
-                                                            | #{school.name}
-                                        else
-                                            if schid
-                                                select.form-control.required(name="school",disabled="disabled")
-                                                    each school in schools
-                                                        option(value=school._id,selected=school._id.toString()===schid.toString())
-                                                            | #{school.name}
-                                            else
-                                                select.form-control.required(name="school")
-                                                    each school in schools
-                                                        option(value=school._id)
-                                                            | #{school.name}
+                                        input#school.form-control(type="text",value=school.name,disabled="disabled")
+                                        input#hfdSchool(type="hidden",value=sid,name="sid")
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 班主任
                                     .col-lg-10.col-md-10
-
-                                        //select.form-control(name="user",disabled="disabled")
-                                        //    each user in users
-                                        //        option(value=user._id,selected=user._id.toString() === grade.user._id.toString())
-                                        //            | #{user.name}
+                                        select.form-control(name="user")
+                                            each user in users
+                                                option(value=user._id)
+                                                    | #{user.name}
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 班级成员
+                                    .col-lg-10.col-md-10
+                                        form(role="form",method="post",action="/admin/grade/users/new",enctype="multipart/form-data")
+                                            select.form-control(name="user")
+                                                each user in users
+                                                    option(value=user._id)
+                                                        | #{user.name}
+                                            input(type="submit")
+                                        each u in grade.users
+                                            label
+                                                u.name
 
                                 .form-group
-                                    label.col-lg-2.col-md-2.control-label 所在位置(可选)
+                                    label.col-lg-2.col-md-2.control-label 所在位置(选填)
                                     .col-lg-10.col-md-10
                                         input#position.form-control(type="text",name="position",placeholder="请输入详细地址 ...",value=grade.position)
                                 .form-group

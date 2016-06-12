@@ -19,6 +19,9 @@ router.post('/signin',adminUserController.signin);
 router.get('/signout',adminUserController.signinRequired,adminUserController.signout);
 
 router.get('/user/list',adminUserController.signinRequired,userController.user_list);
+router.get('/user',adminUserController.signinRequired,userController.user);
+router.get('/user/:id',adminUserController.signinRequired,userController.user);
+router.post('/user/new',adminUserController.signinRequired,userController.new);
 
 router.get('/president/list',adminUserController.signinRequired,presidentController.president_list);
 router.get('/president',adminUserController.signinRequired,presidentController.president);
@@ -32,8 +35,9 @@ router.get('/school/:id',adminUserController.signinRequired,schoolController.sch
 router.post('/school/new',adminUserController.signinRequired ,schoolController.new);
 router.delete('/school/list',adminUserController.signinRequired ,schoolController.del);
 
-router.get('/grade/list',adminUserController.signinRequired,gradeController.grade_list);
-router.get('/grade',adminUserController.signinRequired,gradeController.grade);
+router.get('/grade/list',adminUserController.signinRequired,schoolController.validSchoolId,gradeController.grade_list);
+router.get('/grade',adminUserController.signinRequired,schoolController.validSchoolId,gradeController.grade);
+router.get('/grade/:id',adminUserController.signinRequired,schoolController.validSchoolId,gradeController.grade);
 
 router.get('/role/list',adminUserController.signinRequired,roleController.role_list);
 router.get('/role',adminUserController.signinRequired,roleController.role);

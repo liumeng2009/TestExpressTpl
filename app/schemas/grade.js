@@ -24,7 +24,13 @@ var GradeSchema = new mongoose.Schema({
             type: Date,
             default: Date.now()
         }
-    }
+    },
+    users:[
+        {
+            type:ObjectId,
+            ref:'user'
+        }
+    ]
 })
 
 GradeSchema.pre('save', function(next) {

@@ -1,0 +1,76 @@
+extends ../../layout
+
+block content
+    .content-wrapper
+        .row
+            .col-lg-12.heading
+                ul#crumb.breadcrumb
+                    li
+                        i.im-home
+                        a(href="/admin") 首页
+                        i.en-arrow-right7
+                    li
+                        i.st-cube
+                        a(href="/admin/user/list") 选择学校
+                    li
+                        i.im-user4
+                        a(href="/admin/user/list?sid=#{sid}") 用户列表
+                    li
+                        i.en-user-add
+                        a(href="#") #{action}用户
+        .outlet
+            .row
+                .col-lg-12
+                    .panel.panel-default.toggle
+                        .panel-heading
+                            h3.panel-title #{action}用户
+                        .panel-body
+                            form.form-horizontal.group-border.hover-stripped(role="form",id="validate",method="post",action="/admin/user/new",enctype="multipart/form-data")
+                                .form-group
+                                    if user&&user._id
+                                        input(type="hidden",value="#{user._id}",name="id")
+                                    label.col-lg-2.col-md-2.control-label 用户名
+                                    .col-lg-10.col-md-10
+                                        input#name.form-control.required(type="text",placeholder="请输入用户名称...",value=user.name,name="name")
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 所属学校
+                                    .col-lg-10.col-md-10
+                                        input#school.form-control(type="text",value=school.name,disabled="disabled")
+                                        input#hfdSchool(type="hidden",value=sid,name="sid")
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 角色
+                                    .col-lg-10.col-md-10
+                                        select#role.form-control(name="role")
+                                            each r in roles
+                                                option(value=r._id,selected=user.role.toString()===r._id.toString())
+                                                    | #{r.name}
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 成为家长
+                                    .col-lg-10.col-md-10
+                                        if user.isParent
+                                            input#isParent.switch.noStyle(name="isParent",type="checkbox",checked="checked")
+                                        else
+                                            input#isParent.switch.noStyle(name="isParent",type="checkbox")
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 电话
+                                    .col-lg-10.col-md-10
+                                        input#phone.form-control.required.phone(type="text",placeholder="请输入电话 ...",value=user.phone,name="phone")
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 电子邮箱
+                                    .col-lg-10.col-md-10
+                                        input#email.form-control.required.email(type="text",placeholder="请输入电子邮箱 ...",value=user.email,name="email")
+                                .form-group
+                                    .col-lg-1.col-md-1
+                                        button.btn.btn-default.ml15(type="submit") 保存
+                                    .col-lg-11.col-md-11
+                                        include ../../includes/notification
+block componentScript
+    include ../../includes/formScript
+block bottom
+    script(src="/javascripts/app.js")
+    script(src="/assets/js/pages/form-validation.js")
+    script(src="/assets/js/pages/forms.js")
+    script.
+        setTimeout(function(){
+            checkSideNav('一般用户管理');
+        },0);

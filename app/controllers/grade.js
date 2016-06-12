@@ -2,7 +2,7 @@
  * Created by Administrator on 2016/6/6.
  */
 var School=require('../models/school');
-var President=require('../models/president');
+var User=require('../models/user');
 var Grade=require('../models/grade');
 
 exports.grade_list=function(req,res){
@@ -40,55 +40,41 @@ exports.grade_list=function(req,res){
 }
 
 exports.grade=function(req,res){
-    var gid=req.query.gid;
-    Grade.findOne({status:true,_id:gid},function(err,grade){
+    var sid=req.query.sid;
+    var id=req.query.id;
 
-        console.log('查询出的班级是:'+grade);
-
+    School.find({status:true,_id:sid},function(err,school){
         if(err)
             return console.log(err);
-        if(grade){
-            School.find({status:true},function(err,schools){
-                if(err)
-                    return console.log(err);
-                res.render('./pages/grade/grade_edit',{
-                    title:'编辑班级',
-                    schools:schools,
-                    action:'编辑',
-                    grade:grade===null?[]:grade
-                });
-            });
-        }
-        else{
-            var sid=req.query.sid;
-            School.find({status:true},function(err,schools){
-                if(err)
-                    return console.log(err);
-                var isExist=false;
-                for(var i=0;i<schools.length;i++){
-                    if(sid.toString()===schools[i]._id.toString()){
-                        isExist=true;
-                        break;
-                    }
-                }
-                if(isExist){
-                    res.render('./pages/grade/grade',{
-                        title:'新建班级',
-                        schools:schools,
-                        action:'新建',
-                        schid:sid,
-                        grade:grade===null?[]:grade
+        if(school){
+            User.find({status:true,school:school._id},function(err,users){
+                if(id){
+                    //编辑模式
+                    Grade.findById({status:true,_id:id},function(err,grade){
+                        res.render('./pages/grade/grade',{
+                            title:'编辑班级信息',
+                            grade:grade,
+                            users:users,
+                            sid:school._id,
+                            action:'编辑'
+                        });
                     });
+
                 }
                 else{
                     res.render('./pages/grade/grade',{
-                        title:'新建班级',
-                        schools:schools,
+                        title:'新建班级信息',
+                        grade:{},
+                        users:users,
+                        sid:school._id,
                         action:'新建',
-                        grade:grade===null?[]:grade
+                        school:school
                     });
                 }
             });
         }
-    })
+        else{
+            res.redirect('/admin/grade/list?err=snotexist');
+        }
+    });
 }

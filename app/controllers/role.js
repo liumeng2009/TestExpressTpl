@@ -142,7 +142,8 @@ exports.new=function(req,res){
                     name:req.body.name,
                     school:school._id,
                     weight:req.body.weight,
-                    functions:funs
+                    functions:funs,
+                    status:true
                 };
                 if(id){
                     Role.findById({_id:id,status:true},function(err,role){
@@ -178,9 +179,4 @@ exports.new=function(req,res){
             res.redirect('/admin/role/list?err=snotexist');
         }
     });
-}
-
-var checkToActions=function(obj){
-    var funs=[];
-
 }

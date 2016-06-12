@@ -127,3 +127,17 @@ exports.new=function(req,res){
 exports.del=function(req,res){
 
 }
+//中间件
+exports.validSchoolId=function(req,res,next){
+    var sid=req.query.sid;
+    if(sid) {
+        console.log('没有到达这里吗');
+        if (!sid.match(/^[0-9a-fA-F]{24}$/)) {
+            var err = new Error('参数错误');
+            err.status = 404;
+            err.message='错误的参数格式';
+            next(err);
+        }
+    }
+    next();
+}
