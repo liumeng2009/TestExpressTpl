@@ -45,16 +45,15 @@ block content
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 班级成员
                                     .col-lg-10.col-md-10
-                                        form(role="form",method="post",action="/admin/grade/users/new",enctype="multipart/form-data")
-                                            select.form-control(name="user")
-                                                each user in users
-                                                    option(value=user._id)
-                                                        | #{user.name}
-                                            input(type="submit")
-                                        each u in grade.users
-                                            label
-                                                u.name
-
+                                        .tagsinput(style="height:auto;border:none !important;background:none!important;")
+                                            input#hfdGradeUsers(type="hidden",value="")
+                                        select#selectGradeUsers.form-control(name="user")
+                                            each user in users
+                                                option(value=user._id)
+                                                    | #{user.name}
+                                        label.mt10
+                                            button#addGradeUsers.btn.btn-primary
+                                                | 新增班级成员
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 所在位置(选填)
                                     .col-lg-10.col-md-10
@@ -72,5 +71,6 @@ block bottom
     script.
         setTimeout(function(){
             checkSideNav('班级管理');
+            checkGradeUser();
         },0);
 

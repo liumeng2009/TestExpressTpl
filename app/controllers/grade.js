@@ -43,14 +43,15 @@ exports.grade=function(req,res){
     var sid=req.query.sid;
     var id=req.query.id;
 
-    School.find({status:true,_id:sid},function(err,school){
+    School.findOne({status:true,_id:sid},function(err,school){
         if(err)
             return console.log(err);
         if(school){
             User.find({status:true,school:school._id},function(err,users){
+                console.log('user对象是'+users+'sid是'+school._id);
                 if(id){
                     //编辑模式
-                    Grade.findById({status:true,_id:id},function(err,grade){
+                    Grade.findOne({status:true,_id:id},function(err,grade){
                         res.render('./pages/grade/grade',{
                             title:'编辑班级信息',
                             grade:grade,
