@@ -1,0 +1,61 @@
+extends ../../layout
+
+block content
+    .content-wrapper
+        .row
+            .col-lg-12.heading
+                ul#crumb.breadcrumb
+                    li
+                        i.im-home
+                        a(href="/admin") 首页
+                        i.en-arrow-right7
+                    li
+                        i.im-user4
+                        a(href="/admin/student/list") 学生列表
+        .outlet
+            .row
+                .col-lg-12
+                    .panel.panel-default.plain.toggle.panelClose.panelRefresh
+                        .panel-heading.white-bg
+                            h4.panel-title 学生列表
+                        .panel-body
+                            .row.mb15
+                                .col-lg-8.col-md-8
+                                    form.form-inline(method="get",role="form",action="/admin/student/new",enctype="multipart/form-data")
+                                        .form-group
+                                            label(for="name") 学生姓名
+                                            input.form-control(type="text",placeholder="学生名称",name="name")
+                                        button.btn.btn-primary(type="submit") 搜索
+                                .col-lg-4.col-md-4
+                                    a.btn.btn-default.pull-right(href="/admin/school")
+                                        i.br-plus
+                                        |     新增学校
+
+                            table#presidentList.table.table-bordered
+                                thead
+                                    tr
+                                        th.per20 学生姓名
+                                        th.per20 家长
+                                        th.per20 所在班级
+                                        th.per10 性别
+                                        th.per10 年龄
+                                        th.per20 操作
+                                tbody
+                                    each school in schools
+                                        tr(class="item-id-#{school._id}")
+                                            td #{school.name}
+                                            td #{school.owner.name}
+                                            td 20人
+                                            td #{moment(school.meta.createAt).format('MM/DD/YYYY')}
+                                            td
+                                                a.btn.btn-primary(href="/admin/school?id=#{school._id}") 编辑
+                            include ../../includes/notification
+block componentScript
+    include ../../includes/table
+block bottom
+    script(src="/javascripts/app.js")
+    script(src="/assets/js/pages/tables.js")
+    script.
+        setTimeout(function(){
+            checkSideNav('学生管理');
+        },0);

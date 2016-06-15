@@ -1,20 +1,29 @@
 /**
- * Created by Administrator on 2016/5/31.
+ * Created by Administrator on 2016/6/15.
  */
 var mongoose = require('mongoose')
 var Schema =mongoose.Schema;
 var ObjectId=Schema.Types.ObjectId;
 
-var GradeSchema = new mongoose.Schema({
+var StudentSchema = new mongoose.Schema({
     name: {
+        unique: true,
         type: String
     },
-    school:{
+    grade:{
         type:ObjectId,
-        ref:'school'
+        ref:'grade'
+    },
+    parent:{
+        type:ObjectId,
+        ref:'user'
     },
     status:Boolean,
-    position:String,
+    age:num,
+    sex:String,
+    health:String,
+    interest:String,
+    state_now:String,
     meta: {
         createAt: {
             type: Date,
@@ -24,20 +33,10 @@ var GradeSchema = new mongoose.Schema({
             type: Date,
             default: Date.now()
         }
-    },
-    users:[
-        {
-            type:ObjectId,
-            ref:'user'
-        }
-    ],
-    header:{
-        type:ObjectId,
-        ref:'user'
     }
 })
 
-GradeSchema.pre('save', function(next) {
+StudentSchema.pre('save', function(next) {
     if (this.isNew) {
         this.meta.createAt = this.meta.updateAt = Date.now()
     }
@@ -48,7 +47,7 @@ GradeSchema.pre('save', function(next) {
 })
 
 
-GradeSchema.statics = {
+StudentSchema.statics = {
     fetch: function(cb) {
         return this
             .find({status:true})
@@ -62,4 +61,4 @@ GradeSchema.statics = {
     }
 }
 
-module.exports = GradeSchema;
+module.exports = StudentSchema

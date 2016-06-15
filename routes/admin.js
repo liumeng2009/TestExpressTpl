@@ -38,6 +38,7 @@ router.delete('/school/list',adminUserController.signinRequired ,schoolControlle
 router.get('/grade/list',adminUserController.signinRequired,schoolController.validSchoolId,gradeController.grade_list);
 router.get('/grade',adminUserController.signinRequired,schoolController.validSchoolId,gradeController.grade);
 router.get('/grade/:id',adminUserController.signinRequired,schoolController.validSchoolId,gradeController.grade);
+router.post('/grade/:id',adminUserController.signinRequired,schoolController.validSchoolId,gradeController.new);
 
 router.get('/role/list',adminUserController.signinRequired,roleController.role_list);
 router.get('/role',adminUserController.signinRequired,roleController.role);

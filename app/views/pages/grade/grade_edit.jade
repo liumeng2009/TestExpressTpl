@@ -46,7 +46,11 @@ block content
                                     label.col-lg-2.col-md-2.control-label 班级成员
                                     .col-lg-10.col-md-10
                                         .tagsinput(style="height:auto;border:none !important;background:none!important;")
-                                            input#hfdGradeUsers(type="hidden",value="",name="users")
+                                            - var userss='';
+                                            if grade.users&&grade.users.length>0
+                                                each uu in grade.users
+                                                     - userss=userss+uu._id+',';
+                                            input#hfdGradeUsers(type="hidden",value="#{userss}",name="users")
                                         select#selectGradeUsers.form-control(name="user")
                                             each user in users
                                                 option(value=user._id)

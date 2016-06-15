@@ -22,6 +22,15 @@ var checkGradeUser=function(){
     var users=$('#hfdGradeUsers').val();
     var select=container.find('#selectGradeUsers');
     var userArray=users.split(',');
+    //删除数组里面的空值
+    for(var n=0;n<userArray.length;n++){
+        if(userArray[n].toString().trim()===""){
+            userArray.splice(n,1);
+            i=i-1;
+        }
+    }
+
+
     for(var i=0;i<userArray.length;i++){
         var selectText='';
         for(var m=0;m<select.children().length;m++){
@@ -30,7 +39,6 @@ var checkGradeUser=function(){
                 break;
             }
         }
-
         //增加标签
         var tag=$('<span>').addClass('tag');
         var span=$('<span>').html(selectText+'&nbsp;&nbsp;')
@@ -156,7 +164,7 @@ $(function(){
                 var tag=$(this).parents('.tag');
                 tag.remove();
                 //删除控件
-                submit.val(submitVal.replace(a.attr('data'),''));
+                submit.val(submit.val().replace(a.attr('data'),''));
             });
             a.attr('data',selectVal);
             tag.append(span).append(a);

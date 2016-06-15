@@ -32,16 +32,23 @@ block content
                                         tr
                                             th.per20 班级名称
                                             th.per20 班主任
+                                            th.per20 班级成员
                                             th.per20 建立时间
                                             th.per20 操作
                                     tbody
                                         each grade in grades
                                             tr(class="item-id-#{grade._id}")
                                                 td #{grade.name}
-                                                td #{grade.owner.name}
+                                                td
+                                                    if grade.header
+                                                        | #{grade.header.name}
+                                                td
+                                                    if grade.users
+                                                        each uc in grade.users
+                                                            | #{uc.name}&nbsp;&nbsp;
                                                 td #{moment(school.meta.createAt).format('MM/DD/YYYY')}
                                                 td
-                                                    a.btn.btn-primary(href="/admin/school?id=#{school._id}") 编辑
+                                                    a.btn.btn-primary(href="/admin/grade?id=#{grade._id}&sid=#{school._id}") 编辑
                                 include ../../includes/notification
         else
             .row

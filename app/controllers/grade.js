@@ -4,6 +4,7 @@
 var School=require('../models/school');
 var User=require('../models/user');
 var Grade=require('../models/grade');
+var _=require('underscore');
 
 exports.grade_list=function(req,res){
     var schoolid=req.query.sid;
@@ -16,17 +17,23 @@ exports.grade_list=function(req,res){
 
         if(school){
             //学校存在
-            Grade.find({status:true,school:schoolid},function(err,grades){
-                res.render('./pages/grade/grade_list',{
-                    title:school.name+" 班级列表",
-                    grades:grades,
-                    school:school
-                })
-            });
+            Grade.find({status:true,school:schoolid})
+                .populate('header')
+                .populate('users')
+                .exec(function(err,grades){
+                    if(err)
+                        return console.log(err);
+                    console.log('班级列表是:'+grades);
+                    res.render('./pages/grade/grade_list',{
+                        title:school.name+" 班级列表",
+                        grades:grades,
+                        school:school
+                    })
+                });
         }
         else{
             School.find({status:true})
-                .populate('owner')
+                .populate('header')
                 .exec(function(err,schools) {
                     if (err)
                         return console.log(err);
@@ -47,20 +54,25 @@ exports.grade=function(req,res){
         if(err)
             return console.log(err);
         if(school){
+            //两个下拉框
             User.find({status:true,school:school._id},function(err,users){
-                console.log('user对象是'+users+'sid是'+school._id);
                 if(id){
                     //编辑模式
-                    Grade.findOne({status:true,_id:id},function(err,grade){
-                        res.render('./pages/grade/grade',{
-                            title:'编辑班级信息',
-                            grade:grade,
-                            users:users,
-                            sid:school._id,
-                            action:'编辑'
+                    Grade.find({status:true,_id:id})
+                        .populate('users')
+                        .exec(function(err,grade){
+                            if(err)
+                                return console.log(err);
+                            console.log('班级是：'+grade);
+                            res.render('./pages/grade/grade_edit',{
+                                title:'编辑班级信息',
+                                grade:grade[0],
+                                users:users,
+                                sid:school._id,
+                                action:'编辑',
+                                school:school
+                            });
                         });
-                    });
-
                 }
                 else{
                     res.render('./pages/grade/grade',{
@@ -76,6 +88,67 @@ exports.grade=function(req,res){
         }
         else{
             res.redirect('/admin/grade/list?err=snotexist');
+        }
+    });
+}
+
+exports.new=function(req,res){
+    var id=req.body.id;
+    var sid=req.body.sid;
+
+    School.findById({status:true,_id:sid},function(err,school){
+        if(err)
+            console.log(err);
+        if(school){
+            //如果学校存在
+            User.findById({status:true,_id:req.body.header},function(err,user){
+                //找所有的班级成员
+                var usersElement=req.body.users;
+                var userArray=usersElement.split(',');
+                var searchObj=[];
+                for(var i=0;i<userArray.length;i++){
+                    if(userArray[i].toString().trim()!="") {
+                        var s = {_id: userArray[i]}
+                        searchObj.push(s);
+                    }
+                }
+                User.find({status:true})
+                    .or(searchObj)
+                    .exec(function(err,users){
+                        var gradeObj={
+                            status:true,
+                            position:req.body.position,
+                            school:school,
+                            header:user,
+                            users:users,
+                            name:req.body.name
+                        }
+                        if(id){
+                            Grade.findById({status:true,_id:id},function(err,grade){
+                                if(err)
+                                    return console.log(err);
+                                var _grade= _.extend(grade,gradeObj);
+                                console.log('保存之前：'+_grade);
+                                _grade.save(function(err,grade){
+                                    if(err)
+                                        return console.log(err);
+                                    res.redirect('/admin/grade/list?sid='+school._id);
+                                });
+                            });
+                        }
+                        else{
+                            var _grade=new Grade(gradeObj);
+                            _grade.save(function(err,grade){
+                                if(err)
+                                    return console.log(err);
+                                res.redirect('/admin/grade/list?sid='+school._id);
+                            });
+                        }
+                    });
+            });
+        }
+        else{
+            res.redirect('/admin/role/list?err=snotexist');
         }
     });
 }
