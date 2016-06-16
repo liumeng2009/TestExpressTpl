@@ -56,6 +56,25 @@ var checkGradeUser=function(){
     }
 }
 
+var checkRole=function(){
+    var sid=$('#schools').val();
+    $.ajax({
+            type:'get',
+            url:'/admin/role/findrole/'+sid,
+            dataType:'json'
+        })
+        .done(function (results) {
+            var roles=results;
+            $('#roles').children().remove();
+            for(var i=0;i<roles.length;i++){
+                var _options=$('<option>').val(roles[i]._id).text(roles[i].name);
+                $('#roles').append(_options);
+            }
+        }).fail(function(err) {
+        alert(err);
+    });
+}
+
 
 $(function(){
     $('#adminUserList .del').click(function(e){
@@ -173,5 +192,24 @@ $(function(){
             //存入控件
             submit.val(submitVal+','+selectVal);
         }
+    });
+    $('#schools').change(function(){
+        var sid=$(this).val();
+        alert('学校id是'+sid);
+        $.ajax({
+            type:'get',
+            url:'/admin/role/findrole/'+sid,
+            dataType:'json'
+        })
+            .done(function (results) {
+                var roles=results;
+                $('#roles').children().remove();
+                for(var i=0;i<roles.length;i++){
+                    var _options=$('<option>').val(roles[i]._id).text(roles[i].name);
+                    $('#roles').append(_options);
+                }
+            }).fail(function(err) {
+                alert(err);
+            });
     });
 });

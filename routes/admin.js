@@ -8,6 +8,7 @@ var presidentController=require('../app/controllers/president');
 var gradeController=require('../app/controllers/grade');
 var roleController=require('../app/controllers/role');
 var functionController=require('../app/controllers/function');
+var studentController=require('../app/controllers/student');
 
 router.get('/',adminUserController.signinRequired ,indexController.index);
 router.get('/login',adminUserController.showSignIn);
@@ -44,10 +45,16 @@ router.get('/role/list',adminUserController.signinRequired,roleController.role_l
 router.get('/role',adminUserController.signinRequired,roleController.role);
 router.get('/role/:id',adminUserController.signinRequired,roleController.role);
 router.post('/role/new',adminUserController.signinRequired,roleController.new);
+router.get('/role/findrole/:sid',adminUserController.signinRequired,roleController.findRoleBySchool);
 
 router.get('/function/list',adminUserController.signinRequired,functionController.function_list);
 router.get('/function',adminUserController.signinRequired,functionController.function);
 router.get('/function/:id',adminUserController.signinRequired,functionController.function);
 router.post('/function/new',adminUserController.signinRequired,adminUserController.maxRequired,functionController.new);
+
+router.get('/student/list',adminUserController.signinRequired,studentController.student_list)
+router.get('/student',adminUserController.signinRequired,studentController.student)
+router.get('/student/:id',adminUserController.signinRequired,studentController.student)
+router.post('/student/new',adminUserController.signinRequired,studentController.new)
 
 module.exports = router;

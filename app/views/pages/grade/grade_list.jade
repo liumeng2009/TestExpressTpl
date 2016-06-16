@@ -11,7 +11,11 @@ block content
                         i.en-arrow-right7
                     li
                         i.im-user4
-                        a(href="/admin/grade/list") 班级列表
+                        a(href="/admin/grade/list") 选择学校
+                    if sid
+                        li
+                            i.im-user4
+                            a(href="/admin/grade/list?sid=#{sid}") 班级列表
         if school
             .outlet
                 .row

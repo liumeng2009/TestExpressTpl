@@ -180,3 +180,23 @@ exports.new=function(req,res){
         }
     });
 }
+
+//根据学校id寻找他的角色
+exports.findRoleBySchool=function(req,res){
+    var sid=req.params.sid;
+    console.log('学校id是'+sid);
+    School.find({status:true,_id:sid},function(err,school){
+        if(err)
+            return console.log(err);
+        if(school){
+            Role.find({school:school[0]._id},function(err,roles){
+                if(err)
+                    return console.log(err)
+                res.send(roles);
+            })
+        }
+        else{
+            res.send('[]');
+        }
+    });
+}

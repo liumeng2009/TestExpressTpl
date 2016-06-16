@@ -1,0 +1,94 @@
+extends ../../layout
+
+block content
+    .content-wrapper
+        .row
+            .col-lg-12.heading
+                ul#crumb.breadcrumb
+                    li
+                        i.im-home
+                        a(href="/admin") 首页
+                        i.en-arrow-right7
+                    li
+                        i.im-user4
+                        a(href="/admin/student/list") 选择学校
+                        i.en-arrow-right7
+                    li
+                        i.im-user4
+                        a(href="/admin/student/list?sid=#{sid}") 学生列表
+                        i.en-arrow-right7
+                    li
+                        i.en-user-add
+                        a(href="#") #{action}学生
+        .outlet
+            .row
+                .col-lg-12
+                    .panel.panel-default.toggle
+                        .panel-heading
+                            h3.panel-title #{action}学生
+                        .panel-body
+                            form.form-horizontal.group-border.hover-stripped(role="form",id="validate",method="post",action="/admin/grade/new",enctype="multipart/form-data")
+                                .form-group
+                                    if student&&student._id
+                                        input(type="hidden",value=student._id,name="id")
+                                    label.col-lg-2.col-md-2.control-label 学生姓名
+                                    .col-lg-10.col-md-10
+                                        input#name.form-control.required(type="text",placeholder="请输入学生姓名...",value=student.name,name="name")
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 所属学校
+                                    .col-lg-10.col-md-10
+                                        input#school.form-control(type="text",value=school.name,disabled="disabled")
+                                        input#hfdSchool(type="hidden",value=sid,name="sid")
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 所属班级
+                                    .col-lg-10.col-md-10
+                                        select#grade.form-control(name="grade")
+                                            each grade in grades
+                                                option(value=grade._id)
+                                                    | #{grade.name}
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 家长
+                                    .col-lg-10.col-md-10
+                                        select#parent.form-control(name="parent")
+                                            each parent in parents
+                                                option(value="#{parent._id}")
+                                                    | #{parent.name}
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 性别
+                                    .col-lg-10.col-md-10
+                                        select#sex.form-control(name="sex")
+                                            option(value='1')
+                                                | 男
+                                            option(value="0")
+                                                | 女
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 年龄
+                                    .col-lg-10.col-md-10
+                                        input#age.form-control.number(type="text",name="age")
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 健康状况
+                                    .col-lg-10.col-md-10
+                                        textarea.form-control(name="health")
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 兴趣爱好
+                                    .col-lg-10.col-md-10
+                                        textarea.form-control(name="interest")
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 现状
+                                    .col-lg-10.col-md-10
+                                        textarea.form-control(name="state_now")
+                                .form-group
+                                    .col-lg-1.col-md-1
+                                        button.btn.btn-default.ml15(type="submit") 保存
+                                    .col-lg-11.col-md-11
+                                        include ../../includes/notification
+block componentScript
+    include ../../includes/formScript
+block bottom
+    script(src="/javascripts/app.js")
+    script(src="/assets/js/pages/form-validation.js")
+    script.
+        setTimeout(function(){
+            checkSideNav('学生管理');
+        },0);
+

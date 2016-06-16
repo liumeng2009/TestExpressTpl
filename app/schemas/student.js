@@ -10,6 +10,10 @@ var StudentSchema = new mongoose.Schema({
         unique: true,
         type: String
     },
+    school:{
+        type:ObjectId,
+        ref:'school'
+    },
     grade:{
         type:ObjectId,
         ref:'grade'
@@ -19,7 +23,7 @@ var StudentSchema = new mongoose.Schema({
         ref:'user'
     },
     status:Boolean,
-    age:num,
+    age:Number,
     sex:String,
     health:String,
     interest:String,

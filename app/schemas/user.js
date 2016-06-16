@@ -26,14 +26,12 @@ var UserSchema = new mongoose.Schema({
             default: Date.now()
         }
     },
-    role:{
-        type:ObjectId,
-        ref:'role'
-    },
-    school:{
-        type:ObjectId,
-        ref:'school'
-    },
+    roles:[
+        {
+            type:ObjectId,
+            ref:'role'
+        }
+    ],
     isParent:Boolean
 })
 

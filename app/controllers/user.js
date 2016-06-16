@@ -63,50 +63,39 @@ exports.user_list=function(req,res){
 //用户信息
 exports.user=function(req,res){
     var id=req.query.id;
-    var sid=req.query.sid;
-    School.findOne({_id:sid,status:true},function(err,school){
-        if(school){
-            if(id){
-                //编辑
-                User.findOne({status:true,_id:id},function(err,user){
-                    if(err)
-                        return console.log(err);
-                    Role.find({school:school._id},function(err,roles){
-                        console.log('角色列表是：'+roles);
-                        if(err)
-                            return console.log(err);
-                        res.render('./pages/users/user_edit',{
-                            title:'编辑用户',
-                            action:'编辑',
-                            user:user,
-                            sid:sid,
-                            school:school,
-                            roles:roles
-                        });
-                    });
+
+    if(id){
+        //编辑
+        User.findOne({status:true,_id:id},function(err,user){
+            if(err)
+                return console.log(err);
+            Role.find({school:school._id},function(err,roles){
+                if(err)
+                    return console.log(err);
+                res.render('./pages/users/user_edit',{
+                    title:'编辑用户',
+                    action:'编辑',
+                    user:user,
+                    sid:sid,
+                    school:school,
+                    roles:roles
                 });
-            }
-            else{
-                //新增
-                Role.find({school:school._id},function(err,roles){
-                    console.log('角色列表是：'+roles);
-                    if(err)
-                        return console.log(err);
-                    res.render('./pages/users/user',{
-                        title:'新增用户',
-                        action:'新增',
-                        user:{},
-                        sid:sid,
-                        school:school,
-                        roles:roles
-                    });
-                });
-            }
-        }
-        else{
-            res.redirect('/admin/user/list?err=snotexist');
-        }
-    });
+            });
+        });
+    }
+    else{
+        //新增
+        School.find({status:true},function(err,schools){
+            if(err)
+                return console.log(err);
+            res.render('./pages/users/user',{
+                title:'新增用户',
+                action:'新增',
+                user:{},
+                schools:schools
+            });
+        });
+    }
 }
 
 exports.new=function(req,res){
