@@ -81,7 +81,7 @@ exports.student=function(req,res){
     });
 }
 exports.new=function(req,res){
-    var id=req.body.id;
+    var id=req.param.id;
     var sid=req.body.sid;
     var gid=req.body.grade;
     var pid=req.body.parent;
@@ -111,7 +111,12 @@ exports.new=function(req,res){
                                 if(err)
                                     return console.log(err)
                                 if(student){
-
+                                    var _student= _.extend(student,studentObj);
+                                    _student.save(function(err,student){
+                                        if(err)
+                                            return console.log(err);
+                                        res.redirect('/admin/student/list?sid='+school._id);
+                                    });
                                 }
                                 else{
                                     res.redirect('/admin/student/list?sid='+school._id);
