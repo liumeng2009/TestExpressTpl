@@ -30,11 +30,7 @@ var GradeSchema = new mongoose.Schema({
             type:ObjectId,
             ref:'user'
         }
-    ],
-    header:{
-        type:ObjectId,
-        ref:'user'
-    }
+    ]
 })
 
 GradeSchema.pre('save', function(next) {

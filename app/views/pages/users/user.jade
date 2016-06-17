@@ -10,11 +10,8 @@ block content
                         a(href="/admin") 首页
                         i.en-arrow-right7
                     li
-                        i.st-cube
-                        a(href="/admin/user/list") 选择学校
-                    li
                         i.im-user4
-                        a(href="/admin/user/list?sid=#{sid}") 用户列表
+                        a(href="/admin/user/list") 用户列表
                     li
                         i.en-user-add
                         a(href="#") #{action}用户
@@ -38,21 +35,9 @@ block content
                                         input#password.form-control(type="password",name="password",placeholder="输入密码...",value=user.password)
                                         input#confirm_password.form-control.mt15(type="password",name="confirm_password",placeholder="确认密码...")
                                 .form-group
-                                    label.col-lg-2.col-md-2.control-label 所属学校
+                                    label.col-lg-2.col-md-2.control-label 成为学校工作人员
                                     .col-lg-10.col-md-10
-                                        input#school.form-control(type="text",value=school.name,disabled="disabled")
-                                        input#hfdSchool(type="hidden",value=sid,name="sid")
-                                .form-group
-                                    label.col-lg-2.col-md-2.control-label 角色
-                                    .col-lg-10.col-md-10
-                                        select#role.form-control(name="role")
-                                            each r in roles
-                                                option(value=r._id)
-                                                    | #{r.name}
-                                .form-group
-                                    label.col-lg-2.col-md-2.control-label 成为家长
-                                    .col-lg-10.col-md-10
-                                        input#isParent.switch.noStyle(name="isParent",type="checkbox")
+                                        input#isParent.switch.noStyle(name="isWorker",type="checkbox")
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 电话
                                     .col-lg-10.col-md-10

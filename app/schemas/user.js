@@ -26,13 +26,19 @@ var UserSchema = new mongoose.Schema({
             default: Date.now()
         }
     },
-    roles:[
-        {
-            type:ObjectId,
-            ref:'role'
-        }
-    ],
-    isParent:Boolean
+    role: {
+        type:ObjectId,
+        ref:'role'
+    },
+    school:{
+        type:ObjectId,
+        ref:'school'
+    },
+    grade:{
+        type:ObjectId,
+        ref:'grade'
+    },
+    isWorker:Boolean
 })
 
 UserSchema.pre('save', function(next) {

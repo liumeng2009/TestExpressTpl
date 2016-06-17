@@ -17,44 +17,6 @@ var checkSideNav=function(navName){
         }
     })
 }
-var checkGradeUser=function(){
-    var container=$('#hfdGradeUsers').parents('.form-group');
-    var users=$('#hfdGradeUsers').val();
-    var select=container.find('#selectGradeUsers');
-    var userArray=users.split(',');
-    //删除数组里面的空值
-    for(var n=0;n<userArray.length;n++){
-        if(userArray[n].toString().trim()===""){
-            userArray.splice(n,1);
-            i=i-1;
-        }
-    }
-
-
-    for(var i=0;i<userArray.length;i++){
-        var selectText='';
-        for(var m=0;m<select.children().length;m++){
-            if(userArray[i]===select.children().eq(m).val()){
-                selectText=select.children().eq(m).text();
-                break;
-            }
-        }
-        //增加标签
-        var tag=$('<span>').addClass('tag');
-        var span=$('<span>').html(selectText+'&nbsp;&nbsp;')
-        var a=$('<a>').addClass('Removing').addClass('tag').text('x');
-        a.click(function(e){
-            //删除tag
-            var tag=$(this).parents('.tag');
-            tag.remove();
-            //删除控件
-            $('#hfdGradeUsers').val($('#hfdGradeUsers').val().replace(a.attr('data'),''));
-        });
-        a.attr('data',userArray[i]);
-        tag.append(span).append(a);
-        container.find('.tagsinput').append(tag);
-    }
-}
 
 var checkRole=function(){
     var sid=$('#schools').val();
@@ -156,42 +118,6 @@ $(function(){
 
 
         });
-    });
-    $('#addGradeUsers').click(function(e){
-        var container=$(this).parents('.form-group');
-        var submit=container.find('#hfdGradeUsers');
-        var select=container.find('#selectGradeUsers');
-        var selectVal=select.val();
-        var selectText='';
-        for(var i=0;i<select.children().length;i++){
-            if(select.children().eq(i).val()===select.val()){
-                selectText=select.children().eq(i).text();
-                break;
-            }
-        }
-        var submitVal=submit.val();
-        if(submitVal.indexOf(selectVal)>-1){
-            //说明存在
-        }
-        else{
-            //增加标签
-            var tag=$('<span>').addClass('tag');
-            var span=$('<span>').html(selectText+'&nbsp;&nbsp;')
-            var a=$('<a>').addClass('Removing').addClass('tag').text('x');
-            a.click(function(e){
-                //删除tag
-                var tag=$(this).parents('.tag');
-                tag.remove();
-                //删除控件
-                submit.val(submit.val().replace(a.attr('data'),''));
-            });
-            a.attr('data',selectVal);
-            tag.append(span).append(a);
-            container.find('.tagsinput').append(tag);
-
-            //存入控件
-            submit.val(submitVal+','+selectVal);
-        }
     });
     $('#schools').change(function(){
         var sid=$(this).val();

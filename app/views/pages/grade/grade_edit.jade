@@ -31,33 +31,20 @@ block content
                                     .col-lg-10.col-md-10
                                         input#name.form-control.required(type="text",placeholder="请输入班级名称...",value=grade.name,name="name")
                                 .form-group
-                                    label.col-lg-2.col-md-2.control-label 所属学校
-                                    .col-lg-10.col-md-10
-                                        input#school.form-control(type="text",value=school.name,disabled="disabled")
-                                        input#hfdSchool(type="hidden",value=sid,name="sid")
-                                .form-group
-                                    label.col-lg-2.col-md-2.control-label 班主任
-                                    .col-lg-10.col-md-10
-                                        select.form-control(name="header")
-                                            each user in users
-                                                option(value=user._id)
-                                                    | #{user.name}
-                                .form-group
                                     label.col-lg-2.col-md-2.control-label 班级成员
                                     .col-lg-10.col-md-10
-                                        .tagsinput(style="height:auto;border:none !important;background:none!important;")
-                                            - var userss='';
-                                            if grade.users&&grade.users.length>0
-                                                each uu in grade.users
-                                                     - userss=userss+uu._id+',';
-                                            input#hfdGradeUsers(type="hidden",value="#{userss}",name="users")
-                                        select#selectGradeUsers.form-control(name="user")
-                                            each user in users
-                                                option(value=user._id)
-                                                    | #{user.name}
-                                        label.mt10
-                                            a(href="#")#addGradeUsers.btn.btn-primary
-                                                | 新增班级成员
+                                        table.table.table-bordered
+                                            thead
+                                                tr
+                                                    th 用户
+                                                    th 角色
+                                            tbody
+                                                each u in grade.users
+                                                    tr
+                                                        td #{u.name}
+                                                        td #{u.role.name}
+                                        a(href="#",data-toggle="modal",data-target="#modal1")#addGradeUsers.btn.btn-primary
+                                            | 新增班级成员
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 所在位置(选填)
                                     .col-lg-10.col-md-10
@@ -67,6 +54,39 @@ block content
                                         button.btn.btn-default.ml15(type="submit") 保存
                                     .col-lg-11.col-md-11
                                         include ../../includes/notification
+    #modal1.modal.fade(role="dialog",tabindex="-1",aria-hidden="true")
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    button.close(type="button",data-dismiss="modal",aria-hidden="true")
+                        | &times;
+                    h4#myModalLabel.modal-title
+                        | 添加班级管理人员
+                form.form-horizontal(role="form",method="post",action="/admin/grade/insertuser",enctype="multipart/form-data")
+                    .modal-body
+                        .form-group
+                            if grade&&grade._id
+                                input(type="hidden",value=grade._id,name="grade_id")
+                            if sid
+                                input(type="hidden",value=sid,name="sid")
+                            label.col-lg-2.col-md-2.control-label 用户
+                            .col-lg-10.col-md-10
+                                select#user.form-control(name="user")
+                                    each u in users
+                                        option(value="u._id")
+                                            | #{u.name}
+                        .form-group
+                            label.col-lg-2.col-md-2.control-label 角色
+                            .col-lg-10.col-md-10
+                                select#role.form-control(name="role")
+                                    each r in roles
+                                        option(value="r._id")
+                                            | #{r.name}
+                    .modal-footer
+                        button.btn.btn-default(type="button",data-dismiss="modal")
+                            | 关闭
+                        button.btn.btn-primary(type="submit")
+                            | 保存
 block componentScript
     include ../../includes/formScript
 block bottom
@@ -75,6 +95,5 @@ block bottom
     script.
         setTimeout(function(){
             checkSideNav('班级管理');
-            checkGradeUser();
         },0);
 
