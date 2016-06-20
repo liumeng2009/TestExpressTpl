@@ -1,0 +1,35 @@
+extends ../../layout
+
+block content
+    .content-wrapper
+        .row
+            .col-lg-12.heading
+                ul#crumb.breadcrumb
+                    li
+                        i.im-home
+                        a(href="/admin") 首页
+                        i.en-arrow-right7
+                    li
+                        i.im-home
+                        a(href="/admin/school/select") 选择学校
+                        i.en-arrow-right7
+        .row
+            - var colors_bg=['white','red','blue','green','yellow','orange','purple','pink','lime','magenta','teal','brown','gray','dark']
+            each sch in schools
+                .col-lg-3.col-md-3.col-sm-6.col-xs-12
+                    - var random=parseInt(Math.random()*10);
+                    - var colorbg=colors_bg[random];
+                        .tile-stats.b.brall.mb25.#{colorbg}
+                            a(href="#")
+                                .tile-stats-icon
+                                    .st-cube.color-white.s48
+                                .tile-stats-content
+                                    .tile-stats-number.color-white #{sch.name}
+                                    .tile-stats-text.color-white #{sch.owner.name}
+                                .clearfix
+            include ../../includes/notification
+block componentScript
+    include ../../includes/table
+block bottom
+    script(src="/javascripts/app.js")
+    script(src="/assets/js/pages/tables.js")

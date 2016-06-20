@@ -30,6 +30,12 @@ var GradeSchema = new mongoose.Schema({
             type:ObjectId,
             ref:'user'
         }
+    ],
+    students:[
+        {
+            type:ObjectId,
+            ref:'student'
+        }
     ]
 })
 

@@ -28,6 +28,7 @@ var StudentSchema = new mongoose.Schema({
     health:String,
     interest:String,
     state_now:String,
+    school_remark:String,
     meta: {
         createAt: {
             type: Date,

@@ -66,7 +66,6 @@ exports.grade=function(req,res){
                         return console.log(err);
                     }
                     Role.find({status:true,school:school._id},function(err,roles){
-                        console.log('角色列表是:'+roles);
                         if(err){
                             err.status=500;
                             res.render('error',{
@@ -76,32 +75,39 @@ exports.grade=function(req,res){
                             return console.log(err);
                         }
                         if(id){
-                            Grade.findById({status:true,_id:id},function(err,grade){
-                                if(err){
-                                    err.status=500;
-                                    res.render('error',{
-                                        message:err.name,
-                                        error:err
-                                    })
-                                    return console.log(err);
-                                }
-                                if(grade){
-                                    res.render('./pages/grade/grade_edit',{
-                                        title:'编辑班级信息',
-                                        grade:grade,
-                                        users:users,
-                                        sid:school._id,
-                                        action:'编辑',
-                                        school:school,
-                                        roles:roles
-                                    });
-                                }
-                                else{
-                                    res.redirect('/admin/grade/list?sid='+sid);
-                                }
-
-                            });
-
+                            Grade.findOne({status:true,_id:id})
+                                .populate({
+                                    path:'users',
+                                    model:'user',
+                                    populate:{
+                                        path:'role',
+                                        model:'role'
+                                    }
+                                })
+                                .exec(function(err,grade) {
+                                    if (err) {
+                                        err.status = 500;
+                                        res.render('error', {
+                                            message: err.name,
+                                            error: err
+                                        })
+                                        return console.log(err);
+                                    }
+                                    if (grade) {
+                                        res.render('./pages/grade/grade_edit', {
+                                            title: '编辑班级信息',
+                                            grade: grade,
+                                            users: users,
+                                            sid: school._id,
+                                            action: '编辑',
+                                            school: school,
+                                            roles: roles
+                                        });
+                                    }
+                                    else {
+                                        res.redirect('/admin/grade/list?sid=' + sid);
+                                    }
+                                });
                         }
                         else{
                             res.render('./pages/grade/grade',{
@@ -194,7 +200,9 @@ exports.insertuser=function(req,res){
     //user表里面的school，grade，role都要赋值
     //grade表里面的users添加users
     var sid=req.body.sid;
-    var id=req.body.id;
+    var id=req.body.grade_id;
+
+    console.log('id是'+id);
 
     School.findOne({status:true,_id:sid},function(err,school){
         if(err){
@@ -205,8 +213,9 @@ exports.insertuser=function(req,res){
            })
            return console.log(err);
         }
+        console.log('school是：'+school);
         if(school){
-            Grade.findOne({status:true,_id:req.body.grade_id},function(err,grade){
+            Grade.findOne({status:true,_id:id},function(err,grade){
                 if(err){
                     err.status=500;
                     res.render('error',{
@@ -215,7 +224,9 @@ exports.insertuser=function(req,res){
                     })
                     return console.log(err);
                 }
+                console.log('grade是：'+grade);
                 if(grade){
+                    console.log('99999999999999999999'+req.body.role);
                     Role.findOne({status:true,_id:req.body.role},function(err,role){
                        if(err){
                            err.status=500;
@@ -225,6 +236,7 @@ exports.insertuser=function(req,res){
                            })
                            return console.log(err);
                        }
+                        console.log('role是：'+role);
                         if(role){
                             User.findOne({status:true,_id:req.body.user},function(err,user){
                                 console.log('找到的user对象是：'+grade);
@@ -236,6 +248,7 @@ exports.insertuser=function(req,res){
                                     })
                                     return console.log(err);
                                 }
+                                console.log('user是：'+user);
                                 if(user){
                                     //user插入school grade role数据
                                     var userObj={
@@ -265,23 +278,23 @@ exports.insertuser=function(req,res){
                                                 })
                                                 return console.log(err);
                                             }
-                                            res.redirect('/admin/grade/list?sid=#{sid}');
+                                            res.redirect('/admin/grade/list?sid='+sid);
                                         });
                                     });
                                     //grade插入user数据
                                 }
                                 else{
-                                    res.redirect('/admin/grade/#{id}?sid='+school._id+'&err=wrongparams');
+                                    res.redirect('/admin/grade/'+id+'?sid='+school._id+'&err=wrongparams');
                                 }
                             });
                         }
                         else{
-                            res.redirect('/admin/grade/#{id}?sid='+school._id+'&err=wrongparams');
+                            res.redirect('/admin/grade/'+id+'?sid='+school._id+'&err=wrongparams');
                         }
                     });
                 }
                 else{
-                    res.redirect('/admin/grade/#{id}?sid='+school._id+'&err=wrongparams');
+                    res.redirect('/admin/grade/'+id+'?sid='+school._id+'&err=wrongparams');
                 }
             });
         }

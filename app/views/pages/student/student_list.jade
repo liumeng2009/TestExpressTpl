@@ -34,9 +34,9 @@ block content
                                     .col-lg-4.col-md-4
                                         a.btn.btn-default.pull-right(href="/admin/student?sid=#{sid}")
                                             i.br-plus
-                                            |     新增学校
+                                            |     新增学生
 
-                                table#presidentList.table.table-bordered
+                                table#studentList.table.table-bordered
                                     thead
                                         tr
                                             th.per10 学生姓名
@@ -53,10 +53,16 @@ block content
                                                 td #{student.parent.name}
                                                 td #{student.school.name}
                                                 td #{student.grade.name}
-                                                td #{student.sex}
+                                                td
+                                                    if student.sex===1
+                                                        | 男
+                                                    else
+                                                        | 女
                                                 td #{student.age}
                                                 td
-                                                    a.btn.btn-primary(href="/admin/student?id=#{school._id}") 编辑
+                                                    a.btn.btn-primary(href="/admin/student/#{student._id}?sid=#{school._id}") 编辑
+                                                    | &nbsp;&nbsp;
+                                                    a.del.btn.btn-danger(href="#",data-id="#{student._id}") 删除
                                 include ../../includes/notification
         else
             .row

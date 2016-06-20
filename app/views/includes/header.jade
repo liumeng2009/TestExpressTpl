@@ -15,6 +15,32 @@
                         a.full-screen(href="#")
                             i.fa-fullscreen
                 ul.nav.navbar-nav.pull-right
+                    li
+                        a(href="#")
+
+                    li.dropdown
+                        a(href="#",data-toggle="dropdown")
+                            | 当前选取学校：aaa，点击切换&nbsp;&nbsp;
+                            i.ec-location
+                            span.notification
+                                | 5
+                        ul.dropdown-menu.notification-menu.right(role="menu")
+                            li.clearfix
+                                i.ec-chart
+                                a.notification-user(href="#")
+                                    | Ric Jones
+                                span.notification-action
+                                    | replied to your
+                                a.motification-link(href="#")
+                                    | comment
+                            li.clearfix
+                                i.ec-chart
+                                a.notification-user(href="#")
+                                    | Ric Jones
+                                span.notification-action
+                                    | replied to your
+                                a.motification-link(href="#")
+                                    | comment
                     li.dropdown
                         a(href="#",data-toggle="dropdown")
                             img.user-avatar(src="/assets/img/avatars/48.jpg",alt="#{user.name}")

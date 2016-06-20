@@ -35,6 +35,7 @@ router.get('/school',adminUserController.signinRequired,schoolController.school)
 router.get('/school/:id',adminUserController.signinRequired,schoolController.school);
 router.post('/school/new',adminUserController.signinRequired ,schoolController.new);
 router.delete('/school/list',adminUserController.signinRequired ,schoolController.del);
+router.get('/school_select',adminUserController.signinRequired,schoolController.select);
 
 router.get('/grade/list',adminUserController.signinRequired,schoolController.validSchoolId,gradeController.grade_list);
 router.get('/grade',adminUserController.signinRequired,schoolController.validSchoolId,gradeController.grade);
@@ -57,5 +58,6 @@ router.get('/student/list',adminUserController.signinRequired,studentController.
 router.get('/student',adminUserController.signinRequired,studentController.student)
 router.get('/student/:id',adminUserController.signinRequired,studentController.student)
 router.post('/student/new',adminUserController.signinRequired,studentController.new)
+router.delete('/student/list',adminUserController.signinRequired,studentController.delete)
 
 module.exports = router;

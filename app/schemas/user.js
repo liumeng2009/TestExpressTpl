@@ -38,6 +38,12 @@ var UserSchema = new mongoose.Schema({
         type:ObjectId,
         ref:'grade'
     },
+    sons:[
+        {
+            type:ObjectId,
+            ref:'student'
+        }
+    ],
     isWorker:Boolean
 })
 

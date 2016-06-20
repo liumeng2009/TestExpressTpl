@@ -44,43 +44,47 @@ block content
                                     .col-lg-10.col-md-10
                                         select#grade.form-control(name="grade")
                                             each grade in grades
-                                                option(value=grade._id)
+                                                option(value=grade._id,selected=student.grade.toString()===grade._id.toString())
                                                     | #{grade.name}
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 家长
                                     .col-lg-10.col-md-10
                                         select#parent.form-control(name="parent")
                                             each parent in parents
-                                                option(value=parent._id)
+                                                option(value=parent._id,selected=student.parent.toString()===parent._id.toString())
                                                     | #{parent.name}
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 性别
                                     .col-lg-10.col-md-10
                                         select#sex.form-control(name="sex")
-                                            option(value='1')
+                                            option(value='1',selected=student.sex.toString()==="1")
                                                 | 男
-                                            option(value="0")
+                                            option(value="0",selected=student.sex.toString()==="0")
                                                 | 女
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 年龄
                                     .col-lg-10.col-md-10
-                                        input#age.form-control.number(type="text",name="age",min="0",max="99")
+                                        input#age.form-control.number(type="text",name="age",min="0",max="99",value=student.age)
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 健康状况
                                     .col-lg-10.col-md-10
                                         textarea.form-control(name="health")
+                                            | #{student.health}
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 兴趣爱好
                                     .col-lg-10.col-md-10
                                         textarea.form-control(name="interest")
+                                            | #{student.interest}
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 现状
                                     .col-lg-10.col-md-10
                                         textarea.form-control(name="state_now")
+                                            | #{student.state_now}
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 学校标注
                                     .col-lg-10.col-md-10
                                         textarea.form-control(name="school_remark")
+                                            | #{student.school_remark}
                                 .form-group
                                     .col-lg-1.col-md-1
                                         button.btn.btn-default.ml15(type="submit") 保存

@@ -127,6 +127,26 @@ exports.new=function(req,res){
 exports.del=function(req,res){
 
 }
+
+exports.select=function(req,res){
+    School.find({status:true})
+        .populate('owner')
+        .exec(function(err,schools){
+        if(err){
+            err.status = 500;
+            res.render('error', {
+                message: err.name,
+                error: err
+            })
+            return console.log(err);
+        }
+        res.render('./pages/school/school_select',{
+            title:'选择学校',
+            schools:schools
+        })
+    });
+}
+
 //中间件
 exports.validSchoolId=function(req,res,next){
     var sid=req.query.sid;
