@@ -9,8 +9,9 @@ var gradeController=require('../app/controllers/grade');
 var roleController=require('../app/controllers/role');
 var functionController=require('../app/controllers/function');
 var studentController=require('../app/controllers/student');
+var apiAdminController=require('../app/controllers/api_admin');
 
-router.get('/',adminUserController.signinRequired ,indexController.index);
+router.get('/',adminUserController.signinRequired ,schoolController.school_list_allpage,indexController.index);
 router.get('/login',adminUserController.showSignIn);
 router.get('/admin/list',adminUserController.signinRequired ,adminUserController.admin_user_list);
 router.post('/admin/new',adminUserController.signinRequired ,adminUserController.new);
@@ -31,17 +32,18 @@ router.post('/president/new',adminUserController.signinRequired ,presidentContro
 router.delete('/president/list',adminUserController.signinRequired ,presidentController.del);
 
 router.get('/school/list',adminUserController.signinRequired,schoolController.school_list);
-router.get('/school',adminUserController.signinRequired,schoolController.school);
+router.get('/school',adminUserController.signinRequired,schoolController.school_list_allpage,schoolController.school);
 router.get('/school/:id',adminUserController.signinRequired,schoolController.school);
 router.post('/school/new',adminUserController.signinRequired ,schoolController.new);
 router.delete('/school/list',adminUserController.signinRequired ,schoolController.del);
 router.get('/school_select',adminUserController.signinRequired,schoolController.select);
+router.get('/school_change',adminUserController.signinRequired,schoolController.change);
 
-router.get('/grade/list',adminUserController.signinRequired,schoolController.validSchoolId,gradeController.grade_list);
-router.get('/grade',adminUserController.signinRequired,schoolController.validSchoolId,gradeController.grade);
-router.get('/grade/:id',adminUserController.signinRequired,schoolController.validSchoolId,gradeController.grade);
-router.post('/grade/new',adminUserController.signinRequired,schoolController.validSchoolId,gradeController.new);
-router.post('/grade/insertuser',adminUserController.signinRequired,schoolController.validSchoolId,gradeController.insertuser);
+router.get('/grade/list',adminUserController.signinRequired,schoolController.school_list_allpage,gradeController.grade_list);
+router.get('/grade',adminUserController.signinRequired,gradeController.grade);
+router.get('/grade/:id',adminUserController.signinRequired,gradeController.grade);
+router.post('/grade/new',adminUserController.signinRequired,gradeController.new);
+router.post('/grade/insertuser',adminUserController.signinRequired,gradeController.insertuser);
 
 router.get('/role/list',adminUserController.signinRequired,roleController.role_list);
 router.get('/role',adminUserController.signinRequired,roleController.role);
@@ -54,10 +56,12 @@ router.get('/function',adminUserController.signinRequired,functionController.fun
 router.get('/function/:id',adminUserController.signinRequired,functionController.function);
 router.post('/function/new',adminUserController.signinRequired,adminUserController.maxRequired,functionController.new);
 
-router.get('/student/list',adminUserController.signinRequired,studentController.student_list)
-router.get('/student',adminUserController.signinRequired,studentController.student)
-router.get('/student/:id',adminUserController.signinRequired,studentController.student)
-router.post('/student/new',adminUserController.signinRequired,studentController.new)
-router.delete('/student/list',adminUserController.signinRequired,studentController.delete)
+router.get('/student/list',adminUserController.signinRequired,studentController.student_list);
+router.get('/student',adminUserController.signinRequired,studentController.student);
+router.get('/student/:id',adminUserController.signinRequired,studentController.student);
+router.post('/student/new',adminUserController.signinRequired,studentController.new);
+router.delete('/student/list',adminUserController.signinRequired,studentController.delete);
+
+router.post('/uploadify',adminUserController.signinRequired,apiAdminController.uploadify);
 
 module.exports = router;

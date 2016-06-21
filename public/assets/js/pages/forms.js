@@ -55,6 +55,7 @@ $(document).ready(function() {
     });
 
     //------------- File input styling -------------//
+
     $(":file").filestyle({
     	buttonText: "Select file",
     	classButton: "btn btn-primary",
@@ -75,12 +76,11 @@ $(document).ready(function() {
 	$("#showPaletteOnly").spectrum({
 	    showPaletteOnly: true,
 	    showPalette:true,
-	    color: 'blanchedalmond',
+	    color: 'red',
 	    palette: [
-	        ['black', 'white', 'blanchedalmond',
-	        'rgb(255, 128, 0);', 'hsv 100 70 50'],
-	        ['red', 'yellow', 'green', 'blue', 'violet']
-	    ]
+			['white','red','blue','green','yellow','orange','gray'],
+			['purple','pink','lime','magenta','teal','brown','dark']
+		]
 	});
 
 	$("#flat-color-picker").spectrum({

@@ -20,31 +20,26 @@
 
                     li.dropdown
                         a(href="#",data-toggle="dropdown")
-                            | 当前选取学校：aaa，点击切换&nbsp;&nbsp;
+                            | 当前选取学校：
+                            if schoolnow
+                                |#{schoolnow.name}&nbsp;&nbsp;点击切换&nbsp;&nbsp;
+                            else
+                                | 未选取
                             i.ec-location
                             span.notification
-                                | 5
-                        ul.dropdown-menu.notification-menu.right(role="menu")
-                            li.clearfix
-                                i.ec-chart
-                                a.notification-user(href="#")
-                                    | Ric Jones
-                                span.notification-action
-                                    | replied to your
-                                a.motification-link(href="#")
-                                    | comment
-                            li.clearfix
-                                i.ec-chart
-                                a.notification-user(href="#")
-                                    | Ric Jones
-                                span.notification-action
-                                    | replied to your
-                                a.motification-link(href="#")
-                                    | comment
+                                if schoolhead
+                                    | #{schoolhead.length}
+                        ul.dropdown-menu(role="menu")
+                            if schoolhead
+                                each sch in schoolhead
+                                    li
+                                        a(href="/admin/school_change?sid=#{sch._id}&redirecturl=#{urlnow}")
+                                            img.user-avatar(src="/assets/img/avatars/48.jpg",alt="#{userr.name}")
+                                            | #{sch.name}
                     li.dropdown
                         a(href="#",data-toggle="dropdown")
-                            img.user-avatar(src="/assets/img/avatars/48.jpg",alt="#{user.name}")
-                            | #{user.name}
+                            img.user-avatar(src="/assets/img/avatars/48.jpg",alt="#{userr.name}")
+                            | #{userr.name}
                         ul.dropdown-menu.right(role="menu")
                             li
                                 a(href="profile.html")

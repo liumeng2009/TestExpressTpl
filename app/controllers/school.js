@@ -147,6 +147,32 @@ exports.select=function(req,res){
     });
 }
 
+exports.change=function(req,res){
+    var sid=req.query.sid;
+    console.log('7777777'+sid);
+    School.findById({status:true,_id:sid},function(err,school){
+        if(err){
+            err.status = 500;
+            res.render('error', {
+                message: err.name,
+                error: err
+            })
+            return console.log(err);
+        }
+        //session保存当前选到的学校信息
+        if(school) {
+            req.session.schoolnow = {
+                name: school.name,
+                id: school._id
+            }
+            res.redirect(req.query.redirecturl);
+        }
+        else{
+            res.redirect('/admin');
+        }
+    })
+}
+
 //中间件
 exports.validSchoolId=function(req,res,next){
     var sid=req.query.sid;
@@ -160,4 +186,15 @@ exports.validSchoolId=function(req,res,next){
         }
     }
     next();
+}
+
+exports.school_list_allpage=function(req,res,next){
+    School.find({status:true})
+        .exec(function(err,schools){
+            if(err)
+                return console.log(err);
+            console.log("我想全局都有这个值"+schools);
+            res.app.locals.schoolhead=schools;
+            next();
+        });
 }

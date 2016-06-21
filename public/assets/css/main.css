@@ -3525,3 +3525,6 @@ pre {
     display: none;
   }
 }
+.bootstrap-filestyle{
+  display:none !important;
+}

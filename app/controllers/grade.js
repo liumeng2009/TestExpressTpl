@@ -8,14 +8,16 @@ var Role=require('../models/role');
 var _=require('underscore');
 
 exports.grade_list=function(req,res){
-    var schoolid=req.query.sid;
-    console.log('学校id是：'+schoolid);
+    var schoolid=req.session.schoolnow.id;
     School.findOne({status:true,_id:schoolid},function(err,school){
-        if(err)
+        if(err){
+            err.status=500;
+            res.render('error',{
+                message:err.name,
+                error:err
+            })
             return console.log(err);
-
-        console.log('得到的学校对象是：'+school);
-
+        }
         if(school){
             //学校存在
             Grade.find({status:true,school:schoolid})
@@ -32,16 +34,7 @@ exports.grade_list=function(req,res){
                 });
         }
         else{
-            School.find({status:true})
-                .populate('header')
-                .exec(function(err,schools) {
-                    if (err)
-                        return console.log(err);
-                    res.render('./pages/grade/grade_list', {
-                        title: '请先选择学校',
-                        schools: schools
-                    });
-                });
+            res.redirect('/admin/school_select');
         }
     });
 }

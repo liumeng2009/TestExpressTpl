@@ -150,4 +150,5 @@ $(document).ready(function() {
     });
     $('.tags1').tagsInput({width: 'auto'});
 
+
 });

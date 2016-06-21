@@ -26,6 +26,8 @@ var SchoolSchema = new mongoose.Schema({
     ],
     status:Boolean,
     intro:String,
+    image:String,
+    color:String,
     meta: {
         createAt: {
             type: Date,

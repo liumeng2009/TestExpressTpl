@@ -8,10 +8,6 @@ var multiparty=require('connect-multiparty');
 var mongoose=require('mongoose');
 var session=require('express-session');
 var mongoStore=require('connect-mongo')(session);
-
-
-var SchoolModel=require('./app/models/school');
-
 var routes = require('./routes/index');
 var admin = require('./routes/admin');
 
@@ -36,6 +32,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multiparty());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'upload')));
 
 app.use(cookieParser());
 app.use(session({
@@ -55,7 +52,10 @@ app.use(function(req,res,next){
 
 app.use(function(req,res,next){
   var _user=req.session.user;
-  app.locals.user=_user;
+  app.locals.userr=_user;
+  app.locals.urlnow=req.originalUrl;
+  app.locals.schoolnow=req.session.schoolnow;
+
   if(req.query.err){
     app.locals.err=req.query.err;
   }
@@ -63,6 +63,7 @@ app.use(function(req,res,next){
     delete app.locals.err;
   }
   next();
+
 });
 
 
