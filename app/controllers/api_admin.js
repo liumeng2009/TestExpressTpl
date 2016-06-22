@@ -20,7 +20,7 @@ exports.uploadify=function(req,res){
                     return res.send('error');
                 }
                 req.poster=poster;
-                res.json({path:newPath});
+                res.json({path:poster});
             });
         });
     }

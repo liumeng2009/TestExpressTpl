@@ -40,12 +40,14 @@ block content
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 颜色
                                     .col-lg-10.col-md-10
-                                        input#showPaletteOnly.form-control
+                                        input#showPaletteOnly(name="color").form-control
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 校标
                                     .col-lg-10.col-md-10
                                         #queue
                                         input#file_upload(name="poster",type="file",multiple="true")
+                                        input#file_upload_hidden(name="image",type="hidden")
+                                        img#image(width="60",height="60")
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 所在省区县
                                     .col-lg-10.col-md-10#city1
@@ -85,9 +87,10 @@ block bottom
                 uploader: '/admin/uploadify',
                 swf: '/assets/plugins/forms/uploadify/uploadify.swf',
                 onUploadSuccess: function (file,data,response) {
-                    alert('The file ' + file + ' finished processing.');
+                    var json=jQuery.parseJSON(data);
+                    $('#file_upload_hidden').val(json.path);
+                    $('#image').attr('src','/'+json.path);
                 }
             })
-
         },0);
 

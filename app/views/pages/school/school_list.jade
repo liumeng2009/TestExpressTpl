@@ -37,12 +37,12 @@ block content
                                         i.br-plus
                                         |     新增学校
 
-                            table#presidentList.table.table-bordered
+                            table#schoolList.table.table-bordered
                                 thead
                                     tr
                                         th.per20 学校名称
                                         th.per20 所有者
-                                        th.per20 班级数
+                                        th.per20 地区
                                         th.per20 建立时间
                                         th.per20 操作
                                 tbody
@@ -50,10 +50,12 @@ block content
                                         tr(class="item-id-#{school._id}")
                                             td #{school.name}
                                             td #{school.owner.name}
-                                            td 20人
+                                            td #{school.province}
                                             td #{moment(school.meta.createAt).format('MM/DD/YYYY')}
                                             td
-                                                a.btn.btn-primary(href="/admin/school?id=#{school._id}") 编辑
+                                                a.btn.btn-primary(href="/admin/school/#{school._id}") 编辑
+                                                | &nbsp;&nbsp;
+                                                a.del.btn.btn-danger(href="#",data-id="#{school._id}") 删除
                             include ../../includes/notification
 block componentScript
     include ../../includes/table

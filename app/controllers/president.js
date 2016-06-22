@@ -2,19 +2,25 @@
  * Created by Administrator on 2016/6/1.
  */
 var President=require('../models/president');
+var _=require('underscore');
 
 exports.president_list=function(req,res){
-    President.fetch(function(err,presidents){
-        if(err){
-            console.log(err);
-        }
-        else{
+    President.find({status:true})
+        .populate('schools')
+        .exec(function(err,presidents) {
+            if (err) {
+                err.status = 500;
+                res.render('error', {
+                    message: err.name,
+                    error: err
+                })
+                return console.log(err);
+            }
             res.render('./pages/users/president_list',{
                 title:'校长用户列表',
                 presidents:presidents
             });
-        }
-    });
+        });
 }
 //用户信息
 exports.president=function(req,res){
@@ -94,11 +100,13 @@ exports.del=function(req,res){
         console.log('删除的id是:'+id);
         President.update({_id:id},{status:false},function(err){
             if(err){
-                console.log(err);
+                res.json({success:0,info:'数据库读取失败'});
+                return console.log(err);
             }
-            else{
+            //这个用户下面的学校全部置否
+
                 res.json({success:1});
-            }
+
         });
     }
 }

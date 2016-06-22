@@ -16,52 +16,41 @@ block content
                         li
                             i.im-user4
                             a(href="/admin/grade/list?sid=#{sid}") 班级列表
-        if school
-            .outlet
-                .row
-                    .col-lg-12
-                        .panel.panel-default.plain.toggle.panelClose.panelRefresh
-                            .panel-heading.white-bg
-                                h4.panel-title #{school.name}的班级列表
-                            .panel-body
-                                .row.mb15
-                                    .col-lg-8.col-md-8
-                                    .col-lg-4.col-md-4
-                                        a.btn.btn-default.pull-right(href="/admin/grade?sid=#{school._id}")
-                                            i.br-plus
-                                            | 新增班级
-
-                                table#presidentList.table.table-bordered
-                                    thead
-                                        tr
-                                            th.per20 班级名称
-                                            th.per20 班级成员
-                                            th.per20 建立时间
-                                            th.per20 操作
-                                    tbody
-                                        each grade in grades
-                                            tr(class="item-id-#{grade._id}")
-                                                td #{grade.name}
-                                                td
-                                                    if grade.users
-                                                        each uc in grade.users
-                                                            | #{uc.name}&nbsp;&nbsp;
-                                                td #{moment(school.meta.createAt).format('MM/DD/YYYY')}
-                                                td
-                                                    a.btn.btn-primary(href="/admin/grade/#{grade._id}?sid=#{school._id}") 编辑
-                                include ../../includes/notification
-        else
+        .outlet
             .row
-                each sch in schools
-                    .col-lg-3.col-md-3.col-sm-6.col-xs-12
-                        .tile-stats.b.brall.mb25.teal-bg
-                            a(href="/admin/grade/list?sid=#{sch._id}")
-                                .tile-stats-icon
-                                    .st-cube.color-white.s48
-                                .tile-stats-content
-                                    .tile-stats-number.color-white #{sch.name}
-                                    .tile-stats-text.color-white #{sch.owner.name}
-                                .clearfix
+                .col-lg-12
+                    .panel.panel-default.plain.toggle.panelClose.panelRefresh
+                        .panel-heading.white-bg
+                            h4.panel-title #{school.name}的班级列表
+                        .panel-body
+                            .row.mb15
+                                .col-lg-8.col-md-8
+                                .col-lg-4.col-md-4
+                                    a.btn.btn-default.pull-right(href="/admin/grade?sid=#{school._id}")
+                                        i.br-plus
+                                        | 新增班级
+
+                            table#presidentList.table.table-bordered
+                                thead
+                                    tr
+                                        th.per20 班级名称
+                                        th.per20 班级成员
+                                        th.per20 建立时间
+                                        th.per20 操作
+                                tbody
+                                    each grade in grades
+                                        tr(class="item-id-#{grade._id}")
+                                            td #{grade.name}
+                                            td
+                                                if grade.users
+                                                    each uc in grade.users
+                                                        | #{uc.name}&nbsp;&nbsp;
+                                            td #{moment(school.meta.createAt).format('MM/DD/YYYY')}
+                                            td
+                                                a.btn.btn-primary(href="/admin/grade/#{grade._id}?sid=#{school._id}") 编辑
+                                                | &nbsp;&nbsp;
+                                                a.del.btn.btn-danger(href="#",data-id="#{school._id}") 删除
+                            include ../../includes/notification
 block componentScript
     include ../../includes/table
 block bottom

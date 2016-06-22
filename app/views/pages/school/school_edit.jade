@@ -38,6 +38,20 @@ block content
                                                 option(value=pre._id,selected=school.owner.toString()===pre._id.toString())
                                                     | #{pre.name}
                                 .form-group
+                                    label.col-lg-2.col-md-2.control-label 颜色
+                                    .col-lg-10.col-md-10
+                                        input#showPaletteOnly(name="color").form-control
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 校标
+                                    .col-lg-10.col-md-10
+                                        #queue
+                                        input#file_upload(name="poster",type="file",multiple="true")
+                                        input#file_upload_hidden(name="image",type="hidden",value=school.image)
+                                        if school.image
+                                            img#image(width="60",height="60",src='/'+school.image)
+                                        else
+                                            img#image(width="60",height="60",src='/images/avata_128.jpg')
+                                .form-group
                                     label.col-lg-2.col-md-2.control-label 所在省区县
                                     .col-lg-10.col-md-10#city1
                                         select.prov.form-control.required(name="province")
@@ -59,6 +73,8 @@ block content
 block componentScript
     include ../../includes/formScript
 block bottom
+    script(src="/assets/plugins/forms/uploadify/jquery.uploadify.min.js")
+    link(rel="stylesheet",type="text/css",href="/assets/plugins/forms/uploadify/uploadify.css")
     script(src="/javascripts/app.js")
     script(src="/assets/js/pages/forms.js")
     script(src="/assets/js/pages/form-validation.js")
@@ -67,5 +83,28 @@ block bottom
         setTimeout(function(){
             checkSideNav('学校管理');
             $("#city1").citySelect({prov: '#{school.province}',city:'#{school.city}',dist:'#{school.country}'});
+            $('#file_upload').uploadify({
+                width: 120,
+                height: 30,
+                buttonText: '上传图片',
+                uploader: '/admin/uploadify',
+                swf: '/assets/plugins/forms/uploadify/uploadify.swf',
+                onUploadSuccess: function (file, data, response) {
+                    var json = jQuery.parseJSON(data);
+                    $('#file_upload_hidden').val(json.path);
+                    $('#image').attr('src', '/' + json.path);
+                }
+            });
+
+            $('#showPaletteOnly').spectrum({
+                color:'#{school.color?school.color:'#75b9e6'}',
+                showPaletteOnly: true,
+                showPalette: true,
+                palette: [
+                    ['#f68484', '#75b9e6', '#71d398', '#97d3c5', '#f4b162', '#af91e1'],
+                    ['#f78db8', '#a8db43', '#e65097', '#d1b993', '#79859b', '#f3f5f6']
+                ]
+            });
+
         },0);
 

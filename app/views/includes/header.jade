@@ -34,7 +34,10 @@
                                 each sch in schoolhead
                                     li
                                         a(href="/admin/school_change?sid=#{sch._id}&redirecturl=#{urlnow}")
-                                            img.user-avatar(src="/assets/img/avatars/48.jpg",alt="#{userr.name}")
+                                            if sch.image
+                                                img.user-avatar(src="/#{sch.image}",alt="#{userr.name}")
+                                            else
+                                                img.user-avatar(src="/images/avata_128.jpg",alt="#{userr.name}")
                                             | #{sch.name}
                     li.dropdown
                         a(href="#",data-toggle="dropdown")

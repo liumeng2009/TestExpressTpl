@@ -4,16 +4,31 @@
 //var mongoose=require('mongoose');
 var School=require('../models/school');
 var President=require('../models/president');
+var _=require('underscore');
 
 exports.school=function(req,res){
-    var id=req.query.id;
+    var id=req.params.id;
     President.find({status:true}).exec(function(err,presidents){
         if(err){
-            console.log(err);
+            err.status=500;
+            res.render('error',{
+                message:err.name,
+                error:err
+            })
+            return console.log(err);
         }
         else{
-            console.log("负责人列表是："+presidents);
-            School.findById({_id:id},function(err,school){
+
+            School.findOne({_id:id},function(err,school){
+                if(err){
+                    err.status=500;
+                    res.render('error',{
+                        message:err.name,
+                        error:err
+                    })
+                    return console.log(err);
+                }
+                console.log('学校信息'+school);
                 if(school){
                     res.render('./pages/school/school_edit',{
                         title:'编辑学校信息',
@@ -55,7 +70,7 @@ exports.school_list=function(req,res){
                     return console.log(err);
 
                 res.render('./pages/school/school_list',{
-                    title:'管理员列表',
+                    title:'学校列表',
                     schools:schools,
                     presidents:presidents
                 });
@@ -65,67 +80,144 @@ exports.school_list=function(req,res){
 
 exports.new=function(req,res){
     var id=req.body._id;
-    President.findById({_id:req.body.president},function(err,_pre){
-        if(err)
-            return console.log(err)
-
-        var schoolObj=new School({
+    console.log('学校是：'+id);
+    President.findById({_id:req.body.president,status:true},function(err,pre){
+        if(err){
+            err.status=500;
+            res.render('error',{
+                message:err.name,
+                error:err
+            })
+            return console.log(err);
+        }
+        var schoolObj={
             name: req.body.name,
-            owner:_pre,
+            owner:pre,
             status:true,
             province:req.body.province,
             city:req.body.city,
             country:req.body.country,
             address:req.body.address,
-            intro:req.body.intro
-        });
+            intro:req.body.intro,
+            color:req.body.color,
+            image:req.body.image,
+            roles:[],
+            grades:[]
+        };
 
         //id存在就是编辑 不存在就是新增
         if(id){
-            School.update({_id:id},{
-                name:schoolObj.name,
-                owner:_pre,
-                province:schoolObj.province,
-                city:schoolObj.city,
-                country:schoolObj.country,
-                address:schoolObj.address,
-                intro:schoolObj.intro
-            },function(err,school){
+            School.findOne({status:true,_id:id},function(err,school){
                 if(err){
-                    console.log(err)
+                    err.status=500;
+                    res.render('error',{
+                        message:err.name,
+                        error:err
+                    })
+                    return console.log(err);
                 }
-                else{
-                    res.redirect('/admin/school/list');
-                }
+                console.log('444444444'+school);
+                var _school= _.extend(school,schoolObj);
+                console.log('555555'+_school);
+                _school.save(function(err,school){
+                    if(err){
+                        err.status=500;
+                        res.render('error',{
+                            message:err.name,
+                            error:err
+                        })
+                        return console.log(err);
+                    }
+                    //school添加到president里面
+                    if(pre.schools){
+                        if(pre.schools.toString().indexOf(school._id)>-1){
+                            res.redirect('/admin/school/list');
+                        }
+                        else{
+                            pre.schools.push(school);
+                            pre.save(function(err,president){
+                                if(err){
+                                    err.status=500;
+                                    res.render('error',{
+                                        message:err.name,
+                                        error:err
+                                    })
+                                    return console.log(err);
+                                }
+                                res.redirect('/admin/school/list');
+                            });
+                        }
+                    }
+                });
             });
         }
         else{
             School.find({name:schoolObj.name},function(err,school){
                 if(err){
-                    console.log(err);
+                    err.status=500;
+                    res.render('error',{
+                        message:err.name,
+                        error:err
+                    })
+                    return console.log(err);
                 }
-                else{
-                    if(school&&school.length>0){
-                        res.redirect('/admin/school?err=exist');
-                    }else{
-                        schoolObj.save(function(err,school){
+                if(school&&school.length>0){
+                    res.redirect('/admin/school?err=exist');
+                }else{
+                    var _school=new School(schoolObj);
+                    _school.save(function(err,school){
+                        if(err){
+                            err.status=500;
+                            res.render('error',{
+                                message:err.name,
+                                error:err
+                            })
+                            return console.log(err);
+                        }
+                        //将school保存到president的schools字段
+                        pre.schools.push(school);
+                        pre.save(function(err,president){
                             if(err){
-                                console.log(err);
+                                err.status=500;
+                                res.render('error',{
+                                    message:err.name,
+                                    error:err
+                                })
+                                return console.log(err);
                             }
-                            else{
-                                res.redirect('/admin/school/list');
-                            }
+                            res.redirect('/admin/school/list');
                         });
-                    }
+                    });
                 }
             });
         }
     });
-
-
 }
-exports.del=function(req,res){
-
+exports.delete=function(req,res){
+    var id=req.query.id;
+    if(id){
+        School.findById({status:true,_id:id},function(err,school){
+            if(err){
+                res.json({success:0,info:'数据库读取失败'});
+                return console.log(err);
+            }
+            if(school){
+                School.update({_id:id},{$set:{status:false}},function(err,role){
+                    if(err){
+                        res.json({success:0,info:'数据库读取失败'});
+                        return console.log(err);
+                    }
+                    res.json({success:1});
+                });
+            }
+            else{
+                res.json({success:0,info:'没有此数据'});
+            }
+        })
+    }
+    else{
+        res.json({success:0,info:'参数错误'});
+    }
 }
 
 exports.select=function(req,res){
@@ -193,7 +285,6 @@ exports.school_list_allpage=function(req,res,next){
         .exec(function(err,schools){
             if(err)
                 return console.log(err);
-            console.log("我想全局都有这个值"+schools);
             res.app.locals.schoolhead=schools;
             next();
         });

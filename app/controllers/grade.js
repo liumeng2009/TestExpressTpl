@@ -125,7 +125,6 @@ exports.grade=function(req,res){
 exports.new=function(req,res){
     var id=req.body.id;
     var sid=req.body.sid;
-
     School.findById({status:true,_id:sid},function(err,school){
         if(err){
             err.status=500;
@@ -163,7 +162,9 @@ exports.new=function(req,res){
                             })
                             return console.log(err);
                         }
-                        res.redirect('/admin/grade/list?sid='+school._id);
+                        //school的grades列应该有这个班级
+
+                        res.redirect('/admin/grade/list');
                     });
                 });
             }

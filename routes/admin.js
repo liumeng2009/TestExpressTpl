@@ -19,6 +19,7 @@ router.get('/admin',adminUserController.signinRequired ,adminUserController.admi
 router.get('/admin/:id',adminUserController.signinRequired ,adminUserController.admin_user);
 router.post('/signin',adminUserController.signin);
 router.get('/signout',adminUserController.signinRequired,adminUserController.signout);
+router.delete('/admin/list',adminUserController.signinRequired,adminUserController.del)
 
 router.get('/user/list',adminUserController.signinRequired,userController.user_list);
 router.get('/user',adminUserController.signinRequired,userController.user);
@@ -31,12 +32,12 @@ router.get('/president/:id',adminUserController.signinRequired,presidentControll
 router.post('/president/new',adminUserController.signinRequired ,presidentController.new);
 router.delete('/president/list',adminUserController.signinRequired ,presidentController.del);
 
-router.get('/school/list',adminUserController.signinRequired,schoolController.school_list);
+router.get('/school/list',adminUserController.signinRequired,schoolController.school_list_allpage,schoolController.school_list);
 router.get('/school',adminUserController.signinRequired,schoolController.school_list_allpage,schoolController.school);
-router.get('/school/:id',adminUserController.signinRequired,schoolController.school);
+router.get('/school/:id',adminUserController.signinRequired,schoolController.school_list_allpage,schoolController.school);
 router.post('/school/new',adminUserController.signinRequired ,schoolController.new);
-router.delete('/school/list',adminUserController.signinRequired ,schoolController.del);
-router.get('/school_select',adminUserController.signinRequired,schoolController.select);
+router.delete('/school/list',adminUserController.signinRequired,schoolController.delete);
+router.get('/school_select',adminUserController.signinRequired,schoolController.school_list_allpage,schoolController.select);
 router.get('/school_change',adminUserController.signinRequired,schoolController.change);
 
 router.get('/grade/list',adminUserController.signinRequired,schoolController.school_list_allpage,gradeController.grade_list);
@@ -50,6 +51,7 @@ router.get('/role',adminUserController.signinRequired,roleController.role);
 router.get('/role/:id',adminUserController.signinRequired,roleController.role);
 router.post('/role/new',adminUserController.signinRequired,roleController.new);
 router.get('/role/findrole/:sid',adminUserController.signinRequired,roleController.findRoleBySchool);
+router.delete('/role/list',adminUserController.signinRequired,roleController.delete);
 
 router.get('/function/list',adminUserController.signinRequired,functionController.function_list);
 router.get('/function',adminUserController.signinRequired,functionController.function);

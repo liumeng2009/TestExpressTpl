@@ -50,7 +50,7 @@ $(function(){
                 if(result) {
                     $.ajax({
                             type: 'DELETE',
-                            url: '/admin/list?id=' + id
+                            url: '/admin/admin/list?id=' + id
                         })
                         .done(function (results) {
                             if (results.success === 1) {
@@ -144,6 +144,126 @@ $(function(){
                                 message:err.statusText,
                                 callback:function(){}
                             });
+                    });
+                }
+            },
+            buttons:{
+                'confirm':{
+                    label:'确定'
+                },
+                'cancel':{
+                    label:'取消'
+                }
+            }
+
+
+        });
+    });
+    $('#roleList .del').click(function(e){
+        var target=$(e.target);
+        var id=target.data('id');
+        var tr=$('.item-id-'+id);
+        bootbox.confirm({
+            message:'确认删除吗',
+            size:'small',
+            callback:function (result) {
+                if(result) {
+                    $.ajax({
+                            type: 'DELETE',
+                            url: '/admin/role/list?id=' + id
+                        })
+                        .done(function (results) {
+                            if (results.success === 1) {
+                                if (tr.length > 0) {
+                                    tr.remove();
+                                }
+                            }
+                        }).fail(function(err){
+                        bootbox.alert({
+                            title:'错误',
+                            message:err.statusText,
+                            callback:function(){}
+                        });
+                    });
+                }
+            },
+            buttons:{
+                'confirm':{
+                    label:'确定'
+                },
+                'cancel':{
+                    label:'取消'
+                }
+            }
+
+
+        });
+    });
+    $('#schoolList .del').click(function(e){
+        var target=$(e.target);
+        var id=target.data('id');
+        var tr=$('.item-id-'+id);
+        bootbox.confirm({
+            message:'确认删除吗',
+            size:'small',
+            callback:function (result) {
+                if(result) {
+                    $.ajax({
+                            type: 'DELETE',
+                            url: '/admin/school/list?id=' + id
+                        })
+                        .done(function (results) {
+                            if (results.success === 1) {
+                                if (tr.length > 0) {
+                                    tr.remove();
+                                }
+                            }
+                        }).fail(function(err){
+                        bootbox.alert({
+                            title:'错误',
+                            message:err.statusText,
+                            callback:function(){}
+                        });
+                    });
+                }
+            },
+            buttons:{
+                'confirm':{
+                    label:'确定'
+                },
+                'cancel':{
+                    label:'取消'
+                }
+            }
+
+
+        });
+    });
+    $('#userList .del').click(function(e){
+        var target=$(e.target);
+        var id=target.data('id');
+        var tr=$('.item-id-'+id);
+        bootbox.confirm({
+            message:'确认删除吗',
+            size:'small',
+            callback:function (result) {
+                if(result) {
+                    $.ajax({
+                            type: 'DELETE',
+                            url: '/admin/user/list?id=' + id
+                        })
+                        .done(function (results) {
+                            if (results.success === 1) {
+                                if (tr.length > 0) {
+                                    tr.remove();
+                                }
+                            }
+                        }).fail(function(err){
+                        bootbox.alert({
+                            title:'错误',
+                            message:err.statusText,
+                            callback:function(){}
+                        });
                     });
                 }
             },

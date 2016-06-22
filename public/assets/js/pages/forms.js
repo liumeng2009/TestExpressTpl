@@ -78,8 +78,8 @@ $(document).ready(function() {
 	    showPalette:true,
 	    color: 'red',
 	    palette: [
-			['white','red','blue','green','yellow','orange','gray'],
-			['purple','pink','lime','magenta','teal','brown','dark']
+			['#f68484','#75b9e6','#71d398','#97d3c5','#f4b162','#af91e1'],
+			['#f78db8','#a8db43','#e65097','#d1b993','#79859b','#f3f5f6']
 		]
 	});
 

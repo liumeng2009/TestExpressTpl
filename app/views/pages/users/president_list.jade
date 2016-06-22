@@ -27,6 +27,7 @@ block content
                                     tr
                                         th.per20 用户名
                                         th.per20 电话
+                                        th.per20 拥有学校
                                         th.per15 建立时间
                                         th.per45 操作
                                 tbody
@@ -34,6 +35,12 @@ block content
                                         tr(class="item-id-#{president._id}")
                                             td #{president.name}
                                             td #{president.phone}
+                                            td
+                                                if president.schools&&president.schools.length>1
+                                                    each ss in president.schools
+                                                        a(href="/admin/school/#{ss._id}")
+                                                            | #{ss.name}
+                                                        | &nbsp;&nbsp;
                                             td #{moment(president.meta.createAt).format('MM/DD/YYYY')}
                                             td
                                                 a.btn.btn-primary(href="/admin/president?id=#{president._id}") 编辑

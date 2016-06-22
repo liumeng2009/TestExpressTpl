@@ -105,3 +105,19 @@ exports.new=function(req,res){
 
     }
 }
+
+exports.delete=function(req,res){
+    var id=req.query.id;
+    User.update({_id:id},{$set:{status:false}},function(err,user){
+        if(err){
+            res.json({success:0,info:'数据库读取失败'});
+            return console.log(err);
+        }
+        //如果有grade信息，则删除grade里面的users[]
+        if(user.school){
+            School.findOne({status:true,_id:user.school},function(err,school){
+
+            })
+        }
+    });
+}

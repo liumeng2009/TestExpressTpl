@@ -145,7 +145,7 @@ exports.del=function(req,res){
     var id=req.query.id;
     if(id){
         console.log('删除的id是:'+id);
-        AdminUser.update({_id:id},{$push:{status:false}},function(err){
+        AdminUser.update({_id:id},{$set:{status:false}},function(err){
             if(err){
                 res.send(err+'错误');
             }

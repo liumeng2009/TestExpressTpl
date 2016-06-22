@@ -24,6 +24,7 @@ var SchoolSchema = new mongoose.Schema({
             ref:'role'
         }
     ],
+    grades:[],
     status:Boolean,
     intro:String,
     image:String,
