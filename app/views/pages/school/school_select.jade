@@ -21,7 +21,11 @@ block content
                     else
                         -colormy='rgb(255,0,0)'
                     .tile-stats.b.brall.mb25(style="background-color:#{colormy};border:none;")
-                        a(href="#",style="color:#768399")
+                        if fronturl
+                            - var url=fronturl
+                        else
+                            -var url='/admin'
+                        a(href="/admin/school_change?sid=#{sch._id}&redirecturl=#{url}",style="color:#768399")
                             .tile-stats-icon
                                 if sch.image
                                     img.user-avatar(src="/#{sch.image}",width="40",height="40",style="border-radius:100%")

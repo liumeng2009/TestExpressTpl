@@ -5,6 +5,7 @@ var User=require('../models/user');
 var School=require('../models/school');
 var Role=require('../models/role');
 var Student=require('../models/student');
+var Grade=require('../models/grade');
 var _=require('underscore');
 
 //用户列表
@@ -108,12 +109,14 @@ exports.new=function(req,res){
 }
 
 exports.delete=function(req,res){
+    console.log('到达这里');
     var id=req.query.id;
-    User.update({_id:id},{$set:{status:false}},function(err,user){
+    User.findOne({_id:id},function(err,user){
         if(err){
             res.json({success:0,info:'数据库读取失败'});
             return console.log(err);
         }
+        console.log('1111111111111111'+user);
         //如果有工作人员的信息，则删除grade里面的users[]
         if(user.school&&user.grade&&user.role){
             Grade.findOne({status:true,_id:user.grade.toString()},function(err,grade){
@@ -122,40 +125,82 @@ exports.delete=function(req,res){
                     return console.log(err);
                 }
                 console.log('grade是：'+grade);
-                if(grade.users.toString().indexOf(user.grade.toString())>-1){
+                console.log('grad1是：'+grade.users.toString());
+                console.log('grad2是：'+user._id.toString());
+                if(grade.users.toString().indexOf(user._id.toString())>-1){
+                    console.log('符合');
                     for(var i=0;i<grade.users.length;i++){
-                        if(grade.users[i].toString()===user.grade.toString()){
+                        if(grade.users[i].toString()===user._id.toString()){
                             grade.users.splice(i,1);
                         }
                     }
+                    console.log('符合'+grade.users);
                     grade.save(function(err,grade){
                         if(err){
                             res.json({success:0,info:'数据库读取失败'});
                             return console.log(err);
                         }
-                        //用户删除之后，他的孩子们置否
-                        var searchStudent=[];
-                        for(var n=0;n<user.sons.length;n++){
-                            var idobj={_id:user.sons.toString()}
-                            searchStudent.push(idobj);
-                        }
-
-                        Student.update({status:true,"$or":searchStudent},{status:false},function(err,student){
+                        User.update({_id:id,status:true},{$set:{status:false,school:undefined,grade:undefined,role:undefined}},function(err){
                             if(err){
                                 res.json({success:0,info:'数据库读取失败'});
                                 return console.log(err);
                             }
-                            res.json({success:1});
+                            //用户删除之后，他的孩子们置否
+                            var searchStudent=[];
+                            for(var n=0;n<user.sons.length;n++){
+                                searchStudent.push(user.sons[n]);
+                            }
+                            console.log('儿子们：'+searchStudent);
+                            Student.find({status:true})
+                                .where('_id')
+                                .in(searchStudent)
+                                .update({status:false})
+                                .exec(function(err){
+                                    if(err){
+                                        res.json({success:0,info:'数据库读取失败'});
+                                        return console.log(err);
+                                    }
+                                    console.log('update完成');
+                                    res.json({success:1});
+                                });
                         });
+
                     });
                 }
                 else{
-                    res.json({success:1,});
+                    res.json({success:0,info:'数据结构有误'});
                 }
             })
         }
+        //如果没有，那么说明这个用户不是工作人员，就直接删除，再删除他的孩子即可
         else{
-            res.json({success:1});
+            User.update({_id:id,status:true},{$set:{status:false,school:undefined,grade:undefined,role:undefined}},function(err){
+               if(err){
+                   res.json({success:0,info:'数据库读取失败'});
+                   return console.log(err);
+               }
+                //用户删除之后，他的孩子们置否
+                var searchStudent=[];
+                for(var n=0;n<user.sons.length;n++){
+                    searchStudent.push(user.sons[i]);
+                }
+                console.log('儿子们：'+searchStudent);
+                Student.find({status:true})
+                    .where('_id')
+                    .in(searchStudent)
+                    .update({status:false})
+                    .exec(function(err,students){
+                        if(err){
+                            res.json({success:0,info:'数据库读取失败'});
+                            return console.log(err);
+                        }
+                        console.log('update完成'+students);
+                        res.json({success:1});
+                    });
+            });
+
         }
-    });
+    })
+
+
 }

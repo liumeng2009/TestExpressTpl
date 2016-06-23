@@ -275,17 +275,17 @@ exports.insertuser=function(req,res){
                                     //grade插入user数据
                                 }
                                 else{
-                                    res.redirect('/admin/grade/'+id+'&err=wrongparams');
+                                    res.redirect('/admin/grade/'+id+'?err=wrongparams');
                                 }
                             });
                         }
                         else{
-                            res.redirect('/admin/grade/'+id+'&err=wrongparams');
+                            res.redirect('/admin/grade/'+id+'?err=wrongparams');
                         }
                     });
                 }
                 else{
-                    res.redirect('/admin/grade/'+id+'&err=wrongparams');
+                    res.redirect('/admin/grade/'+id+'?err=wrongparams');
                 }
             });
         }

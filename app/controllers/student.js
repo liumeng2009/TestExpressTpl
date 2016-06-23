@@ -8,6 +8,9 @@ var User=require('../models/user');
 var _=require('underscore');
 
 exports.student_list=function(req,res){
+    if(!req.session.schoolnow){
+        res.redirect('/admin/school_select?redirecturl=/admin/school/list');
+    }
     var sid=req.session.schoolnow.id;
     School.findOne({status:true,_id:sid},function(err,school){
         if(err)

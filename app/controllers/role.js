@@ -7,6 +7,9 @@ var FunctionModel=require('../models/function');
 var _=require('underscore');
 
 exports.role_list=function(req,res){
+    if(!req.session.schoolnow){
+        res.redirect('/admin/school_select');
+    }
     var schoolid=req.session.schoolnow.id;
     School.findOne({status:true,_id:schoolid},function(err,school){
         if(err){

@@ -234,14 +234,15 @@ exports.select=function(req,res){
         }
         res.render('./pages/school/school_select',{
             title:'选择学校',
-            schools:schools
+            schools:schools,
+            fronturl:req.query.redirecturl
         })
     });
 }
 
 exports.change=function(req,res){
     var sid=req.query.sid;
-    console.log('7777777'+sid);
+    console.log('123456789123456789'+sid);
     School.findById({status:true,_id:sid},function(err,school){
         if(err){
             err.status = 500;
@@ -257,6 +258,7 @@ exports.change=function(req,res){
                 name: school.name,
                 id: school._id
             }
+            console.log('123456789');
             res.redirect(req.query.redirecturl);
         }
         else{
@@ -288,4 +290,13 @@ exports.school_list_allpage=function(req,res,next){
             res.app.locals.schoolhead=schools;
             next();
         });
+}
+
+exports.school_checkid=function(req,res,next){
+    if(req.session.schoolnow){
+        next();
+    }
+    else{
+        res.redirect('/admin/school_select?redirecturl='+req.originalUrl);
+    }
 }
