@@ -39,22 +39,28 @@ block content
                                 table#studentList.table.table-bordered
                                     thead
                                         tr
+                                            th.per10 照片
                                             th.per10 学生姓名
                                             th.per10 家长
-                                            th.per20 所在学校
-                                            th.per20 所在班级
+                                            th.per15 所在学校
+                                            th.per15 所在班级
                                             th.per10 性别
                                             th.per10 年龄
                                             th.per20 操作
                                     tbody
                                         each student in students
                                             tr(class="item-id-#{student._id}")
+                                                td
+                                                    if student.image
+                                                        img#image(width="60",height="60",src='/' + student.image)
+                                                    else
+                                                        img#image(width="60",height="60",src='/images/avata_128.jpg')
                                                 td #{student.name}
                                                 td #{student.parent.name}
                                                 td #{student.school.name}
                                                 td #{student.grade.name}
                                                 td
-                                                    if student.sex===1
+                                                    if student.sex==='1'
                                                         | 男
                                                     else
                                                         | 女

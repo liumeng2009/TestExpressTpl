@@ -47,7 +47,7 @@ block content
                                                         | #{uc.name}&nbsp;&nbsp;
                                             td #{moment(school.meta.createAt).format('MM/DD/YYYY')}
                                             td
-                                                a.btn.btn-primary(href="/admin/grade/#{grade._id}?sid=#{school._id}") 编辑
+                                                a.btn.btn-primary(href="/admin/grade/#{grade._id}") 编辑
                                                 | &nbsp;&nbsp;
                                                 a.del.btn.btn-danger(href="#",data-id="#{school._id}") 删除
                             include ../../includes/notification

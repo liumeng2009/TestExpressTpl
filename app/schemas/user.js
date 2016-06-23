@@ -53,19 +53,20 @@ UserSchema.pre('save', function(next) {
         this.meta.createAt = this.meta.updateAt = Date.now();
         bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
             if (err) return next(err)
+            console.log('999999999999'+salt);
             bcrypt.hash(user.password, salt, function(){},function(err, hash) {
                 if (err) return next(err)
-
+                console.log('8888888888888888'+hash);
                 user.password = hash;
+                console.log('user对象是：'+user);
                 next();
             })
         })
     }
     else {
         this.meta.updateAt = Date.now()
+        next();
     }
-    next();
-
 })
 
 UserSchema.methods = {

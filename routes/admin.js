@@ -25,6 +25,7 @@ router.get('/user/list',adminUserController.signinRequired,userController.user_l
 router.get('/user',adminUserController.signinRequired,userController.user);
 router.get('/user/:id',adminUserController.signinRequired,userController.user);
 router.post('/user/new',adminUserController.signinRequired,userController.new);
+router.delete('/user/list',adminUserController.signinRequired,userController.delete);
 
 router.get('/president/list',adminUserController.signinRequired,presidentController.president_list);
 router.get('/president',adminUserController.signinRequired,presidentController.president);
@@ -46,21 +47,21 @@ router.get('/grade/:id',adminUserController.signinRequired,gradeController.grade
 router.post('/grade/new',adminUserController.signinRequired,gradeController.new);
 router.post('/grade/insertuser',adminUserController.signinRequired,gradeController.insertuser);
 
-router.get('/role/list',adminUserController.signinRequired,roleController.role_list);
-router.get('/role',adminUserController.signinRequired,roleController.role);
-router.get('/role/:id',adminUserController.signinRequired,roleController.role);
+router.get('/role/list',adminUserController.signinRequired,schoolController.school_list_allpage,roleController.role_list);
+router.get('/role',adminUserController.signinRequired,schoolController.school_list_allpage,roleController.role);
+router.get('/role/:id',adminUserController.signinRequired,schoolController.school_list_allpage,roleController.role);
 router.post('/role/new',adminUserController.signinRequired,roleController.new);
 router.get('/role/findrole/:sid',adminUserController.signinRequired,roleController.findRoleBySchool);
 router.delete('/role/list',adminUserController.signinRequired,roleController.delete);
 
-router.get('/function/list',adminUserController.signinRequired,functionController.function_list);
-router.get('/function',adminUserController.signinRequired,functionController.function);
-router.get('/function/:id',adminUserController.signinRequired,functionController.function);
+router.get('/function/list',adminUserController.signinRequired,schoolController.school_list_allpage,functionController.function_list);
+router.get('/function',adminUserController.signinRequired,schoolController.school_list_allpage,functionController.function);
+router.get('/function/:id',adminUserController.signinRequired,schoolController.school_list_allpage,functionController.function);
 router.post('/function/new',adminUserController.signinRequired,adminUserController.maxRequired,functionController.new);
 
-router.get('/student/list',adminUserController.signinRequired,studentController.student_list);
-router.get('/student',adminUserController.signinRequired,studentController.student);
-router.get('/student/:id',adminUserController.signinRequired,studentController.student);
+router.get('/student/list',adminUserController.signinRequired ,schoolController.school_list_allpage,studentController.student_list);
+router.get('/student',adminUserController.signinRequired,schoolController.school_list_allpage,studentController.student);
+router.get('/student/:id',adminUserController.signinRequired,schoolController.school_list_allpage,studentController.student);
 router.post('/student/new',adminUserController.signinRequired,studentController.new);
 router.delete('/student/list',adminUserController.signinRequired,studentController.delete);
 

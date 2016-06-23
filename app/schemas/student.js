@@ -29,6 +29,7 @@ var StudentSchema = new mongoose.Schema({
     interest:String,
     state_now:String,
     school_remark:String,
+    image:String,
     meta: {
         createAt: {
             type: Date,

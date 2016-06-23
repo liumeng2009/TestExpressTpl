@@ -47,6 +47,13 @@ block content
                                                 option(value=grade._id)
                                                     | #{grade.name}
                                 .form-group
+                                    label.col-lg-2.col-md-2.control-label 照片
+                                    .col-lg-10.col-md-10
+                                        #queue
+                                        input#file_upload(name="poster",type="file",multiple="true")
+                                        input#file_upload_hidden(name="image",type="hidden")
+                                        img#image(width="60",height="60")
+                                .form-group
                                     label.col-lg-2.col-md-2.control-label 家长
                                     .col-lg-10.col-md-10
                                         select#parent.form-control(name="parent")
@@ -89,10 +96,24 @@ block content
 block componentScript
     include ../../includes/formScript
 block bottom
+    script(src="/assets/plugins/forms/uploadify/jquery.uploadify.min.js")
+    link(rel="stylesheet",type="text/css",href="/assets/plugins/forms/uploadify/uploadify.css")
     script(src="/javascripts/app.js")
     script(src="/assets/js/pages/form-validation.js")
     script.
         setTimeout(function(){
             checkSideNav('学生管理');
+            $('#file_upload').uploadify({
+                width: 120,
+                height: 30,
+                buttonText: '上传图片',
+                uploader: '/admin/uploadify',
+                swf: '/assets/plugins/forms/uploadify/uploadify.swf',
+                onUploadSuccess: function (file, data, response) {
+                    var json = jQuery.parseJSON(data);
+                    $('#file_upload_hidden').val(json.path);
+                    $('#image').attr('src', '/' + json.path);
+                }
+            })
         },0);
 

@@ -40,7 +40,7 @@ exports.grade_list=function(req,res){
 }
 
 exports.grade=function(req,res){
-    var sid=req.query.sid;
+    var sid=req.session.schoolnow.id;
     var id=req.params.id;
     School.findOne({status:true,_id:sid},function(err,school){
         if(err)
@@ -117,7 +117,7 @@ exports.grade=function(req,res){
                 });
         }
         else{
-            res.redirect('/admin/grade/list?err=snotexist');
+            res.redirect('/admin/school_select');
         }
     });
 }
@@ -220,7 +220,6 @@ exports.insertuser=function(req,res){
                 }
                 console.log('grade是：'+grade);
                 if(grade){
-                    console.log('99999999999999999999'+req.body.role);
                     Role.findOne({status:true,_id:req.body.role},function(err,role){
                        if(err){
                            err.status=500;
@@ -251,7 +250,6 @@ exports.insertuser=function(req,res){
                                         role:role
                                     };
                                     var _user= _.extend(user,userObj);
-                                    console.log('保存前的用户对象：'+_user);
                                     _user.save(function(err,user){
                                         if(err){
                                             err.status=500;
@@ -262,7 +260,6 @@ exports.insertuser=function(req,res){
                                             return console.log(err);
                                         }
                                         grade.users.push(user);
-                                        console.log('保存班级前的对象：'+grade);
                                         grade.save(function(err,grade){
                                             if(err){
                                                 err.status=500;
@@ -272,23 +269,23 @@ exports.insertuser=function(req,res){
                                                 })
                                                 return console.log(err);
                                             }
-                                            res.redirect('/admin/grade/list?sid='+sid);
+                                            res.redirect('/admin/grade/'+grade._id);
                                         });
                                     });
                                     //grade插入user数据
                                 }
                                 else{
-                                    res.redirect('/admin/grade/'+id+'?sid='+school._id+'&err=wrongparams');
+                                    res.redirect('/admin/grade/'+id+'&err=wrongparams');
                                 }
                             });
                         }
                         else{
-                            res.redirect('/admin/grade/'+id+'?sid='+school._id+'&err=wrongparams');
+                            res.redirect('/admin/grade/'+id+'&err=wrongparams');
                         }
                     });
                 }
                 else{
-                    res.redirect('/admin/grade/'+id+'?sid='+school._id+'&err=wrongparams');
+                    res.redirect('/admin/grade/'+id+'&err=wrongparams');
                 }
             });
         }

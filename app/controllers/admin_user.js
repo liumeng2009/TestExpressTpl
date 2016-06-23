@@ -41,7 +41,6 @@ exports.admin_user=function(req,res){
 }
 //新增用户
 exports.new=function(req,res){
-
     var id=req.body._id;
     var adminUserObj={
         name:req.body.name,

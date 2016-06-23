@@ -8,7 +8,7 @@ var User=require('../models/user');
 var _=require('underscore');
 
 exports.student_list=function(req,res){
-    var sid=req.query.sid;
+    var sid=req.session.schoolnow.id;
     School.findOne({status:true,_id:sid},function(err,school){
         if(err)
             return console.log(err);
@@ -29,16 +29,7 @@ exports.student_list=function(req,res){
                 });
         }
         else{
-            School.find({status:true})
-                .populate('header')
-                .exec(function(err,schools) {
-                    if (err)
-                        return console.log(err);
-                    res.render('./pages/student/student_list', {
-                        title: '请先选择学校',
-                        schools: schools
-                    });
-                });
+            res.redirect('/admin/school_select');
         }
     });
 }
@@ -159,7 +150,8 @@ exports.new=function(req,res){
                             interest:req.body.interest,
                             state_now:req.body.state_now,
                             school_remark:req.body.school_remark,
-                            status:true
+                            status:true,
+                            image:req.body.image
                         };
                         if(id){
                             Student.findById({status:true,_id:id},function(err,student){
@@ -265,7 +257,7 @@ exports.new=function(req,res){
                                         return console.log(err);
                                     }
                                     //将student存入grade表
-                                    if(grade.student){
+                                    if(grade.students){
                                     }
                                     else{
                                         grade.students=[];

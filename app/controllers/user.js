@@ -3,7 +3,8 @@
  */
 var User=require('../models/user');
 var School=require('../models/school');
-var Role=require('../models/role')
+var Role=require('../models/role');
+var Student=require('../models/student');
 var _=require('underscore');
 
 //用户列表
@@ -113,11 +114,47 @@ exports.delete=function(req,res){
             res.json({success:0,info:'数据库读取失败'});
             return console.log(err);
         }
-        //如果有grade信息，则删除grade里面的users[]
-        if(user.school){
-            School.findOne({status:true,_id:user.school},function(err,school){
+        //如果有工作人员的信息，则删除grade里面的users[]
+        if(user.school&&user.grade&&user.role){
+            Grade.findOne({status:true,_id:user.grade.toString()},function(err,grade){
+                if(err){
+                    res.json({success:0,info:'数据库读取失败'});
+                    return console.log(err);
+                }
+                if(grade.users.toString().indexOf(user.grade.toString())>-1){
+                    for(var i=0;i<grade.users.length;i++){
+                        if(grade.users[i].toString()===user.grade.toString()){
+                            grade.users.splice(i,1);
+                        }
+                    }
+                    grade.save(function(err,grade){
+                        if(err){
+                            res.json({success:0,info:'数据库读取失败'});
+                            return console.log(err);
+                        }
+                        //用户删除之后，他的孩子们置否
+                        var searchStudent=[];
+                        for(var n=0;n<user.sons.length;n++){
+                            var idobj={_id:user.sons.toString()}
+                            searchStudent.push(idobj);
+                        }
 
+                        Student.update({status:true,"$or":searchStudent},{status:false},function(err,student){
+                            if(err){
+                                res.json({success:0,info:'数据库读取失败'});
+                                return console.log(err);
+                            }
+                            res.json({success:1});
+                        });
+                    });
+                }
+                else{
+                    res.json({success:1,});
+                }
             })
+        }
+        else{
+            res.json({success:1});
         }
     });
 }
