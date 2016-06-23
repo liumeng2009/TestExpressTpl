@@ -42,7 +42,8 @@ block content
                                                 each u in grade.users
                                                     tr
                                                         td #{u.name}
-                                                        td #{u.role.name}
+                                                        if u.role
+                                                            td #{u.role.name}
                                         a(href="#",data-toggle="modal",data-target="#modal1")#addGradeUsers.btn.btn-primary
                                             | 新增班级成员
                                 .form-group

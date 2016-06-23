@@ -121,6 +121,7 @@ exports.delete=function(req,res){
                     res.json({success:0,info:'数据库读取失败'});
                     return console.log(err);
                 }
+                console.log('grade是：'+grade);
                 if(grade.users.toString().indexOf(user.grade.toString())>-1){
                     for(var i=0;i<grade.users.length;i++){
                         if(grade.users[i].toString()===user.grade.toString()){
