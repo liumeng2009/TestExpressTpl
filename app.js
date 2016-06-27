@@ -8,8 +8,10 @@ var multiparty=require('connect-multiparty');
 var mongoose=require('mongoose');
 var session=require('express-session');
 var mongoStore=require('connect-mongo')(session);
+
 var routes = require('./routes/index');
 var admin = require('./routes/admin');
+var api=require('./routes/api');
 
 var app = express();
 
@@ -69,6 +71,7 @@ app.use(function(req,res,next){
 
 app.use('/', routes);
 app.use('/admin', admin);
+app.use('/api',api);
 
 
 app.locals.moment=require('moment');

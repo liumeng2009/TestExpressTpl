@@ -12,6 +12,9 @@ var UserSchema = new mongoose.Schema({
         unique: true,
         type: String
     },
+    nickname:{
+        type:String
+    },
     password: String,
     status:Boolean,
     phone:String,

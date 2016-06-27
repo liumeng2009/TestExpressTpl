@@ -58,7 +58,8 @@ exports.new=function(req,res){
         phone:req.body.phone,
         email:req.body.email,
         status:true,
-        isWorker:req.body.isWorker
+        isWorker:req.body.isWorker,
+        nickname:req.body.nickname
     }
     if(id){
         //编辑
