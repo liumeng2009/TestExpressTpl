@@ -66,7 +66,13 @@ exports.new=function(req,res){
         User.findById({_id:id,status:true},function(err,user){
             if(err)
                 return console.log(err);
+            if(req.body.resetPwd){
+                //点击了重置密码这个功能，将密码设定为123456
+                userObj.password='123456';
+                userObj.resetPwd=true;
+            }
             var _user= _.extend(user,userObj);
+            console.log('保存前的user是'+_user);
             _user.save(function(err,user){
                 if(err)
                     return console.log(err);

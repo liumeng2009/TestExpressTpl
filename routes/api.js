@@ -7,5 +7,6 @@ var router = express.Router();
 var userController=require('../app/controllers/apiControllers/user');
 
 router.get('/signin',userController.signin);
+router.get('/signup',userController.accesstoken,userController.signup);
 
 module.exports=router;

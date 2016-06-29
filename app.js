@@ -73,7 +73,6 @@ app.use('/', routes);
 app.use('/admin', admin);
 app.use('/api',api);
 
-
 app.locals.moment=require('moment');
 
 // catch 404 and forward to error handler

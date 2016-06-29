@@ -19,6 +19,7 @@
     "connect-mongo": "0.8.0",
     "connect-multiparty": "^2.0.0",
     "express-session": "^1.13.0",
+    "jsonwebtoken": "^7.0.1",
     "moment": "^2.13.0",
     "mongoose": "^4.4.19",
     "underscore": "^1.8.3"

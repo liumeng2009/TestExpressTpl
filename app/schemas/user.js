@@ -52,7 +52,9 @@ var UserSchema = new mongoose.Schema({
 
 UserSchema.pre('save', function(next) {
     var user = this;
-    if (this.isNew) {
+    console.log('111111111'+this.isNew);
+    console.log('22222222222222'+user.resetPwd);
+    if (this.isNew||user.resetPwd) {
         this.meta.createAt = this.meta.updateAt = Date.now();
         bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
             if (err) return next(err)
@@ -74,6 +76,8 @@ UserSchema.pre('save', function(next) {
 
 UserSchema.methods = {
     comparePassword: function(password,_password,cb) {
+        console.log('password:'+password);
+        console.log('_password'+_password);
         bcrypt.compare(password, _password, function(err, isMatch) {
             if (err) return cb(err)
             console.log(_password);
