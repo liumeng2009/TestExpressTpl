@@ -47,21 +47,19 @@ var UserSchema = new mongoose.Schema({
             ref:'student'
         }
     ],
-    isWorker:Boolean
+    isWorker:Boolean,
+    token:String,
+    expiresIn:Date
 })
 
 UserSchema.pre('save', function(next) {
     var user = this;
-    console.log('111111111'+this.isNew);
-    console.log('22222222222222'+user.resetPwd);
     if (this.isNew||user.resetPwd) {
         this.meta.createAt = this.meta.updateAt = Date.now();
         bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
             if (err) return next(err)
-            console.log('999999999999'+salt);
             bcrypt.hash(user.password, salt, function(){},function(err, hash) {
                 if (err) return next(err)
-                console.log('8888888888888888'+hash);
                 user.password = hash;
                 console.log('user对象是：'+user);
                 next();

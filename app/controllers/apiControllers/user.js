@@ -9,6 +9,7 @@ var jwt=require('jsonwebtoken');
 exports.signin=function(req,res){
     var username=req.query.username;
     var password=req.query.password;
+    var redirecturl=req.query.redirecturl;
     if(username&&username!="") {
         User.findOne({name: username}, function (err, user) {
             if (err) {
@@ -28,8 +29,18 @@ exports.signin=function(req,res){
                         var token=jwt.sign(user,config.secret,{
                             expiresIn:'1 days'
                         });
-                        //req.session.user = user
+                        user.token=token;
+                        var date=new Date();
+                        date.setDate(date.getDate()+1);
+                        user.expiresIn=date;
+                        user.save(function(err,user){
+                            if(err){
+                                res.json({success: 0, msg: '数据库访问失败3'+err});
+                                return console.log(err);
+                            }
+                        });
                         res.json({success: 1,msg:'登录成功',token:token});
+                        //req.session.user = user
                     }
                     else {
                         res.json({success: 0, msg: '用户名和密码不匹配'});
@@ -62,17 +73,31 @@ exports.signup=function(req,res){
     });
 }
 
+exports.baseInfo=function(req,res){
+    var token=req.query.token;
+    User.findOne({token:token,status:true},function(err,user){
+        if(err){
+            return res.json({ success: 0, message: '数据库连接错误' });
+        }
+        if(user){
+            res.json({success:1,user:user});
+        }
+        else{
+            res.json({success:0})
+        }
+    });
+}
+
 //验证token的中间件
 exports.accesstoken=function(req,res,next){
     //检查post的信息或者url查询参数或者头信息
     var token = req.body.token || req.query.token || req.headers['x-access-token'];
-    console.log(1111111111111111111111122222222222222222);
     // 解析 token
     if (token) {
         // 确认token
         jwt.verify(token, config.secret, function(err, decoded) {
             if (err) {
-                return res.json({ success: false, message: 'token信息错误.' });
+                return res.json({ success: 0, message: 'token信息错误.' });
             } else {
                 // 如果没问题就把解码后的信息保存到请求中，供后面的路由使用
                 req.decoded = decoded;
@@ -88,7 +113,7 @@ exports.accesstoken=function(req,res,next){
 
         // 如果没有token，则返回错误
         return res.status(403).send({
-            success: false,
+            success: 0,
             message: '没有提供token！'
         });
 
