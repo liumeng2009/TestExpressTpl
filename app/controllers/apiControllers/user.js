@@ -97,25 +97,29 @@ exports.accesstoken=function(req,res,next){
         // 确认token
         jwt.verify(token, config.secret, function(err, decoded) {
             if (err) {
-                return res.json({ success: 0, message: 'token信息错误.' });
+                return res.json({ success: 0, msg: '身份错误，请登录，不合法的token。' });
             } else {
                 // 如果没问题就把解码后的信息保存到请求中，供后面的路由使用
                 req.decoded = decoded;
-                for(var i in eval(decoded)){
-                    console.log('属性是：'+i);
+                //decoded的_doc是user对象
+                if(decoded._doc.expiresIn){
+                    var datenow=new Date();
+                    var dateExIn=decoded._doc.expiresIn;
+                    if(dateExIn<datenow){
+                        return res.json({ success: 0, msg: '身份错误，请登录，token过期。' });
+                    }else{
+                        next();
+                    }
                 }
-                console.log('这是什么东西'+decoded._doc);
+                else{
+                    return res.json({ success: 0, msg: '身份错误，请登录，不合法的有效期。' });
+                }
                 next();
             }
         });
 
     } else {
-
-        // 如果没有token，则返回错误
-        return res.status(403).send({
-            success: 0,
-            message: '没有提供token！'
-        });
+        return res.json({ success: 0, msg: '身份错误，请登录，token不存在。' });
 
     }
 }
