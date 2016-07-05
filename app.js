@@ -48,7 +48,7 @@ app.use(session({
 }));
 
 app.use(function(req,res,next){
-  //mongoose.set('debug', true);
+  mongoose.set('debug', true);
   next();
 })
 

@@ -29,14 +29,30 @@ exports.user=function(req,res){
     if(id){
         //编辑
         User.findOne({status:true,_id:id},function(err,user){
-            if(err)
+            if(err){
+                err.status = 500;
+                res.render('error', {
+                    message: err.name,
+                    error: err
+                })
                 return console.log(err);
-            res.render('./pages/users/user_edit',{
-                title:'编辑用户',
-                action:'编辑',
-                user:user
-            });
-
+            }
+            School.find({status:true},function(err,schools){
+                if(err){
+                    err.status = 500;
+                    res.render('error', {
+                        message: err.name,
+                        error: err
+                    })
+                    return console.log(err);
+                }
+                res.render('./pages/users/user_edit',{
+                    title:'编辑用户',
+                    action:'编辑',
+                    user:user,
+                    schools:schools
+                });
+            })
         });
     }
     else{
@@ -59,6 +75,7 @@ exports.new=function(req,res){
         email:req.body.email,
         status:true,
         isWorker:req.body.isWorker,
+        isPresident:req.body.isPresident,
         nickname:req.body.nickname
     }
     if(id){
@@ -71,6 +88,25 @@ exports.new=function(req,res){
                 userObj.password='123456';
                 userObj.resetPwd=true;
             }
+            //如果isPresident=false,需要检查一下，他的名下是否有学校，如果有学校，则不允许删除
+            School.findOne({status:true,owner:user._id},function(err,school){
+                if(err){
+                    err.status=500;
+                    res.render('error',{
+                        message:err.name,
+                        error:err
+                    })
+                    return console.log(err);
+                }
+                if(school){
+                    //他名下有学校，则不能删除了
+
+                }
+                else{
+
+                }
+            });
+
             var _user= _.extend(user,userObj);
             console.log('保存前的user是'+_user);
             _user.save(function(err,user){
@@ -88,8 +124,8 @@ exports.new=function(req,res){
             if(err){
                  err.status=500;
                  res.render('error',{
-                 message:err.name,
-                 error:err
+                     message:err.name,
+                     error:err
                  })
                  return console.log(err);
             }
@@ -210,4 +246,30 @@ exports.delete=function(req,res){
     })
 
 
+}
+
+exports.select_role_grade=function(req,res){
+    var sid=req.query.sid;
+    console.log('111111111111111111'+sid);
+    Grade.find({status:true,school:sid},function(err,grade){
+        if(err){
+            res.json({success:0,info:'数据库读取失败'});
+            return console.log(err);
+        }
+        Role.find({status:true,school:sid},function(err,role){
+            if(err){
+                res.json({success:0,info:'数据库读取失败'});
+                return console.log(err);
+            }
+            res.json({success:1,grade:grade,role:role});
+        })
+    })
+}
+
+exports.insertrole=function(req,res){
+    var userid=req.body.user_id;
+    var school=req.body.schoolModal;
+    var role=req.body.roleModal;
+    var grade=req.body.gradeModal;
+    School.findOne({status:true})
 }

@@ -23,11 +23,11 @@ block content
                                 .col-lg-8.col-md-8
                                     form.form-inline(method="get",role="form",action="/admin/school/list",enctype="multipart/form-data")
                                         .form-group
-                                            label(for="president") 校长：
-                                            select.form-control(name="president")
+                                            label(for="user") 校长：
+                                            select.form-control(name="user")
                                                 option(value="0") 所有校长
-                                                each pre in presidents
-                                                    option(value="#{pre._id}") #{pre.name}
+                                                each user in users
+                                                    option(value="#{user._id}") #{user.name}
                                         .form-group
                                             label(for="name") 学校名称
                                             input.form-control(type="text",placeholder="学校名称",name="name")

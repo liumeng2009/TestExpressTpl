@@ -33,10 +33,10 @@ block content
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 学校建立者
                                     .col-lg-10.col-md-10
-                                        select.form-control.required(name="president")
-                                            each pre in presidents
-                                                option(value=pre._id,selected=school.owner.toString()===pre._id.toString())
-                                                    | #{pre.name}
+                                        select.form-control.required(name="user")
+                                            each user in users
+                                                option(value=user._id,selected=school.owner.toString()===user._id.toString())
+                                                    | #{user.name}
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 颜色
                                     .col-lg-10.col-md-10

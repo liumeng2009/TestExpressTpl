@@ -37,7 +37,10 @@ block content
                                 tbody
                                     each user in users
                                         tr(class="item-id-#{user._id}")
-                                            td #{user.name}
+                                            td
+                                                |#{user.name}
+                                                if user.isPresident
+                                                    | （校长）
                                             td #{user.phone}
                                             td
                                                 if user.isWorker
@@ -61,5 +64,5 @@ block bottom
     script(src="/assets/js/pages/tables.js")
     script.
         setTimeout(function(){
-            checkSideNav('一般用户管理');
+            checkSideNav('用户管理');
         },0);

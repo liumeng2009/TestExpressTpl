@@ -38,12 +38,37 @@ block content
                                     .col-lg-10.col-md-10
                                         input#nickname.form-control(type="text",placeholder="请输入用户名称...",value=user.nickname,name="nickname")
                                 .form-group
+                                    label.col-lg-2.col-md-2.control-label 成为校长
+                                    .col-lg-10.col-md-10
+                                        if user.isPresident
+                                            input#isPresident.switch.noStyle(name="isPresident",type="checkbox",checked="checked")
+                                        else
+                                            input#isPresident.switch.noStyle(name="isPresident",type="checkbox")
+                                .form-group
                                     label.col-lg-2.col-md-2.control-label 成为学校管理人员
                                     .col-lg-10.col-md-10
                                         if user.isWorker
                                             input#isWorker.switch.noStyle(name="isWorker",type="checkbox",checked="checked")
                                         else
                                             input#isWorker.switch.noStyle(name="isWorker",type="checkbox")
+                                .form-group
+                                    label.col-lg-2.col-md-2.control-label 用户角色
+                                    .col-lg-10.col-md-10
+                                        table.table.table-bordered
+                                            thead
+                                                tr
+                                                    th 学校
+                                                    th 班级
+                                                    th 角色
+                                            tbody
+                                                if permissions
+                                                    each permission in permissions
+                                                        tr
+                                                            td #{permission.school}
+                                                            td #{permission.grade}
+                                                            td #{permission.role}
+                                        a(href="#",data-toggle="modal",data-target="#modal1")#addRoles.btn.btn-primary
+                                            | 新增角色
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 电话
                                     .col-lg-10.col-md-10
@@ -57,6 +82,38 @@ block content
                                         button.btn.btn-default.ml15(type="submit") 保存
                                     .col-lg-11.col-md-11
                                         include ../../includes/notification
+    #modal1.modal.fade(role="dialog",tabindex="-1",aria-hidden="true")
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    button.close(type="button",data-dismiss="modal",aria-hidden="true")
+                        | &times;
+                    h4#myModalLabel.modal-title
+                        | 添加角色
+                form.form-horizontal(role="form",method="post",action="/admin/user/insertrole",enctype="multipart/form-data")
+                    .modal-body
+                        .form-group
+                            if user && user._id
+                                input(type="hidden",value=user._id,name="user_id")
+                            label.col-lg-2.col-md-2.control-label 学校
+                            .col-lg-10.col-md-10
+                                select#schoolModal.form-control(name="schoolModal")
+                                    each s in schools
+                                        option(value=s._id)
+                                            | #{s.name}
+                        .form-group
+                            label.col-lg-2.col-md-2.control-label 角色
+                            .col-lg-10.col-md-10
+                                select#roleModal.form-control(name="roleModal")
+                        .form-group
+                            label.col-lg-2.col-md-2.control-label 班级
+                            .col-lg-10.col-md-10
+                                select#gradeModal.form-control(name="gradeModal")
+                    .modal-footer
+                        button.btn.btn-default(type="button",data-dismiss="modal")
+                            | 关闭
+                        button.btn.btn-primary(type="submit")
+                            | 保存
 block componentScript
     include ../../includes/formScript
 block bottom
@@ -65,5 +122,37 @@ block bottom
     script(src="/assets/js/pages/forms.js")
     script.
         setTimeout(function(){
-            checkSideNav('一般用户管理');
+            checkSideNav('用户管理');
         },0);
+        var findData=function(sid,roleEle,gradeEle){
+            $.ajax({
+                        type: 'get',
+                        url: '/admin/user/ajax/select_role_grade?sid=' + sid,
+                        dateType: 'json'
+                    })
+                    .done(function (data) {
+                        roleEle.children().remove();
+                        gradeEle.children().remove();
+                        for(var i=0;i<data.role.length;i++){
+                            var _option=$('<option>').val(data.role[i]._id).text(data.role[i].name);
+                            roleEle.append(_option);
+                        }
+                        for (var i = 0; i < data.grade.length; i++) {
+                            var _option = $('<option>').val(data.grade[i]._id).text(data.grade[i].name);
+                            gradeEle.append(_option);
+                        }
+                    })
+                    .fail(function(err){
+                        alert('网络错误');
+                    })
+            ;
+        }
+        $(document).ready(function(){
+            var schoolEle=$('#schoolModal');
+            var roleEle=$('#roleModal');
+            var gradeEle=$('#gradeModal');
+            findData(schoolEle.val(),roleEle,gradeEle);
+            schoolEle.change(function(){
+                findData(schoolEle.val(), roleEle, gradeEle);
+            })
+        });

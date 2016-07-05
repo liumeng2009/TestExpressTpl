@@ -39,12 +39,6 @@ block content
                                     .col-lg-10.col-md-10
                                         input#school.form-control(type="text",value=school.name,disabled="disabled")
                                         input#hfdSchool(type="hidden",value=sid,name="sid")
-                                if grade&&grade._id
-                                    .form-group
-                                        label.col-lg-2.col-md-2.control-label 班级成员
-                                        .col-lg-10.col-md-10
-                                            a(href="#",data-toggle="modal",data-target="#modal1")#addGradeUsers.btn.btn-primary
-                                                | 新增班级成员
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 所在位置(选填)
                                     .col-lg-10.col-md-10
@@ -54,35 +48,6 @@ block content
                                         button.btn.btn-default.ml15(type="submit") 保存
                                     .col-lg-11.col-md-11
                                         include ../../includes/notification
-    #modal1.modal.fade(role="dialog",tabindex="-1",aria-hidden="true")
-        .modal-dialog
-            .modal-content
-                .modal-header
-                    button.close(type="button",data-dismiss="modal",aria-hidden="true")
-                        |&times;
-                    h4#myModalLabel.modal-title
-                        | 添加班级管理人员
-                form.form-horizontal(role="form",method="post",action="/admin/grade/insertuser",enctype="multipart/form-data")
-                    .modal-body
-                        .form-group
-                            label.col-lg-2.col-md-2 用户(是学校工作人员并且没有被分配班级的用户)
-                            .col-lg-10.col-md-10
-                                select#user.form-control(name="user")
-                                    each u in users
-                                        option(value=u._id)
-                                            | #{u.name}
-                        .form-group
-                            label.col-lg-2.col-md-2 角色(学校的全部角色)
-                            .col-lg-10.col-md-10
-                                select#role.form-control(name="role")
-                                    each r in roles
-                                        option(value=r._id)
-                                            | #{r.name}
-                    .modal-footer
-                        button.btn.btn-default(type="button",data-dismiss="modal")
-                            | 关闭
-                        button.btn.btn-primary(type="submit")
-                            | 保存
 block componentScript
     include ../../includes/formScript
 block bottom

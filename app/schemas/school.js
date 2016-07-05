@@ -16,7 +16,7 @@ var SchoolSchema = new mongoose.Schema({
     address:String,
     owner:{
         type:ObjectId,
-        ref:'president'
+        ref:'user'
     },
     roles:[
         {

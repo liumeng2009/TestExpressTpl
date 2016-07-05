@@ -3,12 +3,12 @@
  */
 //var mongoose=require('mongoose');
 var School=require('../models/school');
-var President=require('../models/president');
+var User=require('../models/user');
 var _=require('underscore');
 
 exports.school=function(req,res){
     var id=req.params.id;
-    President.find({status:true}).exec(function(err,presidents){
+    User.find({status:true,isPresident:true}).exec(function(err,users){
         if(err){
             err.status=500;
             res.render('error',{
@@ -18,7 +18,6 @@ exports.school=function(req,res){
             return console.log(err);
         }
         else{
-
             School.findOne({_id:id},function(err,school){
                 if(err){
                     err.status=500;
@@ -34,7 +33,7 @@ exports.school=function(req,res){
                         title:'编辑学校信息',
                         school:school,
                         action:'编辑',
-                        presidents:presidents
+                        users:users
                     });
                 }
                 else{
@@ -42,7 +41,7 @@ exports.school=function(req,res){
                         title:'新增学校',
                         school:[],
                         action:'新增',
-                        presidents:presidents
+                        users:users
                     });
                 }
             });
@@ -52,8 +51,8 @@ exports.school=function(req,res){
 
 exports.school_list=function(req,res){
     var searchObj={};
-    if(req.query.president&&req.query.president!=0){
-        searchObj.owner=req.query.president;
+    if(req.query.user&&req.query.user!=0){
+        searchObj.owner=req.query.user;
     }
     if(req.query.name&&req.query.name!=""){
         searchObj.name=req.query.name;
@@ -65,14 +64,19 @@ exports.school_list=function(req,res){
         .exec(function(err,schools){
             if(err)
                 return console.log(err);
-            President.find({status:true},function(err,presidents){
-                if(err)
+            User.find({status:true,isPresident:true},function(err,users){
+                if(err){
+                    err.status=500;
+                    res.render('error',{
+                        message:err.name,
+                        error:err
+                    })
                     return console.log(err);
-
+                }
                 res.render('./pages/school/school_list',{
                     title:'学校列表',
                     schools:schools,
-                    presidents:presidents
+                    users:users
                 });
             })
         });
@@ -80,8 +84,7 @@ exports.school_list=function(req,res){
 
 exports.new=function(req,res){
     var id=req.body._id;
-    console.log('学校是：'+id);
-    President.findById({_id:req.body.president,status:true},function(err,pre){
+    User.findById({_id:req.body.president,status:true},function(err,user){
         if(err){
             err.status=500;
             res.render('error',{
@@ -92,7 +95,7 @@ exports.new=function(req,res){
         }
         var schoolObj={
             name: req.body.name,
-            owner:pre,
+            owner:user,
             status:true,
             province:req.body.province,
             city:req.body.city,
@@ -116,9 +119,7 @@ exports.new=function(req,res){
                     })
                     return console.log(err);
                 }
-                console.log('444444444'+school);
                 var _school= _.extend(school,schoolObj);
-                console.log('555555'+_school);
                 _school.save(function(err,school){
                     if(err){
                         err.status=500;
@@ -128,9 +129,10 @@ exports.new=function(req,res){
                         })
                         return console.log(err);
                     }
-                    //school添加到president里面
-                    if(pre.schools){
-                        if(pre.schools.toString().indexOf(school._id)>-1){
+                    //school添加到user里面
+
+                    if(user.schools){
+                        if(user.schools.toString().indexOf(school._id)>-1){
                             res.redirect('/admin/school/list');
                         }
                         else{
@@ -147,6 +149,21 @@ exports.new=function(req,res){
                                 res.redirect('/admin/school/list');
                             });
                         }
+                    }
+                    else{
+                        user.schools=[];
+                        user.schools.push(school);
+                        user.save(function(err,user){
+                            if(err){
+                                err.status=500;
+                                res.render('error',{
+                                    message:err.name,
+                                    error:err
+                                })
+                                return console.log(err);
+                            }
+                            res.redirect('/admin/school/list');
+                        });
                     }
                 });
             });
@@ -175,8 +192,8 @@ exports.new=function(req,res){
                             return console.log(err);
                         }
                         //将school保存到president的schools字段
-                        pre.schools.push(school);
-                        pre.save(function(err,president){
+                        user.schools.push(school);
+                        user.save(function(err,user){
                             if(err){
                                 err.status=500;
                                 res.render('error',{
@@ -242,7 +259,6 @@ exports.select=function(req,res){
 
 exports.change=function(req,res){
     var sid=req.query.sid;
-    console.log('123456789123456789'+sid);
     School.findById({status:true,_id:sid},function(err,school){
         if(err){
             err.status = 500;
@@ -258,7 +274,6 @@ exports.change=function(req,res){
                 name: school.name,
                 id: school._id
             }
-            console.log('123456789');
             res.redirect(req.query.redirecturl);
         }
         else{

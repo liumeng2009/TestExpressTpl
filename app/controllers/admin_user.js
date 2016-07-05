@@ -168,14 +168,14 @@ exports.signinRequired=function(req,res,next){
             if(err)
                 console.log(err);
             if(adminuser){
-
+                console.log('3333333333333333');
+                next();
             }
             else{
                 res.redirect('/admin/login?err=wrong');
             }
         });
     }
-    next();
 }
 
 exports.maxRequired=function(req,res,next){

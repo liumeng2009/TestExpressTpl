@@ -26,6 +26,7 @@ router.get('/user',adminUserController.signinRequired,userController.user);
 router.get('/user/:id',adminUserController.signinRequired,userController.user);
 router.post('/user/new',adminUserController.signinRequired,userController.new);
 router.delete('/user/list',adminUserController.signinRequired,userController.delete);
+router.get('/user/ajax/select_role_grade',adminUserController.signinRequired,userController.select_role_grade);
 
 router.get('/president/list',adminUserController.signinRequired,presidentController.president_list);
 router.get('/president',adminUserController.signinRequired,presidentController.president);
@@ -45,7 +46,6 @@ router.get('/grade/list',adminUserController.signinRequired,schoolController.sch
 router.get('/grade',adminUserController.signinRequired,gradeController.grade);
 router.get('/grade/:id',adminUserController.signinRequired,gradeController.grade);
 router.post('/grade/new',adminUserController.signinRequired,gradeController.new);
-router.post('/grade/insertuser',adminUserController.signinRequired,gradeController.insertuser);
 
 router.get('/role/list',adminUserController.signinRequired,schoolController.school_list_allpage,schoolController.school_checkid,roleController.role_list);
 router.get('/role',adminUserController.signinRequired,schoolController.school_list_allpage,roleController.role);

@@ -29,18 +29,28 @@ var UserSchema = new mongoose.Schema({
             default: Date.now()
         }
     },
-    role: {
-        type:ObjectId,
-        ref:'role'
-    },
-    school:{
-        type:ObjectId,
-        ref:'school'
-    },
-    grade:{
-        type:ObjectId,
-        ref:'grade'
-    },
+    permissions:[
+        {
+            school:{
+                type:ObjectId,
+                ref:'school'
+            },
+            grade:{
+                type:ObjectId,
+                ref:'grade'
+            },
+            role:{
+                type:ObjectId,
+                ref:'role'
+            }
+        }
+    ],
+    schools:[
+        {
+            type:ObjectId,
+            ref:'school'
+        }
+    ],
     sons:[
         {
             type:ObjectId,
@@ -48,6 +58,7 @@ var UserSchema = new mongoose.Schema({
         }
     ],
     isWorker:Boolean,
+    isPresident:Boolean,
     token:String,
     expiresIn:Date
 })
