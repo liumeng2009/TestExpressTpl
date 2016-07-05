@@ -84,7 +84,7 @@ exports.school_list=function(req,res){
 
 exports.new=function(req,res){
     var id=req.body._id;
-    User.findById({_id:req.body.president,status:true},function(err,user){
+    User.findById({_id:req.body.user,status:true},function(err,user){
         if(err){
             err.status=500;
             res.render('error',{
@@ -107,7 +107,6 @@ exports.new=function(req,res){
             roles:[],
             grades:[]
         };
-
         //id存在就是编辑 不存在就是新增
         if(id){
             School.findOne({status:true,_id:id},function(err,school){
@@ -136,8 +135,8 @@ exports.new=function(req,res){
                             res.redirect('/admin/school/list');
                         }
                         else{
-                            pre.schools.push(school);
-                            pre.save(function(err,president){
+                            user.schools.push(school);
+                            user.save(function(err,president){
                                 if(err){
                                     err.status=500;
                                     res.render('error',{

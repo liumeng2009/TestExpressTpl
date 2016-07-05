@@ -116,7 +116,7 @@ exports.signin = function(req, res) {
                 console.log('正确吗？'+isMatch)
                 if (isMatch) {
                     req.session.user = user
-                    return res.redirect('./')
+                    return res.redirect('./admin');
                 }
                 else {
                     res.redirect('./login?err=wrong');

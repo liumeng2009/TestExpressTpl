@@ -35,10 +35,6 @@ var UserSchema = new mongoose.Schema({
                 type:ObjectId,
                 ref:'school'
             },
-            grade:{
-                type:ObjectId,
-                ref:'grade'
-            },
             role:{
                 type:ObjectId,
                 ref:'role'

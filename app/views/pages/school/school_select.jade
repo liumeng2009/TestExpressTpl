@@ -34,7 +34,9 @@ block content
 
                             .tile-stats-content
                                 .tile-stats-number.color-white #{sch.name}
-                                .tile-stats-text.color-white #{sch.owner.name}
+                                .tile-stats-text.color-white
+                                    if sch.owner
+                                        | #{sch.owner.name}
                             .clearfix
             include ../../includes/notification
 block componentScript

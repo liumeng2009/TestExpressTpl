@@ -49,7 +49,9 @@ block content
                                     each school in schools
                                         tr(class="item-id-#{school._id}")
                                             td #{school.name}
-                                            td #{school.owner.name}
+                                            td
+                                                if school.owner
+                                                    |#{school.owner.name}
                                             td #{school.province}
                                             td #{moment(school.meta.createAt).format('MM/DD/YYYY')}
                                             td

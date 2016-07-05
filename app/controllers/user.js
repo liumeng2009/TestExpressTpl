@@ -271,5 +271,35 @@ exports.insertrole=function(req,res){
     var school=req.body.schoolModal;
     var role=req.body.roleModal;
     var grade=req.body.gradeModal;
-    School.findOne({status:true})
+    School.findOne({status:true,_id:school},function(err,school){
+        if(err){
+            err.status=500;
+            res.render('error',{
+                message:err.name,
+                error:err
+            })
+            return console.log(err);
+        }
+        if(school){
+            Role.findOne({status:true,_id:role},function(err,role){
+                if(err){
+                    err.status=500;
+                    res.render('error',{
+                        message:err.name,
+                        error:err
+                    })
+                    return console.log(err);
+                }
+                if(role){
+
+                }
+                else{
+                    res.redirect('/admin/user/'+userid+'?err=wrongparams');
+                }
+            })
+        }
+        else{
+            res.redirect('/admin/user/'+userid+'?err=wrongparams');
+        }
+    })
 }
