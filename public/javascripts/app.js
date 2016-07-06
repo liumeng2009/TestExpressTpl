@@ -58,6 +58,13 @@ $(function(){
                                     tr.remove();
                                 }
                             }
+                            else{
+                                bootbox.alert({
+                                    title:'错误',
+                                    message:results.info,
+                                    callback:function(){}
+                                });
+                            }
                         }).fail(function(err){
                         bootbox.alert({
                             title:'错误',
@@ -97,6 +104,13 @@ $(function(){
                                 if (tr.length > 0) {
                                     tr.remove();
                                 }
+                            }
+                            else{
+                                bootbox.alert({
+                                    title:'错误',
+                                    message:results.info,
+                                    callback:function(){}
+                                });
                             }
                         }).fail(function(err){
                         bootbox.alert({
@@ -138,6 +152,13 @@ $(function(){
                                     tr.remove();
                                 }
                             }
+                            else{
+                                bootbox.alert({
+                                    title:'错误',
+                                    message:results.info,
+                                    callback:function(){}
+                                });
+                            }
                         }).fail(function(err){
                             bootbox.alert({
                                 title:'错误',
@@ -177,6 +198,13 @@ $(function(){
                                 if (tr.length > 0) {
                                     tr.remove();
                                 }
+                            }
+                            else{
+                                bootbox.alert({
+                                    title:'错误',
+                                    message:results.info,
+                                    callback:function(){}
+                                });
                             }
                         }).fail(function(err){
                         bootbox.alert({
@@ -218,6 +246,13 @@ $(function(){
                                     tr.remove();
                                 }
                             }
+                            else{
+                                bootbox.alert({
+                                    title:'错误',
+                                    message:results.info,
+                                    callback:function(){}
+                                });
+                            }
                         }).fail(function(err){
                         bootbox.alert({
                             title:'错误',
@@ -257,6 +292,61 @@ $(function(){
                                 if (tr.length > 0) {
                                     tr.remove();
                                 }
+                            }
+                            else{
+                                bootbox.alert({
+                                    title:'错误',
+                                    message:results.info,
+                                    callback:function(){}
+                                });
+                            }
+                        }).fail(function(err){
+                        bootbox.alert({
+                            title:'错误',
+                            message:err.statusText,
+                            callback:function(){}
+                        });
+                    });
+                }
+            },
+            buttons:{
+                'confirm':{
+                    label:'确定'
+                },
+                'cancel':{
+                    label:'取消'
+                }
+            }
+
+
+        });
+    });
+    $('#userRoles .del').click(function(e){
+        var target=$(e.target);
+        var id=target.data('id');
+        var tr=$('.item-id-'+id);
+        var userid=target.attr('data');
+        bootbox.confirm({
+            message:'确认删除吗',
+            size:'small',
+            callback:function (result) {
+                if(result) {
+                    $.ajax({
+                            type: 'DELETE',
+                            url: '/admin/user/insert/role?id=' + id+'&userid='+userid
+                        })
+                        .done(function (results) {
+                            if (results.success === 1) {
+                                if (tr.length > 0) {
+                                    tr.remove();
+                                }
+                            }
+                            else{
+                                bootbox.alert({
+                                    title:'错误',
+                                    message:results.info,
+                                    callback:function(){}
+                                });
                             }
                         }).fail(function(err){
                         bootbox.alert({

@@ -29,11 +29,11 @@ var UserSchema = new mongoose.Schema({
             default: Date.now()
         }
     },
-    permissions:[
+    roles:[
         {
-            school:{
+            grade:{
                 type:ObjectId,
-                ref:'school'
+                ref:'grade'
             },
             role:{
                 type:ObjectId,
@@ -41,12 +41,14 @@ var UserSchema = new mongoose.Schema({
             }
         }
     ],
+    //校长拥有的学校
     schools:[
         {
             type:ObjectId,
             ref:'school'
         }
     ],
+    //用户的孩子们
     sons:[
         {
             type:ObjectId,

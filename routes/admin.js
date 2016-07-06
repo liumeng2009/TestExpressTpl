@@ -27,6 +27,8 @@ router.get('/user/:id',adminUserController.signinRequired,userController.user);
 router.post('/user/new',adminUserController.signinRequired,userController.new);
 router.delete('/user/list',adminUserController.signinRequired,userController.delete);
 router.get('/user/ajax/select_role_grade',adminUserController.signinRequired,userController.select_role_grade);
+router.post('/user/insert/role',adminUserController.signinRequired,userController.insertrole);
+router.delete('/user/insert/role',adminUserController.signinRequired,userController.deleterole);
 
 router.get('/president/list',adminUserController.signinRequired,presidentController.president_list);
 router.get('/president',adminUserController.signinRequired,presidentController.president);

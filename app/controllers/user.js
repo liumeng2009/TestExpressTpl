@@ -7,6 +7,7 @@ var Role=require('../models/role');
 var Student=require('../models/student');
 var Grade=require('../models/grade');
 var _=require('underscore');
+var Mongoose=require('mongoose');
 
 //用户列表
 exports.user_list=function(req,res){
@@ -25,19 +26,19 @@ exports.user_list=function(req,res){
 //用户信息
 exports.user=function(req,res){
     var id=req.params.id;
-
     if(id){
         //编辑
-        User.findOne({status:true,_id:id},function(err,user){
-            if(err){
-                err.status = 500;
-                res.render('error', {
-                    message: err.name,
-                    error: err
-                })
-                return console.log(err);
-            }
-            School.find({status:true},function(err,schools){
+        User.findOne({status:true,_id:id})
+            .populate({
+                path:'roles.role',
+                populate:{
+                    path:'school'
+                }
+            })
+            .populate({
+                path:'roles.grade'
+            })
+            .exec(function(err,user){
                 if(err){
                     err.status = 500;
                     res.render('error', {
@@ -46,14 +47,25 @@ exports.user=function(req,res){
                     })
                     return console.log(err);
                 }
-                res.render('./pages/users/user_edit',{
-                    title:'编辑用户',
-                    action:'编辑',
-                    user:user,
-                    schools:schools
-                });
-            })
-        });
+                School.find({status:true},function(err,schools){
+                    if(err){
+                        err.status = 500;
+                        res.render('error', {
+                            message: err.name,
+                            error: err
+                        })
+                        return console.log(err);
+                    }
+                    console.log('用户信息是'+user);
+                    res.render('./pages/users/user_edit',{
+                        title:'编辑用户',
+                        action:'编辑',
+                        user:user,
+                        schools:schools
+                    });
+                })
+            });
+
     }
     else{
         //新增
@@ -152,14 +164,45 @@ exports.new=function(req,res){
 }
 
 exports.delete=function(req,res){
-    console.log('到达这里');
     var id=req.query.id;
+    console.log('查询id是'+id);
+    School.find({status:true})
+        .update({},{$pull:{"users":Mongoose.Types.ObjectId(id)}},function(err,schools){
+            console.log('schools是'+schools);
+        })
+
+/*
+
+
+    User.findOne({status:true,_id:id})
+        .populate('roles')
+        .exec(function(err,user){
+            if(err){
+                res.json({success:0,info:'数据库读取失败'});
+                return console.log(err);
+            }
+            var schoolOR=[];
+            for(var i=0;i<user.roles.length;i++){
+                var s={_id:user.roles[i].school.toString()}
+                schoolOR.push(s);
+            }
+            School.find({status:true})
+                .or(schoolOR)
+                .exec(function(err,schools){
+
+                });
+        });
+
+
+
     User.findOne({_id:id},function(err,user){
         if(err){
             res.json({success:0,info:'数据库读取失败'});
             return console.log(err);
         }
-        console.log('1111111111111111'+user);
+
+
+
         //如果有工作人员的信息，则删除grade里面的users[]
         if(user.school&&user.grade&&user.role){
             Grade.findOne({status:true,_id:user.grade.toString()},function(err,grade){
@@ -167,9 +210,6 @@ exports.delete=function(req,res){
                     res.json({success:0,info:'数据库读取失败'});
                     return console.log(err);
                 }
-                console.log('grade是：'+grade);
-                console.log('grad1是：'+grade.users.toString());
-                console.log('grad2是：'+user._id.toString());
                 if(grade.users.toString().indexOf(user._id.toString())>-1){
                     console.log('符合');
                     for(var i=0;i<grade.users.length;i++){
@@ -244,7 +284,7 @@ exports.delete=function(req,res){
 
         }
     })
-
+*/
 
 }
 
@@ -268,10 +308,10 @@ exports.select_role_grade=function(req,res){
 
 exports.insertrole=function(req,res){
     var userid=req.body.user_id;
-    var school=req.body.schoolModal;
-    var role=req.body.roleModal;
-    var grade=req.body.gradeModal;
-    School.findOne({status:true,_id:school},function(err,school){
+    var schoolid=req.body.schoolModal;
+    var roleid=req.body.roleModal;
+    var gradeid=req.body.gradeModal;
+    School.findOne({status:true,_id:schoolid},function(err,school){
         if(err){
             err.status=500;
             res.render('error',{
@@ -281,7 +321,7 @@ exports.insertrole=function(req,res){
             return console.log(err);
         }
         if(school){
-            Role.findOne({status:true,_id:role},function(err,role){
+            Role.findOne({status:true,_id:roleid},function(err,role){
                 if(err){
                     err.status=500;
                     res.render('error',{
@@ -291,6 +331,81 @@ exports.insertrole=function(req,res){
                     return console.log(err);
                 }
                 if(role){
+                    //role和school都存在时，将role的id存入user的roles中
+                    User.findOne({status:true,_id:userid},function(err,user){
+                       if(err){
+                           err.status=500;
+                           res.render('error',{
+                               message:err.name,
+                               error:err
+                           })
+                           return console.log(err);
+                       }
+                        if(user){
+                            if(user.roles){
+
+                            }
+                            else{
+                                user.roles=[];
+                            }
+                            Grade.findOne({status:true,_id:gradeid},function(err,grade){
+                                if(err){
+                                    err.status=500;
+                                    res.render('error',{
+                                        message:err.name,
+                                        error:err
+                                    })
+                                    return console.log(err);
+                                }
+                                if(grade){
+                                    var _role={grade:grade,role:role};
+                                    if(user.roles){
+
+                                    }
+                                    else{
+                                        user.roles=[];
+                                    }
+                                    user.roles.push(_role);
+                                    user.save(function(err,user){
+                                        if(err){
+                                            err.status=500;
+                                            res.render('error',{
+                                                message:err.name,
+                                                error:err
+                                            })
+                                            return console.log(err);
+                                        }
+                                        //将user存入grade的users列
+                                        if(grade.users){
+
+                                        }
+                                        else{
+                                            grade.users=[];
+                                        }
+                                        grade.users.push(user);
+                                        grade.save(function(err,grade){
+                                            if(err){
+                                                err.status=500;
+                                                res.render('error',{
+                                                    message:err.name,
+                                                    error:err
+                                                })
+                                                return console.log(err);
+                                            }
+                                            res.redirect('/admin/user/'+userid)
+                                        });
+                                    });
+                                }
+                                else{
+                                    res.redirect('/admin/user/'+userid+'?err=wrongparams');
+                                }
+                            });
+
+                        }
+                        else{
+                            res.redirect('/admin/user/'+userid+'?err=wrongparams');
+                        }
+                    });
 
                 }
                 else{
@@ -300,6 +415,83 @@ exports.insertrole=function(req,res){
         }
         else{
             res.redirect('/admin/user/'+userid+'?err=wrongparams');
+        }
+    })
+}
+
+exports.deleterole=function(req,res){
+    var roleid=req.query.id;
+    var userid=req.query.userid;
+    console.log(isValidObjectId(roleid));
+    console.log(isValidObjectId(userid));
+    if(isValidObjectId(roleid)&&isValidObjectId(userid)){
+
+    }
+    else{
+        return res.json({success:0,info:'参数错误，尝试刷新页面重试'});
+    }
+    User.findOne({status:true,_id:userid},function(err,user){
+        if(err){
+            res.json({success:0,info:'数据库读取失败'});
+            return console.log(err);
+        }
+        console.log('user'+user);
+        if(user){
+            Role.findOne({status:true,_id:roleid},function(err,role){
+                if(err){
+                    res.json({success:0,info:'数据库读取失败'});
+                    return console.log(err);
+                }
+                if(role){
+                    School.findOne({status:true,_id:role.school.toString()},function(err,school){
+                        if(err){
+                            res.json({success:0,info:'数据库读取失败'});
+                            return console.log(err);
+                        }
+                        if(school){
+                            if(user.roles&&user.roles.toString().indexOf(role._id)>-1){
+                                for(var i=0;i<user.roles.length;i++){
+                                    if(user.roles[i].toString()===role._id.toString()){
+                                        user.roles.splice(i,1);
+                                        break;
+                                    }
+                                }
+                            }
+                            user.save(function(err,user){
+                                if(err){
+                                    res.json({success:0,info:'数据库读取失败'});
+                                    return console.log(err);
+                                }
+                                if(school.users&&school.users.toString().indexOf(user._id.toString())>-1){
+                                    for(var i=0;i<school.users.length;i++){
+                                        if(school.users[i].toString()===user._id.toString()){
+                                            school.users.splice(i,1);
+                                            break;
+                                        }
+                                    }
+                                    school.save(function(err,school){
+                                        if(err){
+                                            res.json({success:0,info:'数据库读取失败'});
+                                            return console.log(err);
+                                        }
+                                        res.json({success:1});
+                                    });
+                                }
+
+                            });
+                        }
+                        else{
+                            res.json({success:0,info:'参数错误,请刷新页面重试1'});
+                        }
+                    })
+                }
+                else{
+                    res.json({success:0,info:'参数错误,请刷新页面重试2'});
+                }
+            })
+        }
+        else{
+            res.json({success:0,info:'参数错误,请刷新页面重试3'});
         }
     })
 }

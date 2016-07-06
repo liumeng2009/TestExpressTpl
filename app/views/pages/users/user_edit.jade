@@ -54,19 +54,23 @@ block content
                                 .form-group
                                     label.col-lg-2.col-md-2.control-label 用户角色
                                     .col-lg-10.col-md-10
-                                        table.table.table-bordered
+                                        table#userRoles.table.table-bordered
                                             thead
                                                 tr
-                                                    th 学校
-                                                    th 班级
-                                                    th 角色
+                                                    th.per30 学校
+                                                    th.per30 角色
+                                                    th.per30 班级
+                                                    th.per10
                                             tbody
-                                                if permissions
-                                                    each permission in permissions
-                                                        tr
-                                                            td #{permission.school}
-                                                            td #{permission.grade}
-                                                            td #{permission.role}
+                                                if user.roles
+                                                    each role in user.roles
+                                                        tr(class="item-id-#{role._id}")
+                                                            td #{role.role.school.name}
+                                                            td #{role.role.name}
+                                                            td #{role.grade.name}
+                                                            td
+                                                                a.del.btn.btn-danger(href="#",data="#{user._id}",data-id="#{role._id}")
+                                                                    | 删除角色
                                         a(href="#",data-toggle="modal",data-target="#modal1")#addRoles.btn.btn-primary
                                             | 新增角色
                                 .form-group
@@ -90,7 +94,7 @@ block content
                         | &times;
                     h4#myModalLabel.modal-title
                         | 添加角色
-                form.form-horizontal(role="form",method="post",action="/admin/user/insertrole",enctype="multipart/form-data")
+                form.form-horizontal(role="form",method="post",action="/admin/user/insert/role",enctype="multipart/form-data")
                     .modal-body
                         .form-group
                             if user && user._id
@@ -137,6 +141,9 @@ block bottom
                             var _option=$('<option>').val(data.role[i]._id).text(data.role[i].name);
                             roleEle.append(_option);
                         }
+                        var _op=$('<option>').val('0').text('不指定');
+                        gradeEle.append(_op);
+
                         for (var i = 0; i < data.grade.length; i++) {
                             var _option = $('<option>').val(data.grade[i]._id).text(data.grade[i].name);
                             gradeEle.append(_option);
@@ -153,6 +160,6 @@ block bottom
             var gradeEle=$('#gradeModal');
             findData(schoolEle.val(),roleEle,gradeEle);
             schoolEle.change(function(){
-                findData(schoolEle.val(), roleEle, gradeEle);
+                findData(schoolEle.val(), roleEle,gradeEle);
             })
         });
