@@ -324,8 +324,10 @@ $(function(){
     $('#userRoles .del').click(function(e){
         var target=$(e.target);
         var id=target.data('id');
-        var tr=$('.item-id-'+id);
+        var objid=target.attr('data-obj');
         var userid=target.attr('data');
+        var gradeid=target.attr('data-grade');
+        var tr=$('.item-id-'+objid);
         bootbox.confirm({
             message:'确认删除吗',
             size:'small',
@@ -333,7 +335,7 @@ $(function(){
                 if(result) {
                     $.ajax({
                             type: 'DELETE',
-                            url: '/admin/user/insert/role?id=' + id+'&userid='+userid
+                            url: '/admin/user/insert/role?id=' + id+'&userid='+userid+'&gradeid='+gradeid+'&objid='+objid
                         })
                         .done(function (results) {
                             if (results.success === 1) {

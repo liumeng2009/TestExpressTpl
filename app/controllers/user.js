@@ -166,10 +166,54 @@ exports.new=function(req,res){
 exports.delete=function(req,res){
     var id=req.query.id;
     console.log('查询id是'+id);
+    /*
     School.find({status:true})
         .update({},{$pull:{"users":Mongoose.Types.ObjectId(id)}},function(err,schools){
             console.log('schools是'+schools);
         })
+    */
+    if(isValidObjectId(id)){
+        User.findOne({status:true,_id:id})
+            .populate('sons')
+            .exec(function(err,user){
+                if(err){
+                    res.json({success:0,info:'数据库连接错误'});
+                    return console.log(err);
+                }
+                if(user){
+                    //检查学校的users是否有这个user
+                    if(user.roles.length>0){
+                        //说明还有身份存在，所以不支持删除
+                        return res.json({success:0,info:'这个用户还存在角色，请进入编辑页面，删除角色后再删除用户'});
+                    }
+                    else{
+                        user.status=false;
+                        user.save(function(err,user){
+                            if(err){
+                                res.json({success:0,info:'数据库连接错误'})
+                                return console.log(err);
+                            }
+                            //将他的孩子全部置否
+                            Student
+                                .update({parent:user._id,status:true},{$set:{status:false}},function(err){
+                                    if(err){
+                                        res.json({success:0,info:'数据库连接错误'})
+                                        return console.log(err);
+                                    }
+                                    res.json({success:1});
+                                });
+                        });
+                    }
+                }
+                else{
+                    return res.json({success:0,info:'参数错误，请刷新页面后再次尝试'});
+                }
+            })
+
+    }
+    else{
+        return res.json({success:0,info:'参数错误，请刷新页面后再次尝试'});
+    }
 
 /*
 
@@ -348,6 +392,7 @@ exports.insertrole=function(req,res){
                             else{
                                 user.roles=[];
                             }
+
                             Grade.findOne({status:true,_id:gradeid},function(err,grade){
                                 if(err){
                                     err.status=500;
@@ -375,6 +420,27 @@ exports.insertrole=function(req,res){
                                             })
                                             return console.log(err);
                                         }
+                                        if(school.users){
+
+                                        }
+                                        else{
+                                            school.users=[];
+                                        }
+                                        school.users.push(user);
+                                        school.save(function(err,school){
+                                            if(err){
+                                                err.status=500;
+                                                res.render('error',{
+                                                    message:err.name,
+                                                    error:err
+                                                })
+                                                return console.log(err);
+                                            }
+
+                                        })
+
+
+
                                         //将user存入grade的users列
                                         if(grade.users){
 
@@ -422,6 +488,8 @@ exports.insertrole=function(req,res){
 exports.deleterole=function(req,res){
     var roleid=req.query.id;
     var userid=req.query.userid;
+    var gradeid=req.query.gradeid;
+    var objid=req.query.objid;
     console.log(isValidObjectId(roleid));
     console.log(isValidObjectId(userid));
     if(isValidObjectId(roleid)&&isValidObjectId(userid)){
@@ -442,6 +510,7 @@ exports.deleterole=function(req,res){
                     res.json({success:0,info:'数据库读取失败'});
                     return console.log(err);
                 }
+                console.log('role='+roleid+role);
                 if(role){
                     School.findOne({status:true,_id:role.school.toString()},function(err,school){
                         if(err){
@@ -449,9 +518,16 @@ exports.deleterole=function(req,res){
                             return console.log(err);
                         }
                         if(school){
-                            if(user.roles&&user.roles.toString().indexOf(role._id)>-1){
+                            //去掉user里面的roles 删除的是一个对象[grade:{},role:{},_id:{}]
+                            console.log('ccccccccccccccccccccccccc'+objid);
+                            console.log('ddddddd'+user.roles.toString());
+                            if(user.roles&&user.roles.toString().indexOf(objid)>-1){
+                                console.log('eeeeeeeeeeeeeeeeee');
                                 for(var i=0;i<user.roles.length;i++){
-                                    if(user.roles[i].toString()===role._id.toString()){
+                                    console.log('fffffffffffff'+i);
+                                    console.log('aaaa'+user.roles[i]._id.toString());
+                                    console.log('bbbb'+objid.toString());
+                                    if(user.roles[i]._id.toString()===objid.toString()){
                                         user.roles.splice(i,1);
                                         break;
                                     }
@@ -462,6 +538,7 @@ exports.deleterole=function(req,res){
                                     res.json({success:0,info:'数据库读取失败'});
                                     return console.log(err);
                                 }
+                                //去掉school里面的users
                                 if(school.users&&school.users.toString().indexOf(user._id.toString())>-1){
                                     for(var i=0;i<school.users.length;i++){
                                         if(school.users[i].toString()===user._id.toString()){
@@ -474,7 +551,42 @@ exports.deleterole=function(req,res){
                                             res.json({success:0,info:'数据库读取失败'});
                                             return console.log(err);
                                         }
-                                        res.json({success:1});
+                                        console.log('school'+school);
+                                        //还需要去掉grade里面的users
+                                        if(isValidObjectId(gradeid)){
+                                            Grade.findOne({status:true,_id:gradeid},function(err,grade){
+                                                if(err){
+                                                    res.json({success:0,info:'数据库读取失败'});
+                                                    return console.log(err);
+                                                }
+
+                                                if(grade){
+                                                    for(var i=0;i<grade.users.length;i++){
+                                                        if(grade.users[i].toString()===user._id){
+                                                            grade.users.splice(i,1);
+                                                            break;
+                                                        }
+                                                    }
+                                                    grade.save(function(err,grade){
+                                                        if(err){
+                                                            res.json({success:0,info:'数据库读取失败'});
+                                                            return console.log(err);
+                                                        }
+                                                        console.log('grade'+grade);
+                                                        res.json({success:1});
+                                                    });
+                                                }
+                                                else{
+                                                    res.json({success:0,info:'参数错误,请刷新页面重试4'});
+                                                }
+
+                                            })
+                                        }
+                                        else{
+                                            //grade无效就说明，没有设置班级信息，不需要进行删除了
+                                            res.json({success:1});
+                                        }
+
                                     });
                                 }
 

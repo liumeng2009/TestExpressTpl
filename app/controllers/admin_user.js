@@ -116,10 +116,10 @@ exports.signin = function(req, res) {
                 console.log('正确吗？'+isMatch)
                 if (isMatch) {
                     req.session.user = user
-                    return res.redirect('./admin');
+                    res.redirect('/admin');
                 }
                 else {
-                    res.redirect('./login?err=wrong');
+                    res.redirect('/admin/login?err=wrong');
                 }
             });
         }

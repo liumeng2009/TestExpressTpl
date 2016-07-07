@@ -48,8 +48,8 @@ block content
                                                 else
                                                     | 否
                                             td
-                                                if user.role
-                                                    | #{user.role.name}
+                                                if user.roles&&user.roles.length>0
+                                                    label(style="color:green") 已设定
                                                 else
                                                     | 未设定
                                             td

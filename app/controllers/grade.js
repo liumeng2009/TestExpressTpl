@@ -21,7 +21,9 @@ exports.grade_list=function(req,res){
         if(school){
             //学校存在
             Grade.find({status:true,school:schoolid})
-                .populate('users')
+                .populate({
+                    path:'users'
+                })
                 .exec(function(err,grades){
                     if(err)
                         return console.log(err);
