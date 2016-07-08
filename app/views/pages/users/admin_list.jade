@@ -25,17 +25,15 @@ block content
                             table#adminUserList.table.table-bordered
                                 thead
                                     tr
-                                        th.per20 用户名
-                                        th.per20 电话
-                                        th.per15 操作权限级别
-                                        th.per15 建立时间
-                                        th.per30 操作
+                                        th.per25 用户名
+                                        th.per25 电话
+                                        th.per25 建立时间
+                                        th.per25 操作
                                 tbody
                                     each admin_user in admin_users
                                         tr(class="item-id-#{admin_user._id}")
                                             td #{admin_user.name}
                                             td #{admin_user.phone}
-                                            td #{admin_user.weight}
                                             td #{moment(admin_user.meta.createAt).format('MM/DD/YYYY')}
                                             td
                                                 a.btn.btn-primary(href="/admin/admin?id=#{admin_user._id}") 编辑

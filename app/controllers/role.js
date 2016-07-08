@@ -7,6 +7,7 @@ var FunctionModel=require('../models/function');
 var _=require('underscore');
 
 exports.role_list=function(req,res){
+    console.log('kkkkkkkkkkkkkkkkkkk'+req.session.schoolnow.id);
     if(!req.session.schoolnow){
         res.redirect('/admin/school_select');
     }
@@ -41,7 +42,7 @@ exports.role_list=function(req,res){
                 });
         }
         else{
-            res.redirect('/admin/school_change');
+            res.redirect('/admin/school_select');
         }
     });
 }

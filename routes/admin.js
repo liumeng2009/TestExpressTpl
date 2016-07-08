@@ -39,7 +39,7 @@ router.delete('/president/list',adminUserController.signinRequired ,presidentCon
 router.get('/school/list',adminUserController.signinRequired,schoolController.school_list_allpage,schoolController.school_checkid,schoolController.school_list);
 router.get('/school',adminUserController.signinRequired,schoolController.school_list_allpage,schoolController.school);
 router.get('/school/:id',adminUserController.signinRequired,schoolController.school_list_allpage,schoolController.school);
-router.post('/school/new',adminUserController.signinRequired ,schoolController.new);
+router.post('/school/new',adminUserController.signinRequired ,schoolController.new,schoolController.new_init);
 router.delete('/school/list',adminUserController.signinRequired,schoolController.delete);
 router.get('/school_select',adminUserController.signinRequired,schoolController.school_list_allpage,schoolController.select);
 router.get('/school_change',adminUserController.signinRequired,schoolController.change);

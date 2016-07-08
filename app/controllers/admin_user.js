@@ -102,9 +102,11 @@ exports.signin = function(req, res) {
     var name = req.body.name;
     var password = req.body.password;
     AdminUser.findOne({name: name}, function(err, user) {
+        /*
         if (err) {
             console.log(err);
         }
+        */
         if (!user) {
             res.redirect('./login?err=notexist');
         }

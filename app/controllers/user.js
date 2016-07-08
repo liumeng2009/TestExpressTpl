@@ -195,6 +195,8 @@ exports.delete=function(req,res){
                             }
                             //将他的孩子全部置否
                             Student
+                                .find({status:true})
+                                .setOptions({multi:true})
                                 .update({parent:user._id,status:true},{$set:{status:false}},function(err){
                                     if(err){
                                         res.json({success:0,info:'数据库连接错误'})

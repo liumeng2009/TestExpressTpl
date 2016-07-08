@@ -28,6 +28,12 @@ body.error-page
   .container.animated.fadeInDown
     h1.error-number #{error.status}
     h1.text-center.mb25 #{message}
+    h1.text-center
+      span#time 5
+      | 秒后页面跳转。或者
+      a(href="#",onclick="javascript:window.history.go(-1);")
+        | 点击此处
+      | 跳转
     .text-center.mt25
       .btn-group
         a.btn.btn-default.btn-lg(href="javascript:history.go(-1)")
@@ -53,4 +59,16 @@ body.error-page
   <![endif]-->
   script(src="/assets/js/bootstrap/bootstrap.js")
   script.
+    $(document).ready(function(){
+      var span=$('#time');
+
+      setInterval(function(){
+        var num = parseInt(span.text());
+        span.text(num-1);
+        if(num===1){
+          window.history.go(-1);
+        }
+      },1000)
+    });
+
 
