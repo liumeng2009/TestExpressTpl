@@ -75,23 +75,26 @@ exports.signup=function(req,res){
 
 exports.baseInfo=function(req,res){
     var token=req.query.token;
-    User.findOne({token:token,status:true},function(err,user){
-        if(err){
-            return res.json({ success: 0, message: '数据库连接错误' });
-        }
-        if(user){
-            res.json({success:1,user:user});
-        }
-        else{
-            res.json({success:0})
-        }
-    });
+    User.findOne({token:token,status:true})
+        .populate('schools')
+        .exec(function(err,user){
+            if(err){
+                return res.json({ success: 0, message: '数据库连接错误' });
+            }
+            if(user){
+                console.log(user);
+                res.json({success:1,user:user});
+            }
+            else{
+                res.json({success:0});
+            }
+        });
 }
 
 //验证token的中间件
 exports.accesstoken=function(req,res,next){
     //检查post的信息或者url查询参数或者头信息
-    var token = req.body.token || req.query.token || req.headers['x-access-token'];
+    var token = req.query.token;
     // 解析 token
     if (token) {
         // 确认token
@@ -99,27 +102,43 @@ exports.accesstoken=function(req,res,next){
             if (err) {
                 return res.json({ success: 0, msg: '身份错误，请登录，不合法的token。' });
             } else {
-                // 如果没问题就把解码后的信息保存到请求中，供后面的路由使用
-                req.decoded = decoded;
-                //decoded的_doc是user对象
-                if(decoded._doc.expiresIn){
-                    var datenow=new Date();
-                    var dateExIn=decoded._doc.expiresIn;
-                    if(dateExIn<datenow){
-                        return res.json({ success: 0, msg: '身份错误，请登录，token过期。' });
-                    }else{
-                        next();
+                User.findOne({status:true,_id:decoded._doc._id},function(err,user){
+                    if(err){
+                        return res.json({ success: 0, msg: '网络连接错误' });
                     }
-                }
-                else{
-                    return res.json({ success: 0, msg: '身份错误，请登录，不合法的有效期。' });
-                }
-                next();
+                    if(user){
+                        if(user.expiresIn){
+                            var datenow=new Date();
+                            var dateExIn=user.expiresIn;
+                            if(dateExIn<datenow){
+                                return res.json({ success: 0, msg: '身份错误，请登录，token过期。' });
+                            }else{
+                                next();
+                            }
+                        }
+                        else{
+                            return res.json({ success: 0, msg: '身份错误，请登录，不合法的有效期。' });
+                        }
+                    }
+                    else{
+                        return res.json({ success: 0, msg: '身份错误，用户名不存在，请重新登陆。' });
+                    }
+                })
+                //next();
             }
         });
 
     } else {
         return res.json({ success: 0, msg: '身份错误，请登录，token不存在。' });
+
+    }
+}
+
+//验证操作权限
+exports.opration=function(req,res,next){
+    var url=req.originalUrl;
+    switch(url){
+        case 'school_list':
 
     }
 }
