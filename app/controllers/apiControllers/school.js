@@ -30,3 +30,15 @@ exports.school_list=function(req,res){
         }
     })
 }
+
+exports.new=function(req,res){
+    var name=req.body.name;
+    var schoolObj={
+        name:req.body.name,
+        province:req.body.province,
+        city:req.body.city,
+        country:req.body.country,
+        address:req.body.address,
+        intro:req.body.intro
+    }
+}

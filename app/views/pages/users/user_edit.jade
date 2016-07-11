@@ -24,6 +24,10 @@ block content
                         .panel-body
                             form.form-horizontal.group-border.hover-stripped(role="form",id="validate",method="post",action="/admin/user/new",enctype="multipart/form-data")
                                 .form-group
+                                    .col-lg-2.col-md-2
+                                    .col-lg-10.col-md-10
+                                        include ../../includes/notification
+                                .form-group
                                     if user&&user._id
                                         input(type="hidden",value="#{user._id}",name="id")
                                     label.col-lg-2.col-md-2.control-label 用户名
@@ -85,7 +89,6 @@ block content
                                     .col-lg-1.col-md-1
                                         button.btn.btn-default.ml15(type="submit") 保存
                                     .col-lg-11.col-md-11
-                                        include ../../includes/notification
     #modal1.modal.fade(role="dialog",tabindex="-1",aria-hidden="true")
         .modal-dialog
             .modal-content

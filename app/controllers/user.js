@@ -56,7 +56,6 @@ exports.user=function(req,res){
                         })
                         return console.log(err);
                     }
-                    console.log('用户信息是'+user);
                     res.render('./pages/users/user_edit',{
                         title:'编辑用户',
                         action:'编辑',
@@ -100,32 +99,42 @@ exports.new=function(req,res){
                 userObj.password='123456';
                 userObj.resetPwd=true;
             }
+            else{
+                delete userObj.password;
+            }
+            console.log('选择是'+userObj.isPresident);
             //如果isPresident=false,需要检查一下，他的名下是否有学校，如果有学校，则不允许删除
-            School.findOne({status:true,owner:user._id},function(err,school){
-                if(err){
-                    err.status=500;
-                    res.render('error',{
-                        message:err.name,
-                        error:err
-                    })
-                    return console.log(err);
-                }
-                if(school){
-                    //他名下有学校，则不能删除了
-
-                }
-                else{
-
-                }
-            });
-
-            var _user= _.extend(user,userObj);
-            console.log('保存前的user是'+_user);
-            _user.save(function(err,user){
-                if(err)
-                    return console.log(err);
-                res.redirect('/admin/user/list');
-            });
+            if(!userObj.isPresident) {
+                School.findOne({status: true, owner: user._id}, function (err, school) {
+                    if (err) {
+                        err.status = 500;
+                        res.render('error', {
+                            message: err.name,
+                            error: err
+                        })
+                        return console.log(err);
+                    }
+                    if (school) {
+                        res.redirect('/admin/user/'+id+'?err=hasschool');
+                    }
+                    else {
+                        var _user= _.extend(user,userObj);
+                        _user.save(function(err,user){
+                            if(err)
+                                return console.log(err);
+                            res.redirect('/admin/user/list');
+                        });
+                    }
+                });
+            }
+            else{
+                var _user= _.extend(user,userObj);
+                _user.save(function(err,user){
+                    if(err)
+                        return console.log(err);
+                    res.redirect('/admin/user/list');
+                });
+            }
         })
     }
     else{

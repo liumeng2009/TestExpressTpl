@@ -36,7 +36,7 @@ router.get('/president/:id',adminUserController.signinRequired,presidentControll
 router.post('/president/new',adminUserController.signinRequired ,presidentController.new);
 router.delete('/president/list',adminUserController.signinRequired ,presidentController.del);
 
-router.get('/school/list',adminUserController.signinRequired,schoolController.school_list_allpage,schoolController.school_checkid,schoolController.school_list);
+router.get('/school/list',adminUserController.signinRequired,schoolController.school_list_allpage,schoolController.school_list);
 router.get('/school',adminUserController.signinRequired,schoolController.school_list_allpage,schoolController.school);
 router.get('/school/:id',adminUserController.signinRequired,schoolController.school_list_allpage,schoolController.school);
 router.post('/school/new',adminUserController.signinRequired ,schoolController.new,schoolController.new_init);
