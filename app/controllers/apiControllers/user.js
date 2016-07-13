@@ -2,9 +2,13 @@
  * Created by Administrator on 2016/6/27.
  */
 var User=require('../../models/user');
+var UserSchema=require('../../schemas/user');
 var _=require('underscore');
 var config=require('../../../config');
 var jwt=require('jsonwebtoken');
+var mongoose=require('mongoose');
+var deepPopulate=require('mongoose-deep-populate')(mongoose);
+UserSchema.plugin(deepPopulate,{});
 
 exports.signin=function(req,res){
     var username=req.query.username;
@@ -102,29 +106,33 @@ exports.accesstoken=function(req,res,next){
             if (err) {
                 return res.json({ success: 0, msg: '身份错误，请登录，不合法的token。' });
             } else {
-                User.findOne({status:true,_id:decoded._doc._id},function(err,user){
-                    if(err){
-                        return res.json({ success: 0, msg: '网络连接错误' });
-                    }
-                    if(user){
-                        if(user.expiresIn){
-                            var datenow=new Date();
-                            var dateExIn=user.expiresIn;
-                            if(dateExIn<datenow){
-                                return res.json({ success: 0, msg: '身份错误，请登录，token过期。' });
-                            }else{
-                                next();
+                User.findOne({status:true,_id:decoded._doc._id})
+                    .deepPopulate(['roles.grade','roles.role'])
+                    .exec(function(err,user){
+                        if(err){
+                            return res.json({ success: 0, msg: '网络连接错误' });
+                        }
+                        console.log(user);
+                        console.log(user.roles[0].role.name+user.roles[0].grade.name);
+                        if(user){
+                            if(user.expiresIn){
+                                var datenow=new Date();
+                                var dateExIn=user.expiresIn;
+                                if(dateExIn<datenow){
+                                    return res.json({ success: 0, msg: '身份错误，请登录，token过期。' });
+                                }else{
+                                    req.app.locals.user=user;
+                                    next();
+                                }
+                            }
+                            else{
+                                return res.json({ success: 0, msg: '身份错误，请登录，不合法的有效期。' });
                             }
                         }
                         else{
-                            return res.json({ success: 0, msg: '身份错误，请登录，不合法的有效期。' });
+                            return res.json({ success: 0, msg: '身份错误，用户名不存在，请重新登陆。' });
                         }
-                    }
-                    else{
-                        return res.json({ success: 0, msg: '身份错误，用户名不存在，请重新登陆。' });
-                    }
-                })
-                //next();
+                    });
             }
         });
 
@@ -136,9 +144,29 @@ exports.accesstoken=function(req,res,next){
 
 //验证操作权限
 exports.opration=function(req,res,next){
+    var FORBIDEN='没有权限';
     var url=req.originalUrl;
+    var user=req.app.locals.user;
     switch(url){
-        case 'school_list':
+        case '/school/list':
+            if(user.isPresident){
+                next();
+            }
+            else{
+                res.json({success:0,msg:FORBIDEN});
+            }
+            break;
+        case '/school/new':
+            if(user.isPresident){
+                next();
+            }
+            else{
+                res.json({success:0,msg:FORBIDEN});
+            }
+            break;
+        case '/school':
+            next();
+            break;
 
     }
 }

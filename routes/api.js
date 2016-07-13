@@ -12,6 +12,8 @@ router.get('/signup',userController.accesstoken,userController.signup);
 
 router.get('/usercenter',userController.accesstoken,userController.baseInfo);
 
-router.get('/school_list',userController.accesstoken,schoolController.school_list);
+router.get('/school_list',userController.accesstoken,userController.opration,schoolController.school_list);
+router.post('/school_new',userController.accesstoken,userController.opration,schoolController.new);
+router.post('/school',userController.accesstoken,userController.opration,schoolController.school);
 
 module.exports=router;
