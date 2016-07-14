@@ -30,7 +30,13 @@ exports.signin=function(req,res){
                         return console.log(err);
                     }
                     if (isMatch) {
-                        var token=jwt.sign(user,config.secret,{
+                        //生成token时，只取有用的user信息来签名，否则token会很长
+                        var _tokenUser={
+                            name:user.name,
+                            password:user.password,
+                            _id:user._id
+                        };
+                        var token=jwt.sign(_tokenUser,config.secret,{
                             expiresIn:'1 days'
                         });
                         user.token=token;
@@ -85,6 +91,7 @@ exports.baseInfo=function(req,res){
             if(err){
                 return res.json({ success: 0, message: '数据库连接错误' });
             }
+            console.log('8888888888888888'+token+user);
             if(user){
                 console.log(user);
                 res.json({success:1,user:user});
@@ -99,6 +106,7 @@ exports.baseInfo=function(req,res){
 exports.accesstoken=function(req,res,next){
     //检查post的信息或者url查询参数或者头信息
     var token = req.query.token;
+    console.log('rrrrrrrrrrrrrrrr'+token);
     // 解析 token
     if (token) {
         // 确认token
@@ -106,14 +114,15 @@ exports.accesstoken=function(req,res,next){
             if (err) {
                 return res.json({ success: 0, msg: '身份错误，请登录，不合法的token。' });
             } else {
-                User.findOne({status:true,_id:decoded._doc._id})
+                for(var p in decoded){
+                    console.log(p);
+                }
+                User.findOne({status:true,_id:decoded._id})
                     .deepPopulate(['roles.grade','roles.role'])
                     .exec(function(err,user){
                         if(err){
                             return res.json({ success: 0, msg: '网络连接错误' });
                         }
-                        console.log(user);
-                        console.log(user.roles[0].role.name+user.roles[0].grade.name);
                         if(user){
                             if(user.expiresIn){
                                 var datenow=new Date();
@@ -145,10 +154,10 @@ exports.accesstoken=function(req,res,next){
 //验证操作权限
 exports.opration=function(req,res,next){
     var FORBIDEN='没有权限';
-    var url=req.originalUrl;
+    var url=req.path;
     var user=req.app.locals.user;
     switch(url){
-        case '/school/list':
+        case '/school_list':
             if(user.isPresident){
                 next();
             }
@@ -156,7 +165,7 @@ exports.opration=function(req,res,next){
                 res.json({success:0,msg:FORBIDEN});
             }
             break;
-        case '/school/new':
+        case '/school_add':
             if(user.isPresident){
                 next();
             }
@@ -166,6 +175,9 @@ exports.opration=function(req,res,next){
             break;
         case '/school':
             next();
+            break;
+        default:
+            res.json({success:0,msg:FORBIDEN});
             break;
 
     }
