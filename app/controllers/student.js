@@ -113,7 +113,6 @@ exports.new=function(req,res){
     var sid=req.body.sid;
     var gid=req.body.grade;
     var pid=req.body.parent;
-    console.log('6666666666'+id);
     School.findById({status:true,_id:sid},function(err,school){
         if(err){
             err.status = 500;

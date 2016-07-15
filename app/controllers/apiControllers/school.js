@@ -6,6 +6,7 @@ var User=require('../../models/user')
 var config=require('../../../config');
 var _=require('underscore');
 
+//用户名下的学校
 exports.school_list=function(req,res){
     var user=req.app.locals.user;
     if(user){
@@ -450,4 +451,14 @@ exports.initRole=function(req,res,next){
 }
 exports.initUser=function(req,res){
     console.log('将学校的建立者，赋值一个身份上去，让他拥有这个学校的"校长"身份');
+}
+
+exports.school_list_all=function(req,res){
+    School.find({status:true})
+        .exec(function(err,schools){
+        if(err){
+            res.json({success:0,msg:config.msg.db});
+        }
+        res.json({success:1,msg:config.msg.success,schools:schools});
+    });
 }
