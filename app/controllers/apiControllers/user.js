@@ -182,3 +182,14 @@ exports.opration=function(req,res,next){
 
     }
 }
+
+exports.user_by_id=function(req,res){
+    var id=req.query.id;
+    User.findOne({status:true,_id:id})
+        .exec(function(err,user){
+            if(err){
+                res.json({success:0,msg:config.msg.db});
+                return console.log(err);
+            }
+        })
+}

@@ -22,5 +22,7 @@ router.get('/school_list_all',userController.accesstoken,schoolController.school
 router.get('/grade_list_by_school',userController.accesstoken,gradeController.grade_list_by_school);
 
 router.post('/student_add',userController.accesstoken,studentController.new);
+router.get('/student_list',userController.accesstoken,studentController.list);
+router.get('/student_chat_list',userController.accesstoken,studentController.chat_list);
 
 module.exports=router;

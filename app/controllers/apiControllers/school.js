@@ -4,6 +4,7 @@
 var School=require('../../models/school');
 var User=require('../../models/user')
 var config=require('../../../config');
+var Role=require('../../models/role');
 var _=require('underscore');
 
 //用户名下的学校
@@ -49,7 +50,8 @@ exports.new=function(req,res,next){
         city:req.body.city,
         country:req.body.country,
         address:req.body.address,
-        intro:req.body.intro
+        intro:req.body.intro,
+        status:true
     }
     if(id){
         //编辑
@@ -105,7 +107,8 @@ exports.new=function(req,res,next){
                     return console.log(err);
                 }
                 res.app.locals.schoolapinew=school._id;
-                res.json({success:1,msg:config.msg.success});
+                //res.json({success:1,msg:config.msg.success});
+                next();
             });
         })
     }
@@ -114,12 +117,16 @@ exports.new=function(req,res,next){
 
 exports.initRole=function(req,res,next){
     //新增学校结束后，给学校建立四个默认的角色 校长 班主任 老师 家长
+    console.log('新增学校结束后，给学校建立四个默认的角色 校长 班主任 老师 家长'+req.app.locals.schoolapinew);
+    var user=req.app.locals.user;
     if(req.app.locals.schoolapinew){
         var sid=req.app.locals.schoolapinew;
         School.findOne({status:true,_id:sid},function(err,school){
+            console.log('22222222222222'+school);
             if(school){
                 //建立四个角色
                 //校长
+                console.log('3333333333'+school);
                 var rolePresident={
                     name:'校长',
                     school:school,
@@ -424,7 +431,23 @@ exports.initRole=function(req,res,next){
                                         roleParent.save(function(err,parent){
                                             school.roles.push(parent);
                                             school.save(function(err,school){
-                                                res.redirect('/admin/school/list');
+                                                console.log('fffffffffffffffffinished');
+                                                //将role组合，加入到user的roles中
+                                                //parent需要增加role
+                                                var roleObj={
+
+                                                }
+                                                for(var i=0;i<school.roles.length;i++){
+                                                    if(school.roles[i].name==='校长'){
+                                                        roleObj.role=mongoose.Types.ObjectId(school.roles[i]._id);
+                                                        roleObj.grade='0';
+                                                    }
+                                                }
+                                                user.roles.push(roleObj);
+                                                user.save(function(err,user){
+                                                    next();
+                                                })
+
                                             })
                                         })
                                     });

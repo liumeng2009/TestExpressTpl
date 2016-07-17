@@ -7,6 +7,8 @@
 var app = require('../app');
 var debug = require('debug')('TestExpressTpl:server');
 var http = require('http');
+var fs=require('fs');
+var socket=require('socket.io')
 
 /**
  * Get port from environment and store in Express.
@@ -90,3 +92,59 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+var onlineUsers={};
+var onlineCount=0;
+
+socket.listen(server).on('connection',function(socketio){
+  console.log('a user connected');
+
+  socketio.on('login',function(obj){
+    socketio.name=obj.userid;
+
+    if(!onlineUsers.hasOwnProperty(obj.userid)){
+      onlineUsers[obj.userid]=obj.username;
+      onlineCount++;
+    }
+
+    socket.emit('login',{onlineUsers:onlineUsers,onlineCount:onlineCount,user:obj});
+    console.log(obj.username+'加入了聊天室');
+
+  });
+
+  socketio.on('disconnect',function(){
+    //将退出的用户从在线列表中删除
+    if(onlineUsers.hasOwnProperty(socket.name)) {
+      //退出用户的信息
+      var obj = {userid:socket.name, username:onlineUsers[socket.name]};
+
+      //删除
+      delete onlineUsers[socket.name];
+      //在线人数-1
+      onlineCount--;
+
+      //向所有客户端广播用户退出
+      socket.emit('logout', {onlineUsers:onlineUsers, onlineCount:onlineCount, user:obj});
+      console.log(obj.username+'退出了聊天室');
+    }
+  });
+
+  socketio.on('private message', function (from,to,msg) {
+
+    console.log('I received a private message by ', from, ' say to ',to, msg);
+
+    if(to in users){
+      //console.log('to :' + to);
+      onlineUsers[to].emit('to'+to, {mess:msg});
+
+    }
+  });
+
+
+  socketio.on('message',function(obj){
+    console.log(obj);
+    console.log(obj.username+'说',obj.content);
+    socketio.broadcast.emit('message',obj);
+  });
+
+});

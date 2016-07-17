@@ -1,0 +1,52 @@
+doctype html
+html(lang="zh_CN")
+    head
+        meta(charset="utf-8")
+        title= title
+        meta(name="viewport",content="width=device-width,initial-scale=1,maximum-scale=1")
+        <!-- Force IE9 to render in normal mode -->
+        <!--[if IE]>
+        meta(http-equiv="x-ua-compatible",content="IE=9")
+        <![endif]-->
+        meta(name="author",content="liumeng")
+        meta(name="application-name",content="SFProject")
+    body
+        | Incoming Chat:&nbsp;
+        ul#incomingChatMessages
+        input#outgoingChatMessage(type="text")
+
+        script(src="/assets/js/libs/jquery-2.1.1.min.js")
+        script(src="/javascripts/socket.io.js")
+        script.
+            $(function () {
+                var iosocket = io.connect();
+
+                iosocket.emit('join', {
+                    username: 'Username hehe'
+                });
+
+                iosocket.on('connect', function () {
+                    $('#incomingChatMessages').append($('<li>Connected</li>'));
+
+                    iosocket.on('message', function (message) {
+                        $('#incomingChatMessages').append($('<li></li>').text(message));
+                    });
+
+                    iosocket.on('broadcast_join',function(data){
+                        console.log(data.username + '加入了聊天室');
+                    });
+
+                    iosocket.on('disconnect', function () {
+                        $('#incomingChatMessages').append('<li>Disconnected</li>');
+                    });
+                });
+
+                $('#outgoingChatMessage').keypress(function (event) {
+                    if (event.which == 13) {
+                        event.preventDefault();
+                        iosocket.send({username:'heheh',content:$('#outgoingChatMessage').val()});
+                        $('#incomingChatMessages').append($('<li></li>').text($('#outgoingChatMessage').val()));
+                        $('#outgoingChatMessage').val('');
+                    }
+                });
+            })
