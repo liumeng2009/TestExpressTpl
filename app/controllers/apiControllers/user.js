@@ -68,8 +68,8 @@ exports.signup=function(req,res){
     var username=req.body.username;
     var password=req.body.password;
     var userObj={
-        name:req.body.name,
-        password:req.body.password,
+        name:username,
+        password:password,
         status:true,
         isWorker:false
     }
@@ -79,7 +79,26 @@ exports.signup=function(req,res){
             res.json({success:0,msg:'数据库访问错误'});
             return console.log(err);
         }
-        res.json({success:1,user:user});
+        var _tokenUser={
+            name:user.name,
+            password:user.password,
+            _id:user._id
+        };
+        var token=jwt.sign(_tokenUser,config.secret,{
+            expiresIn:'1 days'
+        });
+        user.token=token;
+        var date=new Date();
+        date.setDate(date.getDate()+1);
+        user.expiresIn=date;
+        user.save(function(err,user){
+            if(err){
+                res.json({success: 0, msg: '数据库访问失败3'+err});
+                return console.log(err);
+            }
+            res.json({success: 1,msg:'注册成功',token:token});
+        });
+
     });
 }
 

@@ -175,6 +175,9 @@ exports.new=function(req,res){
 exports.list=function(req,res){
     var user=req.app.locals.user;
     var SearchObj=[];
+    var nullObjectId=new mongoose.Types.ObjectId
+    var _se={_id:nullObjectId};
+    SearchObj.push(_se);
     for(var i=0;i<user.sons.length;i++){
         var _s={_id:user.sons[i].toString()};
         SearchObj.push(_s);
@@ -224,13 +227,17 @@ exports.chat_list=function(req,res){
                             for(var m=0;m<users.length;m++){
                                 //处理一下user的role 和这个班级无关的role删除
                                 for(var i=0;i<users[m].roles.length;i++){
-                                    console.log(users[m].roles[i].grade._id.toString());
-                                    console.log(grade._id);
-                                    if(users[m].roles[i].grade._id.toString()===grade._id.toString()){
+                                    if(users[m].roles[i].grade) {
+                                        if (users[m].roles[i].grade._id.toString() === grade._id.toString()) {
 
+                                        }
+                                        else {
+                                            users[m].roles.splice(i, 1);
+                                            i--;
+                                        }
                                     }
                                     else{
-                                        users[m].roles.splice(i,1);
+                                        users[m].roles.splice(i, 1);
                                         i--;
                                     }
                                 }
@@ -249,10 +256,6 @@ exports.chat_list=function(req,res){
 
 
                             }
-
-
-
-                            console.log(users);
                             res.json({success:1,msg:config.msg.success,users:users});
                         });
                 });

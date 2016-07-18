@@ -68,13 +68,14 @@ block content
                                             tbody
                                                 if user.roles
                                                     each role in user.roles
-                                                        tr(class="item-id-#{role._id}")
-                                                            td #{role.role.school.name}
-                                                            td #{role.role.name}
-                                                            td #{role.grade.name}
-                                                            td
-                                                                a.del.btn.btn-danger(href="#",data="#{user._id}",data-id="#{role.role._id}",data-grade="#{role.grade._id}",data-obj="#{role._id}")
-                                                                    | 删除角色
+                                                        if role.role&&role.role.school&&role.grade
+                                                            tr(class="item-id-#{role._id}")
+                                                                td #{role.role.school.name}
+                                                                td #{role.role.name}
+                                                                td #{role.grade.name}
+                                                                td
+                                                                    a.del.btn.btn-danger(href="#",data="#{user._id}",data-id="#{role.role._id}",data-grade="#{role.grade._id}",data-obj="#{role._id}")
+                                                                        | 删除角色
                                         a(href="#",data-toggle="modal",data-target="#modal1")#addRoles.btn.btn-primary
                                             | 新增角色
                                 .form-group

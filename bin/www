@@ -102,12 +102,15 @@ socket.listen(server).on('connection',function(socketio){
   socketio.on('login',function(obj){
     socketio.name=obj.userid;
 
-    if(!onlineUsers.hasOwnProperty(obj.userid)){
-      onlineUsers[obj.userid]=obj.username;
+    if(!onlineUsers.hasOwnProperty(obj.username)){
+      onlineUsers[obj.username]={
+        name:obj.username,
+        socket:socketio
+      };
       onlineCount++;
     }
 
-    socket.emit('login',{onlineUsers:onlineUsers,onlineCount:onlineCount,user:obj});
+    socketio.emit('login',{onlineCount:onlineCount,user:obj});
     console.log(obj.username+'加入了聊天室');
 
   });
@@ -124,7 +127,7 @@ socket.listen(server).on('connection',function(socketio){
       onlineCount--;
 
       //向所有客户端广播用户退出
-      socket.emit('logout', {onlineUsers:onlineUsers, onlineCount:onlineCount, user:obj});
+      socketio.emit('logout', {onlineUsers:onlineUsers, onlineCount:onlineCount, user:obj});
       console.log(obj.username+'退出了聊天室');
     }
   });
@@ -133,10 +136,13 @@ socket.listen(server).on('connection',function(socketio){
 
     console.log('I received a private message by ', from, ' say to ',to, msg);
 
-    if(to in users){
-      //console.log('to :' + to);
-      onlineUsers[to].emit('to'+to, {mess:msg});
-
+    for(var p in onlineUsers){
+      console.log(p);
+      if(p===to){
+        console.log(to+'在线');
+        console.log('发送事件名称是：'+'to'+to);
+        onlineUsers[to].socket.emit('to'+to, {mess:msg,from:from});
+      }
     }
   });
 

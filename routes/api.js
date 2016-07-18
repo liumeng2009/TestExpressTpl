@@ -10,7 +10,7 @@ var gradeController=require('../app/controllers/apiControllers/grade');
 var studentController=require('../app/controllers/apiControllers/student');
 
 router.get('/signin',userController.signin);
-router.get('/signup',userController.accesstoken,userController.signup);
+router.post('/signup',userController.signup);
 
 router.get('/usercenter',userController.accesstoken,userController.baseInfo);
 
