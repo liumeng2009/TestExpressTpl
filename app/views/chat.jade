@@ -21,7 +21,7 @@ html(lang="zh_CN")
         script(src="/javascripts/socket.io.js")
         script.
             $(function () {
-                var iosocket = io.connect();
+                var iosocket = io.connect('http://localhost:3000');
 
                 iosocket.emit('login', {
                     username: '#{from}'

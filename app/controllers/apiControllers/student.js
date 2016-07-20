@@ -23,6 +23,7 @@ exports.new=function(req,res){
         .populate('roles')
         .exec(function(err,school){
             if(err){
+                res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success:0,msg:config.msg.db});
                 return console.log(err);
             }
@@ -30,11 +31,13 @@ exports.new=function(req,res){
                 console.log(school);
                 Grade.findOne({status:true,_id:gid},function(err,grade){
                     if(err){
+                        res.setHeader('Access-Control-Allow-Origin', '*');
                         res.json({success:0,msg:config.msg.db});
                         return console.log(err);
                     }
                     User.findOne({status:true,_id:pid},function(err,parent){
                         if(err){
+                            res.setHeader('Access-Control-Allow-Origin', '*');
                             res.json({success:0,msg:config.msg.db});
                             return console.log(err);
                         }
@@ -55,6 +58,7 @@ exports.new=function(req,res){
                         if(id){
                             Student.findById({status:true,_id:id},function(err,student){
                                 if(err) {
+                                    res.setHeader('Access-Control-Allow-Origin', '*');
                                     res.json({success:0,msg:config.msg.db});
                                     return console.log(err);
                                 }
@@ -62,6 +66,7 @@ exports.new=function(req,res){
                                     var _student= _.extend(student,studentObj);
                                     _student.save(function(err,student){
                                         if(err){
+                                            res.setHeader('Access-Control-Allow-Origin', '*');
                                             res.json({success:0,msg:config.msg.db});
                                             return console.log(err);
                                         }
@@ -80,6 +85,7 @@ exports.new=function(req,res){
                                         }
                                         parent.save(function(err,parent){
                                             if(err){
+                                                res.setHeader('Access-Control-Allow-Origin', '*');
                                                 res.json({success:0,msg:config.msg.db});
                                                 return console.log(err);
                                             }
@@ -98,15 +104,18 @@ exports.new=function(req,res){
 
                                             grade.save(function(err,parent){
                                                 if(err){
+                                                    res.setHeader('Access-Control-Allow-Origin', '*');
                                                     res.json({success:0,msg:config.msg.db});
                                                     return console.log(err);
                                                 }
+                                                res.setHeader('Access-Control-Allow-Origin', '*');
                                                 res.json({success:1,msg:config.msg.success})
                                             });
                                         });
                                     });
                                 }
                                 else{
+                                    res.setHeader('Access-Control-Allow-Origin', '*');
                                     res.json({success:0,msg:config.msg.notexists})
                                 }
                             })
@@ -116,6 +125,7 @@ exports.new=function(req,res){
                             var _student=new Student(studentObj);
                             _student.save(function(err,student){
                                 if(err){
+                                    res.setHeader('Access-Control-Allow-Origin', '*');
                                     res.json({success:0,msg:config.msg.db});
                                     return console.log(err);
                                 }
@@ -140,6 +150,7 @@ exports.new=function(req,res){
                                 console.log('update parent'+parent);
                                 parent.save(function(err,parent){
                                     if(err){
+                                        res.setHeader('Access-Control-Allow-Origin', '*');
                                         res.json({success:0,msg:config.msg.db});
                                         return console.log(err);
                                     }
@@ -153,9 +164,11 @@ exports.new=function(req,res){
                                     grade.users.push(parent);
                                     grade.save(function(err,parent){
                                         if(err){
+                                            res.setHeader('Access-Control-Allow-Origin', '*');
                                             res.json({success:0,msg:config.msg.db});
                                             return console.log(err);
                                         }
+                                        res.setHeader('Access-Control-Allow-Origin', '*');
                                         res.json({success:1,msg:config.msg.success})
                                     });
                                 })
@@ -166,6 +179,7 @@ exports.new=function(req,res){
                 });
             }
             else{
+                res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success:0,msg:config.msg.notexists})
             }
         })
@@ -187,9 +201,11 @@ exports.list=function(req,res){
         .populate('grade')
         .exec(function(err,students){
             if(err){
+                res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success:0,msg:config.msg.db});
                 return console.log(err);
             }
+            res.setHeader('Access-Control-Allow-Origin', '*');
             res.json({success:1,students:students});
         });
 }
@@ -199,6 +215,7 @@ exports.chat_list=function(req,res){
     Student.findOne({status:true,_id:studentid})
         .exec(function(err,student){
             if(err){
+                res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success:0,msg:config.msg.db});
                 return console.log(err);
             }
@@ -206,6 +223,7 @@ exports.chat_list=function(req,res){
             Grade.findOne({status:true,_id:gradeid})
                 .exec(function(err,grade){
                     if(err){
+                        res.setHeader('Access-Control-Allow-Origin', '*');
                         res.json({success:0,msg:config.msg.db});
                         return console.log(err);
                     }
@@ -220,6 +238,7 @@ exports.chat_list=function(req,res){
                         .deepPopulate(['roles.grade','roles.role'])
                         .exec(function(err,users){
                             if(err){
+                                res.setHeader('Access-Control-Allow-Origin', '*');
                                 res.json({success:0,msg:config.msg.db});
                                 return console.log(err);
                             }
@@ -256,6 +275,7 @@ exports.chat_list=function(req,res){
 
 
                             }
+                            res.setHeader('Access-Control-Allow-Origin', '*');
                             res.json({success:1,msg:config.msg.success,users:users});
                         });
                 });

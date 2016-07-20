@@ -15,15 +15,18 @@ exports.school_list=function(req,res){
             .populate('owner')
             .exec(function(err,schools){
                 if(err){
+                    res.setHeader('Access-Control-Allow-Origin', '*');
                     res.json({success:0,msg:config.msg.db});
                     return console.log(err);
                 }
                 else{
+                    res.setHeader('Access-Control-Allow-Origin', '*');
                     res.json({success:1,msg:config.msg.success,schools:schools})
                 }
             });
     }
     else{
+        res.setHeader('Access-Control-Allow-Origin', '*');
         res.json({success:0,msg:config.msg.notexists});
     }
 }
@@ -32,9 +35,11 @@ exports.school=function(req,res){
     var id=req.query.id;
     School.findOne({status:true,_id:id},function(err,school){
         if(err){
+            res.setHeader('Access-Control-Allow-Origin', '*');
             res.json({success:0,msg:config.msg.db});
             return console.log(err);
         }
+        res.setHeader('Access-Control-Allow-Origin', '*');
         res.json({success:1,msg:config.msg.success,school:school});
     })
 }
@@ -57,6 +62,7 @@ exports.new=function(req,res,next){
         //编辑
         School.findOne({status:true,_id:id},function(err,school){
             if(err){
+                res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success:0,msg:config.msg.db});
                 return console.log(err);
             }
@@ -65,6 +71,7 @@ exports.new=function(req,res,next){
                 console.log(_school);
                 _school.save(function(err,school){
                     if(err){
+                        res.setHeader('Access-Control-Allow-Origin', '*');
                         res.json({success:0,msg:config.msg.db});
                         return console.log(err);
                     }
@@ -77,16 +84,19 @@ exports.new=function(req,res,next){
                         user.schools.push(school);
                         user.save(function(err,user){
                             if(err){
+                                res.setHeader('Access-Control-Allow-Origin', '*');
                                 res.json({success:0,msg:config.msg.db});
                                 return console.log(err);
                             }
                             res.app.locals.schoolapinew=undefined;
+                            res.setHeader('Access-Control-Allow-Origin', '*');
                             res.json({success:1,msg:config.msg.success});
                         });
                     }
                 })
             }
             else{
+                res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success:0,msg:config.msg.notexists});
                 return console.log(err);
             }
@@ -97,12 +107,14 @@ exports.new=function(req,res,next){
         var _school=new School(schoolObj);
         _school.save(function(err,school){
             if(err){
+                res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success:0,msg:config.msg.db});
                 return console.log(err);
             }
             user.schools.push(school);
             user.save(function(err,user){
                 if(err){
+                    res.setHeader('Access-Control-Allow-Origin', '*');
                     res.json({success:0,msg:config.msg.db});
                     return console.log(err);
                 }
@@ -460,11 +472,7 @@ exports.initRole=function(req,res,next){
 
             }
             else{
-                res.render('error',{
-                    status:500,
-                    message:'角色初始化失败',
-                    error:'角色初始化失败'
-                })
+                next();
             }
         });
     }
@@ -473,15 +481,18 @@ exports.initRole=function(req,res,next){
     }
 }
 exports.initUser=function(req,res){
-    console.log('将学校的建立者，赋值一个身份上去，让他拥有这个学校的"校长"身份');
+    //在上一个中间件中已经完成了
 }
 
 exports.school_list_all=function(req,res){
     School.find({status:true})
         .exec(function(err,schools){
         if(err){
+            res.setHeader('Access-Control-Allow-Origin', '*');
             res.json({success:0,msg:config.msg.db});
+            return console.log(err);
         }
+        res.setHeader('Access-Control-Allow-Origin', '*');
         res.json({success:1,msg:config.msg.success,schools:schools});
     });
 }

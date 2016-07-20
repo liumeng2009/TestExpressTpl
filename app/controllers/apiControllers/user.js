@@ -17,15 +17,18 @@ exports.signin=function(req,res){
     if(username&&username!="") {
         User.findOne({name: username}, function (err, user) {
             if (err) {
+                res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success: 0, msg: '数据库访问失败1'});
                 return console.log(err);
             }
             if (!user) {
+                res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success: 0, msg: '用户名不存在'});
             }
             else {
                 user.comparePassword(password, user.password, function (err, isMatch) {
                     if (err) {
+                        res.setHeader('Access-Control-Allow-Origin', '*');
                         res.json({success: 0, msg: '数据库访问失败2'+err});
                         return console.log(err);
                     }
@@ -45,14 +48,17 @@ exports.signin=function(req,res){
                         user.expiresIn=date;
                         user.save(function(err,user){
                             if(err){
+                                res.setHeader('Access-Control-Allow-Origin', '*');
                                 res.json({success: 0, msg: '数据库访问失败3'+err});
                                 return console.log(err);
                             }
                         });
+                        res.setHeader('Access-Control-Allow-Origin', '*');
                         res.json({success: 1,msg:'登录成功',token:token});
                         //req.session.user = user
                     }
                     else {
+                        res.setHeader('Access-Control-Allow-Origin', '*');
                         res.json({success: 0, msg: '用户名和密码不匹配'});
                     }
                 });
@@ -76,6 +82,7 @@ exports.signup=function(req,res){
     var _user=new User(userObj);
     _user.save(function(err,user){
         if(err){
+            res.setHeader('Access-Control-Allow-Origin', '*');
             res.json({success:0,msg:'数据库访问错误'});
             return console.log(err);
         }
@@ -93,9 +100,11 @@ exports.signup=function(req,res){
         user.expiresIn=date;
         user.save(function(err,user){
             if(err){
+                res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success: 0, msg: '数据库访问失败3'+err});
                 return console.log(err);
             }
+            res.setHeader('Access-Control-Allow-Origin', '*');
             res.json({success: 1,msg:'注册成功',token:token});
         });
 
@@ -108,14 +117,18 @@ exports.baseInfo=function(req,res){
         .populate('schools')
         .exec(function(err,user){
             if(err){
-                return res.json({ success: 0, message: '数据库连接错误' });
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.json({ success: 0, message: '数据库连接错误' });
+                return console.log(err);
             }
             console.log('8888888888888888'+token+user);
             if(user){
                 console.log(user);
+                res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success:1,user:user});
             }
             else{
+                res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success:0});
             }
         });
@@ -131,7 +144,9 @@ exports.accesstoken=function(req,res,next){
         // 确认token
         jwt.verify(token, config.secret, function(err, decoded) {
             if (err) {
+                res.setHeader('Access-Control-Allow-Origin', '*');
                 return res.json({ success: 0, msg: '身份错误，请登录，不合法的token。' });
+
             } else {
                 for(var p in decoded){
                     console.log(p);
@@ -140,6 +155,7 @@ exports.accesstoken=function(req,res,next){
                     .deepPopulate(['roles.grade','roles.role'])
                     .exec(function(err,user){
                         if(err){
+                            res.setHeader('Access-Control-Allow-Origin', '*');
                             return res.json({ success: 0, msg: '网络连接错误' });
                         }
                         if(user){
@@ -147,6 +163,7 @@ exports.accesstoken=function(req,res,next){
                                 var datenow=new Date();
                                 var dateExIn=user.expiresIn;
                                 if(dateExIn<datenow){
+                                    res.setHeader('Access-Control-Allow-Origin', '*');
                                     return res.json({ success: 0, msg: '身份错误，请登录，token过期。' });
                                 }else{
                                     req.app.locals.user=user;
@@ -154,10 +171,12 @@ exports.accesstoken=function(req,res,next){
                                 }
                             }
                             else{
+                                res.setHeader('Access-Control-Allow-Origin', '*');
                                 return res.json({ success: 0, msg: '身份错误，请登录，不合法的有效期。' });
                             }
                         }
                         else{
+                            res.setHeader('Access-Control-Allow-Origin', '*');
                             return res.json({ success: 0, msg: '身份错误，用户名不存在，请重新登陆。' });
                         }
                     });
@@ -165,6 +184,7 @@ exports.accesstoken=function(req,res,next){
         });
 
     } else {
+        res.setHeader('Access-Control-Allow-Origin', '*');
         return res.json({ success: 0, msg: '身份错误，请登录，token不存在。' });
 
     }
@@ -181,6 +201,7 @@ exports.opration=function(req,res,next){
                 next();
             }
             else{
+                res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success:0,msg:FORBIDEN});
             }
             break;
@@ -189,6 +210,7 @@ exports.opration=function(req,res,next){
                 next();
             }
             else{
+                res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success:0,msg:FORBIDEN});
             }
             break;
@@ -196,6 +218,7 @@ exports.opration=function(req,res,next){
             next();
             break;
         default:
+            res.setHeader('Access-Control-Allow-Origin', '*');
             res.json({success:0,msg:FORBIDEN});
             break;
 
@@ -207,8 +230,11 @@ exports.user_by_id=function(req,res){
     User.findOne({status:true,_id:id})
         .exec(function(err,user){
             if(err){
+                res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success:0,msg:config.msg.db});
                 return console.log(err);
             }
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.json({success:1,user:user});
         })
 }

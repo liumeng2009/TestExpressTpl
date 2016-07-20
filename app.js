@@ -129,7 +129,7 @@ isValidObjectId=function(id){
 
 app.use(function(req,res,next){
   res.writeHead(200, { 'Content-type': 'text/html'});
-  res.end(fs.readFileSync(__dirname + '/chat.html'));
+  //res.end(fs.readFileSync(__dirname + '/chat.html'));
 })
 
 

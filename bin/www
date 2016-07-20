@@ -8,7 +8,9 @@ var app = require('../app');
 var debug = require('debug')('TestExpressTpl:server');
 var http = require('http');
 var fs=require('fs');
-var socket=require('socket.io')
+var socket=require('socket.io');
+var User=require('../app/models/user');
+var Chat=require('../app/models/chat');
 
 /**
  * Get port from environment and store in Express.
@@ -93,60 +95,98 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
+//在线聊天模块
 var onlineUsers={};
 var onlineCount=0;
-
 socket.listen(server).on('connection',function(socketio){
-  console.log('a user connected');
-
   socketio.on('login',function(obj){
-    socketio.name=obj.userid;
-
-    if(!onlineUsers.hasOwnProperty(obj.username)){
-      onlineUsers[obj.username]={
-        name:obj.username,
-        socket:socketio
-      };
-      onlineCount++;
-    }
-
-    socketio.emit('login',{onlineCount:onlineCount,user:obj});
-    console.log(obj.username+'加入了聊天室');
+    socketio.name=obj.username;
+    User.findOne({status:true,_id:obj.userid},function(err,user){
+        if(err){
+          socketio.emit('errorinfo','dberror');
+          return console.log(err)
+        }
+        if(user){
+          User.findOne({status:true,_id:obj.touserid},function(err,userto){
+            if(err){
+              socketio.emit('errorinfo','dberror');
+              return console.log(err)
+            }
+            if(userto){
+              //如果成功，进行下一步。
+              if(!onlineUsers.hasOwnProperty(obj.username)) {
+                onlineUsers[obj.username] = {
+                  username: user.name,
+                  _id:user._id,
+                  socket: socketio
+                };
+                onlineCount++;
+                socketio.emit('loginsuccess',{onlineCount:onlineCount,user:user,userto:userto});
+            }
+            else{
+              socketio.emit('errorinfo','usertoerror');
+            }
+          };
+          });
+        }
+        else{
+          socketio.emit('errorinfo','usererror');
+        }
+      });
+    //socketio.emit('login',{onlineCount:onlineCount,user:obj});
+    console.log(obj.username+'登录成功');
 
   });
 
   socketio.on('disconnect',function(){
-    //将退出的用户从在线列表中删除
-    if(onlineUsers.hasOwnProperty(socket.name)) {
+    if(onlineUsers.hasOwnProperty(socketio.name)) {
       //退出用户的信息
-      var obj = {userid:socket.name, username:onlineUsers[socket.name]};
+      //var obj = {username:socket.name, userid:onlineUsers[socket.name]};
 
       //删除
-      delete onlineUsers[socket.name];
+      delete onlineUsers[socketio.name];
       //在线人数-1
-      onlineCount--;
+
 
       //向所有客户端广播用户退出
-      socketio.emit('logout', {onlineUsers:onlineUsers, onlineCount:onlineCount, user:obj});
-      console.log(obj.username+'退出了聊天室');
+      //socketio.emit('logout', {onlineUsers:onlineUsers, onlineCount:onlineCount, user:obj});
+      console.log(socketio.name+'退出');
     }
   });
+
+  socketio.on('logout',function(obj){
+    for(var p in onlineUsers){
+      if(onlineUsers[p]._id.toString()===obj.toString()){
+        delete onlineUsers[p];
+        onlineCount--;
+        console.log(socketio.name+'退出'+onlineCount);
+      }
+    }
+  })
 
   socketio.on('private message', function (from,to,msg) {
 
     console.log('I received a private message by ', from, ' say to ',to, msg);
 
+    //保存到db中
+
+
     for(var p in onlineUsers){
-      console.log(p);
-      if(p===to){
+      console.log('遍历在线的人'+p);
+      if(onlineUsers[p]._id.toString()===to.toString()){
         console.log(to+'在线');
         console.log('发送事件名称是：'+'to'+to);
-        onlineUsers[to].socket.emit('to'+to, {mess:msg,from:from});
+        User.findOne({status:true,_id:from},function(err,user){
+          if(err){
+            socketio.emit('errorinfo','dberror');
+            return console.log(err)
+          }
+          onlineUsers[p].socket.emit('from'+from+'to'+to, {message:msg,user:user});
+        });
+        break;
       }
     }
   });
-
-
   socketio.on('message',function(obj){
     console.log(obj);
     console.log(obj.username+'说',obj.content);
@@ -154,3 +194,6 @@ socket.listen(server).on('connection',function(socketio){
   });
 
 });
+
+
+
