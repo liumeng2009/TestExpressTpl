@@ -118,7 +118,7 @@ exports.baseInfo=function(req,res){
         .exec(function(err,user){
             if(err){
                 res.setHeader('Access-Control-Allow-Origin', '*');
-                res.json({ success: 0, message: '数据库连接错误' });
+                res.json({ success: 0,msg:config.msg.db });
                 return console.log(err);
             }
             console.log('8888888888888888'+token+user);
@@ -129,7 +129,7 @@ exports.baseInfo=function(req,res){
             }
             else{
                 res.setHeader('Access-Control-Allow-Origin', '*');
-                res.json({success:0});
+                res.json({success:0,msg:config.msg.notexists});
             }
         });
 }

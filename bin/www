@@ -11,6 +11,7 @@ var fs=require('fs');
 var socket=require('socket.io');
 var User=require('../app/models/user');
 var Chat=require('../app/models/chat');
+var mongoose=require('mongoose');
 
 /**
  * Get port from environment and store in Express.
@@ -169,23 +170,39 @@ socket.listen(server).on('connection',function(socketio){
     console.log('I received a private message by ', from, ' say to ',to, msg);
 
     //保存到db中
-
-
-    for(var p in onlineUsers){
-      console.log('遍历在线的人'+p);
-      if(onlineUsers[p]._id.toString()===to.toString()){
-        console.log(to+'在线');
-        console.log('发送事件名称是：'+'to'+to);
-        User.findOne({status:true,_id:from},function(err,user){
-          if(err){
-            socketio.emit('errorinfo','dberror');
-            return console.log(err)
-          }
-          onlineUsers[p].socket.emit('from'+from+'to'+to, {message:msg,user:user});
-        });
-        break;
+    var chatObj={
+      from:mongoose.Types.ObjectId(from),
+      to:mongoose.Types.ObjectId(to),
+      status:0,
+      content:msg
+    };
+    var _chat=new Chat(chatObj);
+    _chat.save(function(res,chat){
+      if(err){
+        socketio.emit('errorinfo','dberror');
+        return console.log(err)
       }
-    }
+      //保存成功
+      for(var p in onlineUsers){
+        console.log('遍历在线的人'+p);
+        if(onlineUsers[p]._id.toString()===to.toString()){
+          console.log(to+'在线');
+          console.log('发送事件名称是：'+'to'+to);
+          onlineUsers[p].socket.emit('from'+from+'to'+to, {message:msg});
+          //给用户转发过去了，就认为发送成功了，status置1
+          chat.status=1;
+          chat.save(function(err,chatt){
+            if(err){
+              socketio.emit('errorinfo','dberror');
+              return console.log(err)
+            }
+            break;
+          });
+        }
+      }
+    })
+
+
   });
   socketio.on('message',function(obj){
     console.log(obj);
