@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="socket.io.js" ></script>
+    <script src="public/assets/js/libs/jquery-2.1.1.min.js" ></script>
+</head>
+<body>
+<input type="text" id="message" ><button id="send">发送</button>
+
+<ul id="messageList"></ul>
+
+</body>
+<script>
+    iosocket = io.connect('http://localhost:3000');
+
+    iosocket.emit('login', 'liumeng');
+
+    iosocket.on('connect',function(){
+
+        iosocket.on('to',function(obj){
+            $('#messageList').append($('<li>').text(obj.username+'说'+obj.content));
+        });
+
+        $('#send').click(function(){
+            $('#messageList').append($('<li>').text('liumeng说:'+$('#message').val()));
+            iosocket.emit('message',{username:'liumeng',content:$('#message').val()});
+        });
+
+    });
+</script>
+</html>

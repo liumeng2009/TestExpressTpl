@@ -212,6 +212,7 @@ exports.list=function(req,res){
 
 exports.chat_list=function(req,res){
     var studentid=req.query.id;
+    var usernow=req.app.locals.user;
     Student.findOne({status:true,_id:studentid})
         .exec(function(err,student){
             if(err){
@@ -270,6 +271,13 @@ exports.chat_list=function(req,res){
                                     else{
                                         users[m].sons.splice(j,1);
                                         j--;
+                                    }
+                                }
+
+                                //处理一下users，如果他的id是自己，就排除叼
+                                for(var k=0;k<users.length;k++){
+                                    if(users[k]._id.toString()===usernow._id.toString()){
+                                        users.splice(k,1);
                                     }
                                 }
 

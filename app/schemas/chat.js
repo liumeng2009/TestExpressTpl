@@ -36,8 +36,8 @@ ChatSchema.pre('save', function(next) {
     }
     else {
         this.meta.updateAt = Date.now()
-        next();
     }
+    next();
 })
 
 ChatSchema.statics = {

@@ -9,9 +9,10 @@ var debug = require('debug')('TestExpressTpl:server');
 var http = require('http');
 var fs=require('fs');
 var socket=require('socket.io');
+var mongoose=require('mongoose');
 var User=require('../app/models/user');
 var Chat=require('../app/models/chat');
-var mongoose=require('mongoose');
+
 
 /**
  * Get port from environment and store in Express.
@@ -171,17 +172,20 @@ socket.listen(server).on('connection',function(socketio){
 
     //保存到db中
     var chatObj={
-      from:mongoose.Types.ObjectId(from),
-      to:mongoose.Types.ObjectId(to),
+      from:mongoose.Types.ObjectId(from.toString()),
+      to:mongoose.Types.ObjectId(to.toString()),
       status:0,
       content:msg
     };
+    console.log(chatObj);
     var _chat=new Chat(chatObj);
-    _chat.save(function(res,chat){
+    console.log(_chat);
+    _chat.save(function(err,chat){
       if(err){
         socketio.emit('errorinfo','dberror');
         return console.log(err)
       }
+      console.log('11111111111'+chat);
       //保存成功
       for(var p in onlineUsers){
         console.log('遍历在线的人'+p);
@@ -196,7 +200,7 @@ socket.listen(server).on('connection',function(socketio){
               socketio.emit('errorinfo','dberror');
               return console.log(err)
             }
-            break;
+            //break;
           });
         }
       }

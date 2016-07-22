@@ -1,7 +1,9 @@
 /**
  * Created by Administrator on 2016/5/26.
  */
+var mongoose=require('mongoose');
 var AdminUser=require('../models/admin_user');
+var Chat=require('../models/chat');
 var _ = require('underscore')
 
 //用户列表

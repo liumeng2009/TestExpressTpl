@@ -8,6 +8,7 @@ var userController=require('../app/controllers/apiControllers/user');
 var schoolController=require('../app/controllers/apiControllers/school');
 var gradeController=require('../app/controllers/apiControllers/grade');
 var studentController=require('../app/controllers/apiControllers/student');
+var chatController=require('../app/controllers/apiControllers/chat');
 
 router.get('/signin',userController.signin);
 router.post('/signup',userController.signup);
@@ -24,5 +25,7 @@ router.get('/grade_list_by_school',userController.accesstoken,gradeController.gr
 router.post('/student_add',userController.accesstoken,studentController.new);
 router.get('/student_list',userController.accesstoken,studentController.list);
 router.get('/student_chat_list',userController.accesstoken,studentController.chat_list);
+
+router.get('/chat_list',userController.accesstoken,chatController.chat_list)
 
 module.exports=router;
