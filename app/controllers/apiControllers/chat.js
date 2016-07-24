@@ -24,10 +24,6 @@ exports.chat_list=function(req,res){
 
                 }
             }
-
-
-
-
             res.json({success:1,chats:chats})
         });
 }
@@ -47,4 +43,46 @@ var getRelationUser=function(obj,userid){
             time:obj.meta.createAt
         }
     }
+}
+
+exports.chat_not_read_list=function(req,res){
+    var user=req.app.locals.user;
+    Chat.find({to:user._id.toString(),status:0})
+        .populate('from')
+        .populate('to')
+        .sort({'_id':-1})
+        .exec(function(err,chats){
+            if(err){
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.json({success:0,msg:config.msg.db});
+                return console.log(err);
+            }
+            console.log(chats);
+            //去掉from重复的情况
+            var _chats=[];
+            for(var i=0;i<chats.length;i++){
+                if(i===0){
+                    _chats.push(chats[i]);
+                    _chats[0].newCount=0;
+                    console.log('11111111'+_chats[0]);
+                }
+                else{
+                    for(var j=0;j<_chats.length;j++){
+                        if(chats[i].from._id===_chats[j].from._id){
+                            _chats[j].newCount=parseInt(_chats[j].newCount?_chats[j].newCount:0)+1;
+                        }
+                        else{
+                            if(j===_chats.length-1){
+                                _chats.push(chats[i]);
+                                _chats[_chats.length-1].newCount=1;
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.json({success:1,chats:_chats})
+        });
 }

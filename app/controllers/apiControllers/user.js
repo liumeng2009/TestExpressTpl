@@ -18,6 +18,7 @@ exports.signin=function(req,res){
         User.findOne({name: username}, function (err, user) {
             if (err) {
                 res.setHeader('Access-Control-Allow-Origin', '*');
+
                 res.json({success: 0, msg: '数据库访问失败1'});
                 return console.log(err);
             }
@@ -66,6 +67,7 @@ exports.signin=function(req,res){
         })
     }
     else{
+        res.setHeader('Access-Control-Allow-Origin', '*');
         res.json({success: 0, msg: '用户名不能为空'});
     }
 }
@@ -80,9 +82,12 @@ exports.signup=function(req,res){
         isWorker:false
     }
     var _user=new User(userObj);
+    console.log(_user);
     _user.save(function(err,user){
         if(err){
             res.setHeader('Access-Control-Allow-Origin', '*');
+            res.setHeader('Access-Control-Allow-Methods','POST');
+            res.setHeader('Access-Control-Allow-Headers','x-requested-with,content-type');
             res.json({success:0,msg:'数据库访问错误'});
             return console.log(err);
         }
@@ -101,10 +106,14 @@ exports.signup=function(req,res){
         user.save(function(err,user){
             if(err){
                 res.setHeader('Access-Control-Allow-Origin', '*');
+                res.setHeader('Access-Control-Allow-Methods','POST');
+                res.setHeader('Access-Control-Allow-Headers','x-requested-with,content-type');
                 res.json({success: 0, msg: '数据库访问失败3'+err});
                 return console.log(err);
             }
             res.setHeader('Access-Control-Allow-Origin', '*');
+            res.setHeader('Access-Control-Allow-Methods','POST');
+            res.setHeader('Access-Control-Allow-Headers','x-requested-with,content-type');
             res.json({success: 1,msg:'注册成功',token:token});
         });
 
