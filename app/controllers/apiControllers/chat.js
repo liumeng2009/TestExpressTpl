@@ -57,30 +57,45 @@ exports.chat_not_read_list=function(req,res){
                 res.json({success:0,msg:config.msg.db});
                 return console.log(err);
             }
-            console.log(chats);
             //去掉from重复的情况
             var _chats=[];
+            var _count=[];
             for(var i=0;i<chats.length;i++){
                 if(i===0){
-                    _chats.push(chats[i]);
-                    _chats[0].newCount=0;
-                    console.log('11111111'+_chats[0]);
+                    var chat={
+                        from:chats[i].from,
+                        to:chats[i].to,
+                        meta:chats[i].meta,
+                        content:[
+                            chats[i].content
+                        ]
+                    }
+                    _chats.push(chat);
                 }
                 else{
                     for(var j=0;j<_chats.length;j++){
                         if(chats[i].from._id===_chats[j].from._id){
-                            _chats[j].newCount=parseInt(_chats[j].newCount?_chats[j].newCount:0)+1;
+                            _chats[j].content.push(chats[i].content);
+                            console.log('重复的');
                         }
                         else{
                             if(j===_chats.length-1){
-                                _chats.push(chats[i]);
-                                _chats[_chats.length-1].newCount=1;
+                                var chat={
+                                    from:chats[i].from,
+                                    to:chats[i].to,
+                                    meta:chats[i].meta,
+                                    content:[
+                                        chats[i].content
+                                    ]
+                                }
+                                _chats.push(chat);
                             }
                         }
                     }
                 }
             }
 
+            console.log(_chats);
 
             res.setHeader('Access-Control-Allow-Origin', '*');
             res.json({success:1,chats:_chats})
