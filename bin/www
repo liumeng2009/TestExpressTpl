@@ -101,57 +101,40 @@ function onListening() {
 var onlineUsers={};
 var onlineCount=0;
 socket.listen(server).on('connection',function(socketio){
+  /*
+    obj={
+      name:
+      _id:
+    }
+  */
   socketio.on('login',function(obj){
-    socketio.name=obj.username;
-    User.findOne({status:true,_id:obj.userid},function(err,user){
+    socketio.name=obj.name;
+    User.findOne({status:true,_id:obj._id},function(err,user){
         if(err){
           socketio.emit('errorinfo','dberror');
           return console.log(err)
         }
         if(user){
-          User.findOne({status:true,_id:obj.touserid},function(err,userto){
-            if(err){
-              socketio.emit('errorinfo','dberror');
-              return console.log(err)
-            }
-            if(userto){
-              //如果成功，进行下一步。
-              if(!onlineUsers.hasOwnProperty(obj.username)) {
-                onlineUsers[obj.username] = {
-                  username: user.name,
-                  _id:user._id,
-                  socket: socketio
-                };
-                onlineCount++;
-                socketio.emit('loginsuccess',{onlineCount:onlineCount,user:user,userto:userto});
-            }
-            else{
-              socketio.emit('errorinfo','usertoerror');
-            }
-          };
-          });
+          if(!onlineUsers.hasOwnProperty(obj.name)) {
+            onlineUsers[obj.name] = {
+              name: user.name,
+              _id:user._id,
+              socket: socketio
+            };
+            onlineCount++;
+            socketio.emit('loginsuccess',{user:user});
+            console.log(obj.name+'登录成功');
+          }
         }
         else{
           socketio.emit('errorinfo','usererror');
         }
       });
-    //socketio.emit('login',{onlineCount:onlineCount,user:obj});
-    console.log(obj.username+'登录成功');
-
   });
 
   socketio.on('disconnect',function(){
     if(onlineUsers.hasOwnProperty(socketio.name)) {
-      //退出用户的信息
-      //var obj = {username:socket.name, userid:onlineUsers[socket.name]};
-
-      //删除
       delete onlineUsers[socketio.name];
-      //在线人数-1
-
-
-      //向所有客户端广播用户退出
-      //socketio.emit('logout', {onlineUsers:onlineUsers, onlineCount:onlineCount, user:obj});
       console.log(socketio.name+'退出');
     }
   });
@@ -164,6 +147,16 @@ socket.listen(server).on('connection',function(socketio){
         console.log(socketio.name+'退出'+onlineCount);
       }
     }
+  });
+
+  socketio.on('usersaw',function(obj){
+    var fromid=obj.from;
+    var toid=obj.to;
+    Chat.find()
+      .setOptions({multi:true})
+      .update({from:fromid,to:toid},{$set:{status:1}},function(err,chat){
+        console.log('修改了'+JSON.stringify(chat));
+      })
   })
 
   socketio.on('private message', function (from,to,msg) {
@@ -177,31 +170,20 @@ socket.listen(server).on('connection',function(socketio){
       status:0,
       content:msg
     };
-    console.log(chatObj);
     var _chat=new Chat(chatObj);
-    console.log(_chat);
     _chat.save(function(err,chat){
       if(err){
         socketio.emit('errorinfo','dberror');
         return console.log(err)
       }
-      console.log('11111111111'+chat);
       //保存成功
       for(var p in onlineUsers){
         console.log('遍历在线的人'+p);
         if(onlineUsers[p]._id.toString()===to.toString()){
           console.log(to+'在线');
           console.log('发送事件名称是：'+'to'+to);
-          onlineUsers[p].socket.emit('from'+from+'to'+to, {message:msg});
-          //给用户转发过去了，就认为发送成功了，status置1
-          chat.status=1;
-          chat.save(function(err,chatt){
-            if(err){
-              socketio.emit('errorinfo','dberror');
-              return console.log(err)
-            }
-            //break;
-          });
+          onlineUsers[p].socket.emit('from'+from+'to'+to, {message:msg,createAt:new Date});
+
         }
       }
     })

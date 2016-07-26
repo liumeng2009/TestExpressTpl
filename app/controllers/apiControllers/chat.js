@@ -76,7 +76,6 @@ exports.chat_not_read_list=function(req,res){
                     for(var j=0;j<_chats.length;j++){
                         if(chats[i].from._id===_chats[j].from._id){
                             _chats[j].content.push(chats[i].content);
-                            console.log('重复的');
                         }
                         else{
                             if(j===_chats.length-1){
@@ -94,9 +93,6 @@ exports.chat_not_read_list=function(req,res){
                     }
                 }
             }
-
-            console.log(_chats);
-
             res.setHeader('Access-Control-Allow-Origin', '*');
             res.json({success:1,chats:_chats})
         });
