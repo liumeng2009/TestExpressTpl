@@ -181,9 +181,15 @@ socket.listen(server).on('connection',function(socketio){
         console.log('遍历在线的人'+p);
         if(onlineUsers[p]._id.toString()===to.toString()){
           console.log(to+'在线');
-          console.log('发送事件名称是：'+'to'+to);
+          console.log('发送事件名称是：'+'from'+from+'to'+to);
+          //用于1对1
           onlineUsers[p].socket.emit('from'+from+'to'+to, {message:msg,createAt:new Date});
-
+          //用于main页面
+          User.findOne({_id:from})
+              .exec(function(err,fromuser){
+                console.log('发送main事件'+'to'+to);
+                onlineUsers[p].socket.emit('to'+to, {message:msg,createAt:new Date,from:fromuser});
+              });
         }
       }
     })
