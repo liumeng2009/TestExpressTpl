@@ -130,9 +130,7 @@ exports.baseInfo=function(req,res){
                 res.json({ success: 0,msg:config.msg.db });
                 return console.log(err);
             }
-            console.log('8888888888888888'+token+user);
             if(user){
-                console.log(user);
                 res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success:1,user:user});
             }
@@ -147,7 +145,6 @@ exports.baseInfo=function(req,res){
 exports.accesstoken=function(req,res,next){
     //检查post的信息或者url查询参数或者头信息
     var token = req.query.token;
-    console.log('rrrrrrrrrrrrrrrr'+token);
     // 解析 token
     if (token) {
         // 确认token
@@ -157,9 +154,6 @@ exports.accesstoken=function(req,res,next){
                 return res.json({ success: 0, msg: '身份错误，请登录，不合法的token。' });
 
             } else {
-                for(var p in decoded){
-                    console.log(p);
-                }
                 User.findOne({status:true,_id:decoded._id})
                     .deepPopulate(['roles.grade','roles.role'])
                     .exec(function(err,user){

@@ -177,21 +177,24 @@ socket.listen(server).on('connection',function(socketio){
         return console.log(err)
       }
       //保存成功
-      for(var p in onlineUsers){
-        console.log('遍历在线的人'+p);
-        if(onlineUsers[p]._id.toString()===to.toString()){
-          console.log(to+'在线');
-          console.log('发送事件名称是：'+'from'+from+'to'+to);
-          //用于1对1
-          onlineUsers[p].socket.emit('from'+from+'to'+to, {message:msg,createAt:new Date});
-          //用于main页面
-          User.findOne({_id:from})
-              .exec(function(err,fromuser){
-                console.log('发送main事件'+'to'+to);
-                onlineUsers[p].socket.emit('to'+to, {message:msg,createAt:new Date,from:fromuser});
-              });
-        }
-      }
+      User.findOne({_id:from})
+        .exec(function(err,fromuser){
+          for(var p in onlineUsers){
+            console.log('遍历在线的人'+p);
+            if(onlineUsers[p]._id.toString()===to.toString()){
+              console.log(to+'在线');
+              console.log('发送事件名称是：'+'from'+from+'to'+to+p);
+              //用于1对1
+              onlineUsers[p].socket.emit('from'+from+'to'+to, {message:msg,createAt:new Date});
+              //用于main页面
+              onlineUsers[p].socket.emit('to'+to, {message:msg,createAt:new Date,from:fromuser});
+
+            }
+          }
+        })
+
+
+
     })
 
 

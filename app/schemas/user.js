@@ -70,7 +70,6 @@ UserSchema.pre('save', function(next) {
             bcrypt.hash(user.password, salt, function(){},function(err, hash) {
                 if (err) return next(err)
                 user.password = hash;
-                console.log('user对象是：'+user);
                 next();
             })
         })
@@ -83,8 +82,6 @@ UserSchema.pre('save', function(next) {
 
 UserSchema.methods = {
     comparePassword: function(password,_password,cb) {
-        console.log('password:'+password);
-        console.log('_password'+_password);
         bcrypt.compare(password, _password, function(err, isMatch) {
             if (err) return cb(err)
             console.log(_password);

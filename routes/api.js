@@ -29,5 +29,7 @@ router.get('/student_chat_list',userController.accesstoken,studentController.cha
 
 router.get('/chat_list',userController.accesstoken,chatController.chat_list);
 router.get('/chat_not_read_list',userController.accesstoken,chatController.chat_not_read_list);
+router.get('/chat_not_read_list_to',userController.accesstoken,chatController.chat_not_read_list_to);
+router.get('/chat_twelve_hours_ago',userController.accesstoken,chatController.chat_twelve_hours_ago);
 
 module.exports=router;

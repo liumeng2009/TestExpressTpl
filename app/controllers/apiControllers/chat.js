@@ -97,3 +97,43 @@ exports.chat_not_read_list=function(req,res){
             res.json({success:1,chats:_chats})
         });
 }
+
+exports.chat_not_read_list_to=function(req,res){
+    var user=req.app.locals.user;
+    var fromid=req.query.fromid;
+    Chat.find({to:user._id.toString(),status:0,from:fromid.toString()})
+        .populate('from')
+        .populate('to')
+        .sort({'_id':-1})
+        .exec(function(err,chats){
+            if(err){
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.json({success:0,msg:config.msg.db});
+                return console.log(err);
+            }
+            console.log(chats);
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.json({success:1,chats:chats})
+        });
+}
+exports.chat_twelve_hours_ago=function(req,res){
+    var user=req.app.locals.user;
+    var fromid=req.query.fromid;
+    var dw=new Date();
+    dw.setHours(dw.getHours()-12);
+    Chat.find({status:1})
+        .or([{to:user._id.toString(),from:fromid.toString()},{from:user._id.toString(),to:fromid.toString()}])
+        .gt('meta.createAt',dw)
+        .populate('from')
+        .populate('to')
+        .sort({'_id':-1})
+        .exec(function(err,chats){
+            if(err){
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.json({success:0,msg:config.msg.db});
+                return console.log(err);
+            }
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.json({success:1,chats:chats})
+        });
+}
