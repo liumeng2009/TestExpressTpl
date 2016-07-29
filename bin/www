@@ -122,7 +122,19 @@ socket.listen(server).on('connection',function(socketio){
               socket: socketio
             };
             onlineCount++;
-            socketio.emit('loginsuccess',{user:user});
+            //处理onlineusers，将在线列表传给用户
+            var UserList={};
+            for(var m in onlineUsers){
+              //delete UserList[m].socket;
+              UserList[m.toString()]={
+                name:onlineUsers[m].name,
+                _id:onlineUsers[m]._id
+              }
+            }
+            //告诉自己，我登录了
+            //socketio.emit('userlist',{userlist:UserList});
+            //告诉别人，我登录了
+            socketio.broadcast.emit('userlist',{userlist:UserList});
             console.log(obj.name+'登录成功');
           }
         }
@@ -136,8 +148,34 @@ socket.listen(server).on('connection',function(socketio){
     if(onlineUsers.hasOwnProperty(socketio.name)) {
       delete onlineUsers[socketio.name];
       console.log(socketio.name+'退出');
+      var UserList={};
+      for(var m in onlineUsers){
+        //delete UserList[m].socket;
+        UserList[m.toString()]={
+          name:onlineUsers[m].name,
+          _id:onlineUsers[m]._id
+        }
+      }
+      //告诉自己，我登录了
+      //socketio.emit('userlist',{userlist:UserList});
+      //告诉别人，我登录了
+      socketio.emit('ansuserlist'+onlineUsers[socketio.name]._id,0);
     }
   });
+
+  socketio.on('askuserlist',function(obj){
+    for(var m in onlineUsers){
+      console.log(5555555555555);
+      console.log(onlineUsers[m]._id.toString()+'666666666666'+obj.toString());
+      if(onlineUsers[m]._id.toString()===obj.toString()){
+        socketio.emit('ansuserlist'+obj,1);
+        break;
+      }
+      else{
+        socketio.emit('ansuserlist'+obj,0);
+      }
+    }
+  })
 
   socketio.on('logout',function(obj){
     for(var p in onlineUsers){
@@ -147,6 +185,18 @@ socket.listen(server).on('connection',function(socketio){
         console.log(socketio.name+'退出'+onlineCount);
       }
     }
+    var UserList={};
+    for(var m in onlineUsers){
+      //delete UserList[m].socket;
+      UserList[m.toString()]={
+        name:onlineUsers[m].name,
+        _id:onlineUsers[m]._id
+      }
+    }
+    //告诉自己，我登录了
+    //socketio.emit('userlist',{userlist:UserList});
+    //告诉别人，我登录了
+    socketio.broadcast.emit('userlist',{userlist:UserList});
   });
 
   socketio.on('usersaw',function(obj){
@@ -185,9 +235,11 @@ socket.listen(server).on('connection',function(socketio){
               console.log(to+'在线');
               console.log('发送事件名称是：'+'from'+from+'to'+to+p);
               //用于1对1
-              onlineUsers[p].socket.emit('from'+from+'to'+to, {message:msg,createAt:new Date});
-              //用于main页面
-              onlineUsers[p].socket.emit('to'+to, {message:msg,createAt:new Date,from:fromuser});
+              if(onlineUsers[p].socket) {
+                onlineUsers[p].socket.emit('from' + from + 'to' + to, {message: msg, createAt: new Date});
+                //用于main页面
+                onlineUsers[p].socket.emit('to' + to, {message: msg, createAt: new Date, from: fromuser});
+              }
 
             }
           }
