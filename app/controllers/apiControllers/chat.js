@@ -60,22 +60,23 @@ exports.chat_not_read_list=function(req,res){
             //去掉from重复的情况
             var _chats=[];
             var _count=[];
-            for(var i=0;i<chats.length;i++){
-                if(i===0){
-                    var chat={
-                        from:chats[i].from,
-                        to:chats[i].to,
-                        meta:chats[i].meta,
-                        content:[
-                            chats[i].content
-                        ]
-                    }
-                    _chats.push(chat);
+            if(chats.length>0){
+                var chat={
+                    from:chats[0].from,
+                    to:chats[0].to,
+                    meta:chats[0].meta,
+                    content:[
+                        chats[0].content
+                    ]
                 }
-                else{
+                _chats.push(chat);
+
+                for(var i=0;i<chats.length;i++){
                     for(var j=0;j<_chats.length;j++){
                         if(chats[i].from._id===_chats[j].from._id){
-                            _chats[j].content.push(chats[i].content);
+                            if(_chats[j].meta.createAt!=chats[i].meta.createAt)
+                                _chats[j].content.push(chats[i].content);
+                            break;
                         }
                         else{
                             if(j===_chats.length-1){
@@ -91,8 +92,11 @@ exports.chat_not_read_list=function(req,res){
                             }
                         }
                     }
+
                 }
             }
+
+            console.log(_chats);
             res.setHeader('Access-Control-Allow-Origin', '*');
             res.json({success:1,chats:_chats})
         });

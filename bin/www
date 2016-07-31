@@ -122,20 +122,18 @@ socket.listen(server).on('connection',function(socketio){
               socket: socketio
             };
             onlineCount++;
-            //处理onlineusers，将在线列表传给用户
-            var UserList={};
-            for(var m in onlineUsers){
-              //delete UserList[m].socket;
-              UserList[m.toString()]={
-                name:onlineUsers[m].name,
-                _id:onlineUsers[m]._id
-              }
-            }
+            //存储数据库
+            User.find()
+                .setOptions({multi:true})
+                .update({_id:obj._id},{$set:{online:true}},function(){
+
+                });
+
             //告诉自己，我登录了
             //socketio.emit('userlist',{userlist:UserList});
             //告诉别人，我登录了
-            socketio.broadcast.emit('userlist',{userlist:UserList});
-            console.log(obj.name+'登录成功');
+            socketio.broadcast.emit('ansuserlist'+obj._id,{_id:obj._id,online:true});
+            console.log(obj.name+'登录成功'+'ansuserlist'+obj._id);
           }
         }
         else{
@@ -146,57 +144,47 @@ socket.listen(server).on('connection',function(socketio){
 
   socketio.on('disconnect',function(){
     if(onlineUsers.hasOwnProperty(socketio.name)) {
+      //发送下线
+      socketio.broadcast.emit('ansuserlist'+onlineUsers[socketio.name]._id,{_id:onlineUsers[socketio.name]._id,online:false});
+      User.find()
+          .setOptions({multi:true})
+          .update({_id:onlineUsers[socketio.name]._id},{$set:{online:false}},function(){
+          });
       delete onlineUsers[socketio.name];
-      console.log(socketio.name+'退出');
-      var UserList={};
-      for(var m in onlineUsers){
-        //delete UserList[m].socket;
-        UserList[m.toString()]={
-          name:onlineUsers[m].name,
-          _id:onlineUsers[m]._id
-        }
-      }
-      //告诉自己，我登录了
-      //socketio.emit('userlist',{userlist:UserList});
-      //告诉别人，我登录了
-      socketio.emit('ansuserlist'+onlineUsers[socketio.name]._id,0);
+      onlineCount--;
     }
   });
 
+  //obj是数组
   socketio.on('askuserlist',function(obj){
-    for(var m in onlineUsers){
-      console.log(5555555555555);
-      console.log(onlineUsers[m]._id.toString()+'666666666666'+obj.toString());
-      if(onlineUsers[m]._id.toString()===obj.toString()){
-        socketio.emit('ansuserlist'+obj,1);
-        break;
-      }
-      else{
-        socketio.emit('ansuserlist'+obj,0);
+    console.log(JSON.stringify(obj));
+    for(var i=0;i<obj.length;i++){
+      for(var m in onlineUsers){
+        console.log(onlineUsers[m]._id+'66666666666'+obj[i]);
+        if(obj[i].toString()===onlineUsers[m]._id.toString()){
+          console.log('ansuserlist'+obj[i]);
+          socketio.broadcast.emit('ansuserlist'+obj[i].toString(),1);
+          break;
+        }
       }
     }
   })
 
   socketio.on('logout',function(obj){
+    console.log('mmmmmmmmmmmmmmmmm');
     for(var p in onlineUsers){
       if(onlineUsers[p]._id.toString()===obj.toString()){
+        socketio.broadcast.emit('ansuserlist'+onlineUsers[p]._id,{_id:onlineUsers[p]._id,online:false});
+        User.find()
+            .setOptions({multi:true})
+            .update({_id:onlineUsers[socketio.name]._id},{$set:{online:false}},function(){
+            });
         delete onlineUsers[p];
+
         onlineCount--;
         console.log(socketio.name+'退出'+onlineCount);
       }
     }
-    var UserList={};
-    for(var m in onlineUsers){
-      //delete UserList[m].socket;
-      UserList[m.toString()]={
-        name:onlineUsers[m].name,
-        _id:onlineUsers[m]._id
-      }
-    }
-    //告诉自己，我登录了
-    //socketio.emit('userlist',{userlist:UserList});
-    //告诉别人，我登录了
-    socketio.broadcast.emit('userlist',{userlist:UserList});
   });
 
   socketio.on('usersaw',function(obj){

@@ -58,7 +58,8 @@ var UserSchema = new mongoose.Schema({
     isWorker:Boolean,
     isPresident:Boolean,
     token:String,
-    expiresIn:Date
+    expiresIn:Date,
+    online:Boolean
 })
 
 UserSchema.pre('save', function(next) {

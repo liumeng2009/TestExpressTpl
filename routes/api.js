@@ -15,6 +15,7 @@ router.post('/signup',userController.signup);
 
 router.get('/usercenter',userController.accesstoken,userController.baseInfo);
 router.get('/user_by_id',userController.accesstoken,userController.user_by_id);
+router.post('/check_online',userController.accesstoken,userController.check_online);
 
 router.get('/school_list',userController.accesstoken,userController.opration,schoolController.school_list);
 router.post('/school_add',userController.accesstoken,userController.opration,schoolController.new,schoolController.initRole,schoolController.initUser);

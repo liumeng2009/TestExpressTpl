@@ -169,7 +169,7 @@ exports.new=function(req,res){
                                             return console.log(err);
                                         }
                                         res.setHeader('Access-Control-Allow-Origin', '*');
-                                        res.json({success:1,msg:config.msg.success})
+                                        res.json({success:1,msg:config.msg.success,student:student})
                                     });
                                 })
 
@@ -199,6 +199,7 @@ exports.list=function(req,res){
     Student.find({status:true})
         .or(SearchObj)
         .populate('grade')
+        .populate('school')
         .exec(function(err,students){
             if(err){
                 res.setHeader('Access-Control-Allow-Origin', '*');

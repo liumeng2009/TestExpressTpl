@@ -241,3 +241,33 @@ exports.user_by_id=function(req,res){
             res.json({success:1,user:user});
         })
 }
+
+exports.check_online=function(req,res){
+    var array=req.body.array;
+    console.log('yyyyyyyyyyyyyyyyy'+JSON.stringify(array));
+    var searchObj=[];
+    for(var i=0;i<array.length;i++){
+        var _s={_id:array[i]._id.toString()}
+        searchObj.push(_s)
+    }
+    User.find({status:true})
+        .or(searchObj)
+        .exec(function(err,users){
+            if(err){
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.json({success:0,msg:config.msg.db});
+                return console.log(err);
+            }
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            var userArray=[];
+            for(var i=0;i<users.length;i++){
+                var _u={
+                    _id:users[i]._id,
+                    online:users[i].online
+                }
+                userArray.push(_u);
+            }
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.json({success:1,users:userArray});
+        })
+}
