@@ -75,49 +75,67 @@ exports.signin=function(req,res){
 exports.signup=function(req,res){
     var username=req.body.username;
     var password=req.body.password;
-    var userObj={
-        name:username,
-        password:password,
-        status:true,
-        isWorker:false
-    }
-    var _user=new User(userObj);
-    console.log(_user);
-    _user.save(function(err,user){
+    User.findOne({name:username},function(err,user){
         if(err){
             res.setHeader('Access-Control-Allow-Origin', '*');
             res.setHeader('Access-Control-Allow-Methods','POST');
             res.setHeader('Access-Control-Allow-Headers','x-requested-with,content-type');
-            res.json({success:0,msg:'数据库访问错误'});
+            res.json({success:0,msg:config.msg.db});
             return console.log(err);
         }
-        var _tokenUser={
-            name:user.name,
-            password:user.password,
-            _id:user._id
-        };
-        var token=jwt.sign(_tokenUser,config.secret,{
-            expiresIn:'1 days'
-        });
-        user.token=token;
-        var date=new Date();
-        date.setDate(date.getDate()+1);
-        user.expiresIn=date;
-        user.save(function(err,user){
-            if(err){
-                res.setHeader('Access-Control-Allow-Origin', '*');
-                res.setHeader('Access-Control-Allow-Methods','POST');
-                res.setHeader('Access-Control-Allow-Headers','x-requested-with,content-type');
-                res.json({success: 0, msg: '数据库访问失败3'+err});
-                return console.log(err);
-            }
+        if(user){
             res.setHeader('Access-Control-Allow-Origin', '*');
             res.setHeader('Access-Control-Allow-Methods','POST');
             res.setHeader('Access-Control-Allow-Headers','x-requested-with,content-type');
-            res.json({success: 1,msg:'注册成功',token:token});
-        });
+            res.json({success: 0,msg:config.msg.exists});
+        }
+        else{
 
-    });
+            var userObj={
+                name:username,
+                password:password,
+                status:true,
+                isWorker:false
+            }
+            var _user=new User(userObj);
+            _user.save(function(err,user){
+                if(err){
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    res.setHeader('Access-Control-Allow-Methods','POST');
+                    res.setHeader('Access-Control-Allow-Headers','x-requested-with,content-type');
+                    res.json({success:0,msg:'数据库访问错误'});
+                    return console.log(err);
+                }
+                var _tokenUser={
+                    name:user.name,
+                    password:user.password,
+                    _id:user._id
+                };
+                var token=jwt.sign(_tokenUser,config.secret,{
+                    expiresIn:'1 days'
+                });
+                user.token=token;
+                var date=new Date();
+                date.setDate(date.getDate()+1);
+                user.expiresIn=date;
+                user.save(function(err,user){
+                    if(err){
+                        res.setHeader('Access-Control-Allow-Origin', '*');
+                        res.setHeader('Access-Control-Allow-Methods','POST');
+                        res.setHeader('Access-Control-Allow-Headers','x-requested-with,content-type');
+                        res.json({success: 0, msg: '数据库访问失败3'+err});
+                        return console.log(err);
+                    }
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    res.setHeader('Access-Control-Allow-Methods','POST');
+                    res.setHeader('Access-Control-Allow-Headers','x-requested-with,content-type');
+                    res.json({success: 1,msg:'注册成功',token:token});
+                });
+
+            });
+        }
+    })
+
 }
 
 exports.baseInfo=function(req,res){

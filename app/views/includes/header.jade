@@ -41,8 +41,9 @@
                                             | #{sch.name}
                     li.dropdown
                         a(href="#",data-toggle="dropdown")
-                            img.user-avatar(src="/assets/img/avatars/48.jpg",alt="#{userr.name}")
-                            | #{userr.name}
+                            if userr
+                                img.user-avatar(src="/assets/img/avatars/48.jpg",alt="#{userr.name}")
+                                | #{userr.name}
                         ul.dropdown-menu.right(role="menu")
                             li
                                 a(href="profile.html")

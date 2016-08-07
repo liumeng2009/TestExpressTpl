@@ -8,6 +8,7 @@ module.exports={
         forbiden:'没有权限',
         server:'服务器内部错误',
         notexists:'记录不存在，请回退或者刷新后重试',
-        success:'操作成功'
+        success:'操作成功',
+        exists:'重复记录'
     }
 }
