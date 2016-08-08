@@ -53,9 +53,9 @@ exports.signin=function(req,res){
                                 res.json({success: 0, msg: '数据库访问失败3'+err});
                                 return console.log(err);
                             }
+                            res.setHeader('Access-Control-Allow-Origin', '*');
+                            res.json({success: 1,msg:'登录成功',user:user});
                         });
-                        res.setHeader('Access-Control-Allow-Origin', '*');
-                        res.json({success: 1,msg:'登录成功',token:token});
                         //req.session.user = user
                     }
                     else {
