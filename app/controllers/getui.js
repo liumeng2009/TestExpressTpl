@@ -1,7 +1,7 @@
 /**
  * Created by liumeng on 2016/8/10.
  */
-
+/*
 var GeTui = require('../../lib/nodejsDemo.0.1.0/GT.push');
 var Target = require('../../lib/nodejsDemo.0.1.0/getui/Target');
 var BaseTemplate = require('../../lib/nodejsDemo.0.1.0/getui/template/BaseTemplate');
@@ -57,3 +57,4 @@ function TransmissionTemplateDemo() {
 
     return template;
 }
+    */
