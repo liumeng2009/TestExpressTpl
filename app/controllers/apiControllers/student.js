@@ -276,16 +276,59 @@ exports.chat_list=function(req,res){
                                 }
 
                                 //处理一下users，如果他的id是自己，就排除叼
+                                /*
                                 for(var k=0;k<users.length;k++){
                                     if(users[k]._id.toString()===usernow._id.toString()){
                                         users.splice(k,1);
                                     }
                                 }
-
-
+                                */
                             }
+
+                            //删除无用的列
+                            var _us=[];
+                            for(var i=0;i<users.length;i++){
+                                var _u={
+                                    _id:users[i]._id,
+                                    name:users[i].name,
+                                    nickname:users[i].nickname,
+                                    sons:[
+
+                                    ],
+                                    roles:[
+
+                                    ]
+                                }
+                                //将sons加入数组
+                                for(var m=0;m<users[i].sons.length;m++){
+                                    var _s={name:users[i].sons[m].name}
+                                    _u.sons.push(_s);
+                                }
+                                //将roles判断
+                                for(var n=0;n<users[i].roles.length;n++){
+                                    var _r={
+                                        role:{
+                                            name:users[i].roles[n].role.name
+                                        }
+                                    };
+                                    if(_u.roles.length===0){
+                                        _u.roles.push(_r);
+                                    }
+                                    for(var mm=0;mm<_u.roles.length;mm++){
+                                        if(_u.roles[mm].role.name===users[i].roles[n].role.name){
+                                            break;
+                                        }
+                                        if(mm===_u.roles.length-1){
+                                            _u.roles.push(_r);
+                                        }
+                                    }
+
+                                }
+                                _us.push(_u);
+                            }
+
                             res.setHeader('Access-Control-Allow-Origin', '*');
-                            res.json({success:1,msg:config.msg.success,users:users});
+                            res.json({success:1,msg:config.msg.success,users:_us});
                         });
                 });
         });
