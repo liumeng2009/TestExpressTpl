@@ -39,3 +39,25 @@ user.save(function(err){
     });
 
 });
+
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+    webView=(WebView) findViewById(R.id.webview);
+    textview=(TextView)findViewById(R.id.textview);
+    //允许JavaScript执行
+    webView.getSettings().setJavaScriptEnabled(true);
+    //找到Html文件，也可以用网络上的文件
+    webView.loadUrl("file:///android_asset/www/index.html");
+    // 添加一个对象, 让JS可以访问该对象的方法, 该对象中可以调用JS中的方法
+    webView.addJavascriptInterface(new Contact(), "contact");
+}
+
+public final class Contact {
+    //JavaScript调用此方法拨打电话
+@JavascriptInterface
+    public void call() {
+        Log.v("success","start a service");
+
+    }
+}
