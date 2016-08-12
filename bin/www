@@ -108,6 +108,7 @@ socket.listen(server).on('connection',function(socketio){
     }
   */
   socketio.on('login',function(obj){
+    console.log(JSON.stringify(obj));
     socketio.name=obj.name;
     User.findOne({status:true,_id:obj._id},function(err,user){
         if(err){
