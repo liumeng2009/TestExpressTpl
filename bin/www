@@ -132,6 +132,7 @@ socket.listen(server).on('connection',function(socketio){
 
             //告诉自己，我登录了
             //socketio.emit('userlist',{userlist:UserList});
+            socketio.emit('loginsuccess',{numUsers:onlineCount,mUsername:socketio.name})
             //告诉别人，我登录了
             socketio.broadcast.emit('ansuserlist'+obj._id,{_id:obj._id,online:true});
             console.log(obj.name+'登录成功'+'ansuserlist'+obj._id);

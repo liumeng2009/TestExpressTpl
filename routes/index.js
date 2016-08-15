@@ -12,6 +12,6 @@ router.get('/chat', function(req, res, next) {
     });
 });
 
-router.get('/chat/send',getui.send);
+//router.get('/chat/send',getui.send);
 
 module.exports = router;
