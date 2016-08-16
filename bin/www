@@ -162,7 +162,6 @@ socket.listen(server).on('connection',function(socketio){
     console.log(JSON.stringify(obj));
     for(var i=0;i<obj.length;i++){
       for(var m in onlineUsers){
-        console.log(onlineUsers[m]._id+'66666666666'+obj[i]);
         if(obj[i].toString()===onlineUsers[m]._id.toString()){
           console.log('ansuserlist'+obj[i]);
           socketio.broadcast.emit('ansuserlist'+obj[i].toString(),1);
@@ -228,7 +227,7 @@ socket.listen(server).on('connection',function(socketio){
               if(onlineUsers[p].socket) {
                 onlineUsers[p].socket.emit('from' + from + 'to' + to, {message: msg, createAt: new Date});
                 //用于main页面
-                onlineUsers[p].socket.emit('to' + to, {message: msg, createAt: new Date, from: fromuser});
+                onlineUsers[p].socket.emit('to' + to, {message: chat,from: fromuser});
               }
 
             }
