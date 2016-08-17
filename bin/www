@@ -227,7 +227,7 @@ socket.listen(server).on('connection',function(socketio){
               if(onlineUsers[p].socket) {
                 onlineUsers[p].socket.emit('from' + from + 'to' + to, {message: msg, createAt: new Date});
                 //用于main页面
-                onlineUsers[p].socket.emit('to' + to, {message: chat,from: fromuser});
+                onlineUsers[p].socket.emit('to' + to, {message: chat});
               }
 
             }
