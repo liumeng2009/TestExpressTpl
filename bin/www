@@ -101,20 +101,24 @@ function onListening() {
 var onlineUsers={};
 var onlineCount=0;
 io.on('connection',function(socketio){
+
+  console.log('222222222'+socketio.id);
+
   socketio.on('login',function(obj){
     console.log(JSON.stringify(obj));
     socketio.name=obj.name;
     User.findOne({status:true,_id:obj._id},function(err,user){
         if(err){
-          socketio.emit('errorinfo','dberror');
+          //socketio.emit('errorinfo','dberror');
           return console.log(err)
         }
         if(user){
-          if(!onlineUsers.hasOwnProperty(obj.name)) {
-            onlineUsers[obj.name] = {
+          if(!onlineUsers.hasOwnProperty(obj.name+'-'+obj.type)) {
+            onlineUsers[obj.name+'-'+obj.type] = {
               name: user.name,
               _id:user._id,
-              socket: socketio
+              socket: socketio,
+              type:obj.type
             };
             onlineCount++;
             //存储数据库
@@ -165,7 +169,7 @@ io.on('connection',function(socketio){
   })
 
   socketio.on('disconnect',function(){
-    console.log('触发了关闭连接事件，为什么呢'+socketio.name);
+    console.log('触发了关闭连接事件，为什么呢'+socketio.id+socketio.name);
     /*
     if(onlineUsers.hasOwnProperty(socketio.name)) {
       //发送下线
@@ -263,6 +267,24 @@ io.on('connection',function(socketio){
         })
     })
   });
+
+  socketio.on('send',function(data)
+  {
+    console.log(data);
+//this what you sent to client(Android)
+    socketio.emit('send_response',"i got you");
+//this will generate push notification
+    socketio.emit('notification',data);
+  });
+  socketio.on('send_all',function(data)
+  {
+//this is what you send to all connected clients
+    socketio.broadcast.emit('notification',data);
+    console.log("broadcast"+data);
+  });
+
+
+
 });
 
 
