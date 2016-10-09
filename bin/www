@@ -127,11 +127,22 @@ io.on('connection',function(socketio){
                 .update({_id:obj._id},{$set:{online:true}},function(){
 
                 });
-            io.sockets.emit('loginsuccess',{numUsers:onlineCount,mUsername:socketio.name});
+            //io.sockets.emit('loginsuccess',{numUsers:onlineCount,mUsername:socketio.name});
             console.log(obj.name+'登录成功'+'ansuserlist'+obj._id+socketio.id+'当前用户数目是'+onlineCount);
+          }
+          else{
+            onlineUsers[obj.name+'-'+obj.type].socket=socketio;
+            User.find()
+                .setOptions({multi:true})
+                .update({_id:obj._id},{$set:{online:true}},function(){
+
+                });
+            //io.sockets.emit('loginsuccess',{numUsers:onlineCount,mUsername:socketio.name});
+            console.log(obj.name+'登录成功,重连的情况'+'ansuserlist'+obj._id+socketio.id+'当前用户数目是'+onlineCount);
           }
         }
         else{
+
 
         }
       });
@@ -258,6 +269,7 @@ io.on('connection',function(socketio){
                 console.log(onlineUsers[p].socket.name);
                 console.log(onlineUsers[p].socket.id);
                 //这里行不通，因为重新连接后，不知道如何把新的连接对象放进
+                //将
                 onlineUsers[p].socket.emit('message', {message:chat,from:fromuser});
                 //用于main页面
                 //onlineUsers[p].socket.broadcast.emit('to' + to, {message: chat,from:fromuser});
