@@ -238,7 +238,7 @@ io.on('connection',function(socketio){
       })
   })
 
-  socketio.on('private message', function (from,to,msg) {
+  socketio.on('private message', function (from,to,msg,timeid) {
 
     console.log('I received a private message by ', from, ' say to ',to, msg);
 
@@ -247,7 +247,8 @@ io.on('connection',function(socketio){
       from:mongoose.Types.ObjectId(from.toString()),
       to:mongoose.Types.ObjectId(to.toString()),
       status:0,
-      content:msg
+      content:msg,
+      saw:0
     };
     var _chat=new Chat(chatObj);
     _chat.save(function(err,chat){
@@ -259,7 +260,8 @@ io.on('connection',function(socketio){
       User.findOne({_id:from})
         .exec(function(err,fromuser){
           for(var p in onlineUsers){
-            console.log('遍历在线的人'+p);
+            console.log('遍历在线的人'+p+onlineUsers[p]._id.toString());
+            console.log('发送的人是'+from);
             if(onlineUsers[p]._id.toString()===to.toString()){
               console.log(to+'在线');
               console.log('发送事件名称是：'+'from'+from+'to'+to+p);
@@ -270,14 +272,29 @@ io.on('connection',function(socketio){
                 console.log(onlineUsers[p].socket.id);
                 //这里行不通，因为重新连接后，不知道如何把新的连接对象放进
                 //将
+                //向touser发送消息
                 onlineUsers[p].socket.emit('message', {message:chat,from:fromuser});
                 //用于main页面
                 //onlineUsers[p].socket.broadcast.emit('to' + to, {message: chat,from:fromuser});
               }
             }
+            if(onlineUsers[p]._id.toString()===from.toString()){
+              //向fromuser发送消息，说明服务器收到了
+              console.log('服务器收到了，告诉客户端');
+              onlineUsers[p].socket.emit('reciveMessage', {from:from,to:to,timeid:timeid,message:chat});
+            }
           }
         })
     })
+  });
+
+  socketio.on('ReciveMessage',function(chatid){
+    console.log('客户端收到这条消息了，id是'+chatid.chatid);
+    Chat.find()
+        .setOptions({multi:true})
+        .update({_id:chatid.chatid},{$set:{saw:1}},function(){
+          console.log(chatid.chatid+'的saw列修改成功');
+        });
   });
 
   socketio.on('send',function(data)
