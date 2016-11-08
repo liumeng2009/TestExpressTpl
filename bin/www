@@ -100,6 +100,7 @@ function onListening() {
 //在线聊天模块
 var onlineUsers={};
 var onlineCount=0;
+
 io.on('connection',function(socketio){
 
   console.log('222222222'+socketio.id);
@@ -108,44 +109,44 @@ io.on('connection',function(socketio){
     console.log(JSON.stringify(obj));
     socketio.name=obj.name;
     User.findOne({status:true,_id:obj._id},function(err,user){
-        if(err){
-          //socketio.emit('errorinfo','dberror');
-          return console.log(err)
-        }
-        if(user){
-          if(!onlineUsers.hasOwnProperty(obj.name+'-'+obj.type)) {
-            onlineUsers[obj.name+'-'+obj.type] = {
-              name: user.name,
-              _id:user._id,
-              socket: socketio,
-              type:obj.type
-            };
-            onlineCount++;
-            //存储数据库
-            User.find()
-                .setOptions({multi:true})
-                .update({_id:obj._id},{$set:{online:true}},function(){
+      if(err){
+        //socketio.emit('errorinfo','dberror');
+        return console.log(err)
+      }
+      if(user){
+        if(!onlineUsers.hasOwnProperty(obj.name+'-'+obj.type)) {
+          onlineUsers[obj.name+'-'+obj.type] = {
+            name: user.name,
+            _id:user._id,
+            socket: socketio,
+            type:obj.type
+          };
+          onlineCount++;
+          //存储数据库
+          User.find()
+              .setOptions({multi:true})
+              .update({_id:obj._id},{$set:{online:true}},function(){
 
-                });
-            //io.sockets.emit('loginsuccess',{numUsers:onlineCount,mUsername:socketio.name});
-            console.log(obj.name+'登录成功'+'ansuserlist'+obj._id+socketio.id+'当前用户数目是'+onlineCount);
-          }
-          else{
-            onlineUsers[obj.name+'-'+obj.type].socket=socketio;
-            User.find()
-                .setOptions({multi:true})
-                .update({_id:obj._id},{$set:{online:true}},function(){
-
-                });
-            //io.sockets.emit('loginsuccess',{numUsers:onlineCount,mUsername:socketio.name});
-            console.log(obj.name+'登录成功,重连的情况'+'ansuserlist'+obj._id+socketio.id+'当前用户数目是'+onlineCount);
-          }
+              });
+          //io.sockets.emit('loginsuccess',{numUsers:onlineCount,mUsername:socketio.name});
+          console.log(obj.name+'登录成功'+'ansuserlist'+obj._id+socketio.id+'当前用户数目是'+onlineCount);
         }
         else{
+          onlineUsers[obj.name+'-'+obj.type].socket=socketio;
+          User.find()
+              .setOptions({multi:true})
+              .update({_id:obj._id},{$set:{online:true}},function(){
 
-
+              });
+          //io.sockets.emit('loginsuccess',{numUsers:onlineCount,mUsername:socketio.name});
+          console.log(obj.name+'登录成功,重连的情况'+'ansuserlist'+obj._id+socketio.id+'当前用户数目是'+onlineCount);
         }
-      });
+      }
+      else{
+
+
+      }
+    });
   });
 
   socketio.on('connectsuccess',function(json){
@@ -182,20 +183,20 @@ io.on('connection',function(socketio){
   socketio.on('disconnect',function(){
     console.log('触发了关闭连接事件，为什么呢'+socketio.id+socketio.name);
     /*
-    if(onlineUsers.hasOwnProperty(socketio.name)) {
-      //发送下线
-      //socketio.broadcast.emit('ansuserlist'+onlineUsers[socketio.name]._id,{_id:onlineUsers[socketio.name]._id,online:false});
-      io.sockets.emit('logout',{numUsers:onlineCount,mUsername:socketio.name});
-      User.find()
-          .setOptions({multi:true})
-          .update({_id:onlineUsers[socketio.name]._id},{$set:{online:false}},function(){
-          });
-      console.log(socketio.name+'下线了111。。。。。。。。');
-    }
-    else{
-      console.log('下线了222。。。。。。。。');
-    }
-    */
+     if(onlineUsers.hasOwnProperty(socketio.name)) {
+     //发送下线
+     //socketio.broadcast.emit('ansuserlist'+onlineUsers[socketio.name]._id,{_id:onlineUsers[socketio.name]._id,online:false});
+     io.sockets.emit('logout',{numUsers:onlineCount,mUsername:socketio.name});
+     User.find()
+     .setOptions({multi:true})
+     .update({_id:onlineUsers[socketio.name]._id},{$set:{online:false}},function(){
+     });
+     console.log(socketio.name+'下线了111。。。。。。。。');
+     }
+     else{
+     console.log('下线了222。。。。。。。。');
+     }
+     */
   });
 
   //obj是数组
@@ -232,10 +233,10 @@ io.on('connection',function(socketio){
     var fromid=obj.from;
     var toid=obj.to;
     Chat.find()
-      .setOptions({multi:true})
-      .update({from:fromid,to:toid},{$set:{status:1}},function(err,chat){
-        console.log('修改了'+JSON.stringify(chat));
-      })
+        .setOptions({multi:true})
+        .update({from:fromid,to:toid},{$set:{status:1}},function(err,chat){
+          console.log('修改了'+JSON.stringify(chat));
+        })
   })
 
   socketio.on('private message', function (from,to,msg,timeid) {
@@ -258,33 +259,33 @@ io.on('connection',function(socketio){
       }
       //保存成功
       User.findOne({_id:from})
-        .exec(function(err,fromuser){
-          for(var p in onlineUsers){
-            console.log('遍历在线的人'+p+onlineUsers[p]._id.toString());
-            console.log('发送的人是'+from);
-            if(onlineUsers[p]._id.toString()===to.toString()){
-              console.log(to+'在线');
-              console.log('发送事件名称是：'+'from'+from+'to'+to+p);
-              //用于1对1
-              if(onlineUsers[p].socket) {
-                console.log(p);
-                console.log(onlineUsers[p].socket.name);
-                console.log(onlineUsers[p].socket.id);
-                //这里行不通，因为重新连接后，不知道如何把新的连接对象放进
-                //将
-                //向touser发送消息
-                onlineUsers[p].socket.emit('message', {message:chat,from:fromuser});
-                //用于main页面
-                //onlineUsers[p].socket.broadcast.emit('to' + to, {message: chat,from:fromuser});
+          .exec(function(err,fromuser){
+            for(var p in onlineUsers){
+              console.log('遍历在线的人'+p+onlineUsers[p]._id.toString());
+              console.log('发送的人是'+from);
+              if(onlineUsers[p]._id.toString()===to.toString()){
+                console.log(to+'在线');
+                console.log('发送事件名称是：'+'from'+from+'to'+to+p);
+                //用于1对1
+                if(onlineUsers[p].socket) {
+                  console.log(p);
+                  console.log(onlineUsers[p].socket.name);
+                  console.log(onlineUsers[p].socket.id);
+                  //这里行不通，因为重新连接后，不知道如何把新的连接对象放进
+                  //将
+                  //向touser发送消息
+                  onlineUsers[p].socket.emit('message', {message:chat,from:fromuser});
+                  //用于main页面
+                  //onlineUsers[p].socket.broadcast.emit('to' + to, {message: chat,from:fromuser});
+                }
+              }
+              if(onlineUsers[p]._id.toString()===from.toString()){
+                //向fromuser发送消息，说明服务器收到了
+                console.log('服务器收到了，告诉客户端');
+                onlineUsers[p].socket.emit('reciveMessage', {from:from,to:to,timeid:timeid,message:chat});
               }
             }
-            if(onlineUsers[p]._id.toString()===from.toString()){
-              //向fromuser发送消息，说明服务器收到了
-              console.log('服务器收到了，告诉客户端');
-              onlineUsers[p].socket.emit('reciveMessage', {from:from,to:to,timeid:timeid,message:chat});
-            }
-          }
-        })
+          })
     })
   });
 
@@ -315,6 +316,8 @@ io.on('connection',function(socketio){
 
 
 });
+
+
 
 
 

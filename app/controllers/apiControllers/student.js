@@ -326,7 +326,7 @@ exports.chat_list=function(req,res){
                                 }
                                 _us.push(_u);
                             }
-
+                            console.log(_us);
                             res.setHeader('Access-Control-Allow-Origin', '*');
                             res.json({success:1,msg:config.msg.success,users:_us});
                         });
