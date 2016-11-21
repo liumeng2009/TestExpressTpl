@@ -2,6 +2,7 @@
  * Created by Administrator on 2016/7/22.
  */
 var Chat=require('../../models/chat');
+var User=require('../../models/user');
 var config=require('../../../config');
 exports.chat_list=function(req,res){
     var user=req.app.locals.user;
@@ -46,7 +47,9 @@ var getRelationUser=function(obj,userid){
 }
 
 exports.chat_not_read_list=function(req,res){
-    var user=req.app.locals.user;
+    var token=req.query.token;
+    User.find({token:token,status:true})
+
     Chat.find({to:user._id.toString(),status:0})
         .populate('from')
         .populate('to')
