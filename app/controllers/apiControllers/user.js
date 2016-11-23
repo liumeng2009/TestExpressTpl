@@ -18,7 +18,6 @@ exports.signin=function(req,res){
         User.findOne({name: username}, function (err, user) {
             if (err) {
                 res.setHeader('Access-Control-Allow-Origin', '*');
-
                 res.json({success: 0, msg: '数据库访问失败1'});
                 return console.log(err);
             }
@@ -140,6 +139,7 @@ exports.signup=function(req,res){
 
 exports.baseInfo=function(req,res){
     var token=req.query.token;
+    console.log('请求的token是：'+token);
     User.findOne({token:token,status:true})
         .populate('schools')
         .exec(function(err,user){
@@ -148,6 +148,7 @@ exports.baseInfo=function(req,res){
                 res.json({ success: 0,msg:config.msg.db });
                 return console.log(err);
             }
+            console.log(user);
             if(user){
                 res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success:1,user:user});
@@ -288,4 +289,37 @@ exports.check_online=function(req,res){
             res.setHeader('Access-Control-Allow-Origin', '*');
             res.json({success:1,users:userArray});
         })
+}
+
+exports.setDeviceId=function(req,res){
+    var deviceType=req.query.deviceType;
+    var deviceid=req.query.deviceId;
+    var token=req.query.token;
+    switch(deviceType) {
+        case "phone":
+            User.find()
+                .update({token:token},{$set:{phoneId:deviceid}},function(error,user){
+                    if(error){
+                        res.setHeader('Access-Control-Allow-Origin', '*');
+                        res.json({success: 0, msg:config.msg.db});
+                        return console.log(err);
+                    }
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    res.json({success: 1, msg:config.msg.success});
+                });
+            break;
+        default:
+            User.find()
+                .update({token:token},{$set:{phoneId:deviceid}},function(error,user){
+                    if(error){
+                        res.setHeader('Access-Control-Allow-Origin', '*');
+                        res.json({success: 0, msg:config.msg.db});
+                        return console.log(err);
+                    }
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    res.json({success: 1, msg:config.msg.success});
+                });
+            break;
+    }
+
 }

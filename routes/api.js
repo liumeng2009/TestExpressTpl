@@ -12,6 +12,7 @@ var chatController=require('../app/controllers/apiControllers/chat');
 
 router.get('/signin',userController.signin);
 router.post('/signup',userController.signup);
+router.get('/setdeviceid',userController.setDeviceId);
 
 router.get('/usercenter',userController.accesstoken,userController.baseInfo);
 router.get('/user_by_id',userController.accesstoken,userController.user_by_id);

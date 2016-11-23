@@ -27,8 +27,8 @@ var ChatSchema = new mongoose.Schema({
             default: Date.now()
         }
     },
-    //1代表客户端收到了，0代表没收到
-    saw:Number
+    //设备标识
+    saw:String
 })
 
 ChatSchema.pre('save', function(next) {

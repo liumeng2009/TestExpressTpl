@@ -20,7 +20,6 @@ exports.chat_list=function(req,res){
             //处理chats
             var relationUser={};
             for(var i=0;i<chats.length;i++){
-
                 if(chats[i].from===user._id.toString()){
 
                 }
@@ -49,59 +48,23 @@ var getRelationUser=function(obj,userid){
 exports.chat_not_read_list=function(req,res){
     var token=req.query.token;
     User.find({token:token,status:true})
-
-    Chat.find({to:user._id.toString(),status:0})
-        .populate('from')
-        .populate('to')
-        .sort({'_id':-1})
-        .exec(function(err,chats){
+        .exec(function(err,users){
             if(err){
                 res.setHeader('Access-Control-Allow-Origin', '*');
                 res.json({success:0,msg:config.msg.db});
                 return console.log(err);
             }
-            //去掉from重复的情况
-            var _chats=[];
-            var _count=[];
-            if(chats.length>0){
-                var chat={
-                    from:chats[0].from,
-                    to:chats[0].to,
-                    meta:chats[0].meta,
-                    content:[
-                        chats[0].content
-                    ]
-                }
-                _chats.push(chat);
-
-                for(var i=0;i<chats.length;i++){
-                    for(var j=0;j<_chats.length;j++){
-                        if(chats[i].from._id===_chats[j].from._id){
-                            if(_chats[j].meta.createAt!=chats[i].meta.createAt)
-                                _chats[j].content.push(chats[i].content);
-                            break;
-                        }
-                        else{
-                            if(j===_chats.length-1){
-                                var chat={
-                                    from:chats[i].from,
-                                    to:chats[i].to,
-                                    meta:chats[i].meta,
-                                    content:[
-                                        chats[i].content
-                                    ]
-                                }
-                                _chats.push(chat);
-                            }
-                        }
+            var userid=users[0]._id;
+            Chat.find({to:userid,saw:0})
+                .exec(function(err,chats){
+                    if(err){
+                        res.setHeader('Access-Control-Allow-Origin', '*');
+                        res.json({success:0,msg:config.msg.db});
+                        return console.log(err);
                     }
-
-                }
-            }
-
-            console.log(_chats);
-            res.setHeader('Access-Control-Allow-Origin', '*');
-            res.json({success:1,chats:_chats})
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    res.json({success:1,chats:chats})
+                });
         });
 }
 

@@ -59,7 +59,9 @@ var UserSchema = new mongoose.Schema({
     isPresident:Boolean,
     token:String,
     expiresIn:Date,
-    online:Boolean
+    online:Boolean,
+    //app登录的标示 设备uuid和日期的组合
+    phoneId:String
 })
 
 UserSchema.pre('save', function(next) {
