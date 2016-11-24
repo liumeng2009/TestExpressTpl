@@ -290,11 +290,11 @@ io.on('connection',function(socketio){
   });
 
   socketio.on('ReciveMessage',function(chatid){
-    console.log('客户端收到这条消息了，id是'+chatid.chatid);
+    console.log('客户端收到这条消息了，id是'+chatid.chatid+',设备id是'+chatid.deviceid);
     Chat.find()
         .setOptions({multi:true})
-        .update({_id:chatid.chatid},{$set:{saw:1}},function(){
-          console.log(chatid.chatid+'的saw列修改成功');
+        .update({_id:chatid.chatid},{$set:{saw:chatid.deviceid}},function(){
+          console.log(chatid.chatid+'的saw列修改成了'+chatid.deviceid);
         });
   });
 
