@@ -40,7 +40,7 @@ exports.signin=function(req,res){
                             _id:user._id
                         };
                         var token=jwt.sign(_tokenUser,config.secret,{
-                            expiresIn:'1 days'
+                            expiresIn:'30 days'
                         });
                         user.token=token;
                         var date=new Date();
@@ -115,7 +115,7 @@ exports.signup=function(req,res){
                 });
                 user.token=token;
                 var date=new Date();
-                date.setDate(date.getDate()+1);
+                date.setDate(date.getDate()+30);
                 user.expiresIn=date;
                 user.save(function(err,user){
                     if(err){

@@ -46,6 +46,11 @@ var getRelationUser=function(obj,userid){
 }
 
 exports.chat_not_read_list=function(req,res){
+
+    //最近一周的，关于这个人的所有消息，他发的和接收到的
+    //发的，不管saw的值，都拿过来
+    //
+
     var token=req.query.token;
     User.find({token:token,status:true})
         .exec(function(err,users){
@@ -55,17 +60,23 @@ exports.chat_not_read_list=function(req,res){
                 return console.log(err);
             }
             var userid=users[0]._id;
-            Chat.find({to:userid,saw:0})
-                .exec(function(err,chats){
+            Chat.find({to:userid})
+                .find({saw:{'$ne':users[0].phoneId}})
+                .populate('from')
+                .exec(function(error,chats){
                     if(err){
                         res.setHeader('Access-Control-Allow-Origin', '*');
                         res.json({success:0,msg:config.msg.db});
                         return console.log(err);
                     }
+                    console.log('查到的消息是：'+JSON.stringify(chats));
+
                     res.setHeader('Access-Control-Allow-Origin', '*');
-                    res.json({success:1,chats:chats})
-                });
-        });
+                    res.json({success:1,chats:chats});
+                })
+
+            });
+
 }
 
 exports.chat_not_read_list_to=function(req,res){
