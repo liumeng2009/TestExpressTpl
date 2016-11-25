@@ -27,7 +27,9 @@ var ChatSchema = new mongoose.Schema({
             default: Date.now()
         }
     },
-    //设备标识
+    //发送的设备标识
+    send:String,
+    //接收的设备标识
     saw:String
 })
 
