@@ -240,7 +240,7 @@ io.on('connection',function(socketio){
   })
 
 
-  socketio.on('private message', function (from,to,msg,timeid) {
+  socketio.on('private message', function (from,to,msg,timeid,deviceid) {
 
     console.log('I received a private message by ', from, ' say to ',to, msg);
 
@@ -250,7 +250,7 @@ io.on('connection',function(socketio){
       to:mongoose.Types.ObjectId(to.toString()),
       status:0,
       content:msg,
-      send:from.phoneId,
+      send:deviceid,
       saw:0
     };
     var _chat=new Chat(chatObj);
