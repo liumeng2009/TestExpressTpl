@@ -138,7 +138,30 @@ exports.chat_not_read_list=function(req,res){
                 });
             });
 }
-
+exports.chat_set_new_device=function(req,res){
+    var userid=req.query.userid;
+    var deviceid=req.query.deviceid;
+    Chat.find()
+        .update({to:userid},{'$set':{saw:deviceid}})
+        .exec(function(err,chat){
+            if(err){
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.json({success: 0, msg: config.msg.db});
+                return console.log(err);
+            }
+            console.log('to设备标识更新成功');
+        })
+    Chat.find()
+        .update({from:userid},{'$set':{send:deviceid}})
+        .exec(function(err,chat){
+            if(err){
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.json({success: 0, msg: config.msg.db});
+                return console.log(err);
+            }
+            console.log('from设备标识更新成功');
+        })
+}
 exports.chat_not_read_list_to=function(req,res){
     var user=req.app.locals.user;
     var fromid=req.query.fromid;
