@@ -101,7 +101,6 @@ exports.chat_not_read_list=function(req,res){
                                     .find({'$or':[{saw:{'$ne':users[0].phoneId}},{send:{'$ne':users[0].phoneId}}]})
                                     .populate('from')
                                     .populate('to')
-                                    .limit(1)
                                     .exec(function(error,chatsLong){
                                         if(err){
                                             res.setHeader('Access-Control-Allow-Origin', '*');
@@ -119,7 +118,7 @@ exports.chat_not_read_list=function(req,res){
                                         for(var i=0;i<chatsLong.length;i++){
                                             chatsAll.push(chatsLong[i]);
                                         }
-                                        console.log('获得了'+chats.length+'条未读消息');
+                                        console.log('获得了'+chatsAll.length+'条未读消息');
                                         res.setHeader('Access-Control-Allow-Origin', '*');
                                         res.json({success: 1, chats:chatsAll});
                                     })
