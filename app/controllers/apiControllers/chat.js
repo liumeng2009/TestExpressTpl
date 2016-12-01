@@ -95,12 +95,13 @@ exports.chat_not_read_list=function(req,res){
                             console.log('查到的FROM消息是：'+chatsFrom.length);
                             if(chatsTo.length===0&&chatsFrom.length===0){
                                 console.log('最近一周都没有活动，就把一个月内最新的一条传过去');
-                                var DateMonthAgo=new Date(dateNow.getTime()-30*24*60*60*1000);
+                                //var DateMonthAgo=new Date(dateNow.getTime()-30*24*60*60*1000);
                                 Chat.find({'$or':[{from:userid},{to:userid}]})
-                                    .find('meta.createAt',{'$gt':DateMonthAgo})
+                                    //.find('meta.createAt',{'$gt':DateMonthAgo})
                                     .find({'$or':[{saw:{'$ne':users[0].phoneId}},{send:{'$ne':users[0].phoneId}}]})
                                     .populate('from')
                                     .populate('to')
+                                    .limit(1)
                                     .exec(function(error,chatsLong){
                                         if(err){
                                             res.setHeader('Access-Control-Allow-Origin', '*');
