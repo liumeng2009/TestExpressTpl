@@ -1,17 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var getui=require('../app/controllers/getui');
+var index=require('../app/controllers/index');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.send('网站前台首页');
-});
-router.get('/chat', function(req, res, next) {
-    res.render('chat', {
-        title: 'Chat'
-    });
-});
-
-//router.get('/chat/send',getui.send);
-
+router.get('/',index.index);
+router.get('/android/download',index.download);
 module.exports = router;

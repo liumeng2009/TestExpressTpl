@@ -93,47 +93,16 @@ exports.chat_not_read_list=function(req,res){
                                 return console.log(err);
                             }
                             console.log('查到的FROM消息是：'+chatsFrom.length);
-                            if(chatsTo.length===0&&chatsFrom.length===0){
-                                console.log('最近一周都没有活动，就把一个月内最新的一条传过去');
-                                //var DateMonthAgo=new Date(dateNow.getTime()-30*24*60*60*1000);
-                                Chat.find({'$or':[{from:userid},{to:userid}]})
-                                    //.find('meta.createAt',{'$gt':DateMonthAgo})
-                                    .find({'$or':[{saw:{'$ne':users[0].phoneId}},{send:{'$ne':users[0].phoneId}}]})
-                                    .populate('from')
-                                    .populate('to')
-                                    .exec(function(error,chatsLong){
-                                        if(err){
-                                            res.setHeader('Access-Control-Allow-Origin', '*');
-                                            res.json({success: 0, msg: config.msg.db});
-                                            return console.log(err);
-                                        }
-                                        console.log('查到的LONG消息是：'+chatsLong.length);
-                                        var chatsAll=[];
-                                        for(var i=0;i<chatsTo.length;i++){
-                                            chatsAll.push(chatsTo[i]);
-                                        }
-                                        for(var i=0;i<chatsFrom.length;i++){
-                                            chatsAll.push(chatsFrom[i]);
-                                        }
-                                        for(var i=0;i<chatsLong.length;i++){
-                                            chatsAll.push(chatsLong[i]);
-                                        }
-                                        console.log('获得了'+chatsAll.length+'条未读消息');
-                                        res.setHeader('Access-Control-Allow-Origin', '*');
-                                        res.json({success: 1, chats:chatsAll});
-                                    })
+                            var chatsAll=[];
+                            for(var i=0;i<chatsTo.length;i++){
+                                chatsAll.push(chatsTo[i]);
                             }
-                            else{
-                                var chatsAll=[];
-                                for(var i=0;i<chatsTo.length;i++){
-                                    chatsAll.push(chatsTo[i]);
-                                }
-                                for(var i=0;i<chatsFrom.length;i++){
-                                    chatsAll.push(chatsFrom[i]);
-                                }
-                                res.setHeader('Access-Control-Allow-Origin', '*');
-                                res.json({success: 1, chats:chatsAll});
+                            for(var i=0;i<chatsFrom.length;i++){
+                                chatsAll.push(chatsFrom[i]);
                             }
+                            res.setHeader('Access-Control-Allow-Origin', '*');
+                            console.log('同步了'+chatsAll.length+'条数据。');
+                            res.json({success: 1, chats:chatsAll});
                         });
                 });
             });
@@ -141,7 +110,9 @@ exports.chat_not_read_list=function(req,res){
 exports.chat_set_new_device=function(req,res){
     var userid=req.query.userid;
     var deviceid=req.query.deviceid;
+    console.log('开始更新设备标识');
     Chat.find()
+        .setOptions({multi:true})
         .update({to:userid},{'$set':{saw:deviceid}})
         .exec(function(err,chat){
             if(err){
@@ -149,9 +120,10 @@ exports.chat_set_new_device=function(req,res){
                 res.json({success: 0, msg: config.msg.db});
                 return console.log(err);
             }
-            console.log('to设备标识更新成功');
+            console.log('to设备标识更新成功'+JSON.stringify(chat));
         })
     Chat.find()
+        .setOptions({multi:true})
         .update({from:userid},{'$set':{send:deviceid}})
         .exec(function(err,chat){
             if(err){
@@ -159,7 +131,7 @@ exports.chat_set_new_device=function(req,res){
                 res.json({success: 0, msg: config.msg.db});
                 return console.log(err);
             }
-            console.log('from设备标识更新成功');
+            console.log('from设备标识更新成功'+JSON.stringify(chat));
         })
 }
 exports.chat_not_read_list_to=function(req,res){

@@ -1,0 +1,37 @@
+doctype html
+html(lang="zh_CN")
+    head
+        meta(charset="utf-8")
+        title= title
+        meta(name="viewport",content="width=device-width,initial-scale=1,maximum-scale=1")
+        <!-- Force IE9 to render in normal mode -->
+        <!--[if IE]>
+        meta(http-equiv="x-ua-compatible",content="IE=9")
+        <![endif]-->
+        meta(name="author",content="liumeng")
+        meta(name="application-name",content="SFProject")
+        include ../../includes/head
+    body
+        nav.navbar.navbar-default.navbar-fixed-top.navbar-inverse(role="navigation")
+            .container-fluid
+                .navbar-header
+                    a.navbar-brand(href="#")
+                        | 晓园
+        #jumbo.panel.panel-default(style="padding-top:51px;")
+            .panel-body
+                h1
+                    | 欢迎
+                p
+                    | 晓园实时聊天APP
+                p
+                    a.list-group-item(href="/android/download")
+                        | android下载
+                    a.list-group-item(href="#")
+                        | ios下载
+        nav.navbar.navbar-default.navbar-fixed-bottom.navbar-inverse
+            p.navbar-text.text-center
+                | 版权所有
+        include ../../includes/FScript
+        script.
+            var fullScreen=$(document).height();
+            $('#jumbo').css('height',fullScreen+'px');
