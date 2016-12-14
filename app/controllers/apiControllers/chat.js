@@ -49,7 +49,7 @@ exports.chat_not_read_list=function(req,res){
     //最近一周的，关于这个人的所有消息，他发的和接收到的
     //发的，不管saw的值，都拿过来
     //
-
+    console.log('开始请求服务器未读消息');
     var token=req.query.token;
     User.find({token:token,status:true})
         .exec(function(err,users){
