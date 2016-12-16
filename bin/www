@@ -107,7 +107,7 @@ io.on('connection',function(socketio){
 
   socketio.on('login',function(obj){
     console.log(JSON.stringify(obj));
-    socketio.name=obj.name;
+    socketio.name=obj.name+'-'+obj.type;
     User.findOne({status:true,_id:obj._id},function(err,user){
       if(err){
         //socketio.emit('errorinfo','dberror');
@@ -115,6 +115,7 @@ io.on('connection',function(socketio){
       }
       if(user){
         if(!onlineUsers.hasOwnProperty(obj.name+'-'+obj.type)) {
+
           onlineUsers[obj.name+'-'+obj.type] = {
             name: user.name,
             _id:user._id,
@@ -122,25 +123,14 @@ io.on('connection',function(socketio){
             type:obj.type
           };
           onlineCount++;
-          //存储数据库
-          User.find()
-              .setOptions({multi:true})
-              .update({_id:obj._id},{$set:{online:true}},function(){
-
-              });
-          //io.sockets.emit('loginsuccess',{numUsers:onlineCount,mUsername:socketio.name});
           console.log(obj.name+'登录成功'+'ansuserlist'+obj._id+socketio.id+'当前用户数目是'+onlineCount);
         }
+        /*
         else{
           onlineUsers[obj.name+'-'+obj.type].socket=socketio;
-          User.find()
-              .setOptions({multi:true})
-              .update({_id:obj._id},{$set:{online:true}},function(){
-
-              });
-          //io.sockets.emit('loginsuccess',{numUsers:onlineCount,mUsername:socketio.name});
           console.log(obj.name+'登录成功,重连的情况'+'ansuserlist'+obj._id+socketio.id+'当前用户数目是'+onlineCount);
         }
+        */
       }
       else{
 
@@ -182,6 +172,17 @@ io.on('connection',function(socketio){
 
   socketio.on('disconnect',function(){
     console.log('触发了关闭连接事件，为什么呢'+socketio.id+socketio.name);
+
+    if(onlineUsers.hasOwnProperty(socketio.name)){
+      console.log(socketio.name+'下线了！');
+      //说明是这个人触发了disconnect，把他从在线列表中删除
+      delete onlineUsers[socketio.name];
+      onlineCount--;
+    }
+
+
+
+
     /*
      if(onlineUsers.hasOwnProperty(socketio.name)) {
      //发送下线
@@ -216,13 +217,7 @@ io.on('connection',function(socketio){
   socketio.on('logout',function(obj){
     for(var p in onlineUsers){
       if(onlineUsers[p]._id.toString()===obj.toString()){
-        socketio.broadcast.emit('ansuserlist'+onlineUsers[p]._id,{_id:onlineUsers[p]._id,online:false});
-        User.find()
-            .setOptions({multi:true})
-            .update({_id:onlineUsers[socketio.name]._id},{$set:{online:false}},function(){
-            });
         delete onlineUsers[p];
-
         onlineCount--;
         console.log(socketio.name+'退出'+onlineCount);
       }
@@ -246,6 +241,7 @@ io.on('connection',function(socketio){
 
     //保存到db中
     var chatObj={
+      timeid:timeid,
       from:mongoose.Types.ObjectId(from.toString()),
       to:mongoose.Types.ObjectId(to.toString()),
       status:0,
@@ -253,42 +249,63 @@ io.on('connection',function(socketio){
       send:deviceid,
       saw:0
     };
-    var _chat=new Chat(chatObj);
-    _chat.save(function(err,chat){
-      if(err){
-        socketio.emit('errorinfo','dberror');
-        return console.log(err)
-      }
-      //保存成功
-      User.findOne({_id:from})
-          .exec(function(err,fromuser){
+    //由于客户端有重试机制，所以这里应该检查是否重复,根据timeid和fromuser来判断
+    Chat.find({timeid:timeid,from:from})
+        .exec(function(err,chat){
+          if(err){
+            socketio.emit('errorinfo','dberror');
+            return console.log(err);
+          }
+          if(chat){
+            console.log('这条信息已经存在了，给客户端返消息，不存');
             for(var p in onlineUsers){
-              console.log('遍历在线的人'+p+onlineUsers[p]._id.toString());
-              console.log('发送的人是'+from);
-              if(onlineUsers[p]._id.toString()===to.toString()){
-                console.log(to+'在线');
-                console.log('发送事件名称是：'+'from'+from+'to'+to+p);
-                //用于1对1
-                if(onlineUsers[p].socket) {
-                  console.log(p);
-                  console.log(onlineUsers[p].socket.name);
-                  console.log(onlineUsers[p].socket.id);
-                  //这里行不通，因为重新连接后，不知道如何把新的连接对象放进
-                  //将
-                  //向touser发送消息
-                  onlineUsers[p].socket.emit('message', {message:chat,from:fromuser});
-                  //用于main页面
-                  //onlineUsers[p].socket.broadcast.emit('to' + to, {message: chat,from:fromuser});
-                }
-              }
               if(onlineUsers[p]._id.toString()===from.toString()){
                 //向fromuser发送消息，说明服务器收到了
                 console.log('服务器收到了，告诉客户端');
                 onlineUsers[p].socket.emit('reciveMessage', {from:from,to:to,timeid:timeid,message:chat});
               }
             }
-          })
-    })
+          }
+          else{
+            console.log('这条信息不存在，给客户端返消息，存');
+            var _chat=new Chat(chatObj);
+            _chat.save(function(err,chat){
+              if(err){
+                socketio.emit('errorinfo','dberror');
+                return console.log(err);
+              }
+              //保存成功
+              User.findOne({_id:from})
+                  .exec(function(err,fromuser){
+                    for(var p in onlineUsers){
+                      console.log('遍历在线的人'+p+onlineUsers[p]._id.toString());
+                      console.log('发送的人是'+from);
+                      if(onlineUsers[p]._id.toString()===to.toString()){
+                        console.log(to+'在线');
+                        console.log('发送事件名称是：'+'from'+from+'to'+to+p);
+                        //用于1对1
+                        if(onlineUsers[p].socket) {
+                          console.log(p);
+                          console.log(onlineUsers[p].socket.name);
+                          console.log(onlineUsers[p].socket.id);
+                          //这里行不通，因为重新连接后，不知道如何把新的连接对象放进
+                          //将
+                          //向touser发送消息
+                          onlineUsers[p].socket.emit('message', {message:chat,from:fromuser});
+                          //用于main页面
+                          //onlineUsers[p].socket.broadcast.emit('to' + to, {message: chat,from:fromuser});
+                        }
+                      }
+                      if(onlineUsers[p]._id.toString()===from.toString()){
+                        //向fromuser发送消息，说明服务器收到了
+                        console.log('服务器收到了，告诉客户端');
+                        onlineUsers[p].socket.emit('reciveMessage', {from:from,to:to,timeid:timeid,message:chat});
+                      }
+                    }
+                  })
+            })
+          }
+        });
   });
 
   socketio.on('ReciveMessage',function(chatid){

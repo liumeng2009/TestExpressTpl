@@ -13,6 +13,7 @@ var ChatSchema = new mongoose.Schema({
         type:ObjectId,
         ref:'user'
     },
+    timeid:String,
     content:String,
     //status:0 代表发送失败
     //status:1 代表发送成功
