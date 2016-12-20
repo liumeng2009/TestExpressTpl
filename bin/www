@@ -250,7 +250,7 @@ io.on('connection',function(socketio){
       saw:0
     };
     //由于客户端有重试机制，所以这里应该检查是否重复,根据timeid和fromuser来判断
-    Chat.find({timeid:timeid,from:from})
+    Chat.findOne({timeid:timeid,from:from})
         .exec(function(err,chat){
           if(err){
             socketio.emit('errorinfo','dberror');
