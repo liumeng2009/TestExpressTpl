@@ -58,6 +58,7 @@ exports.chat_not_read_list=function(req,res){
                 res.json({success:0,msg:config.msg.db});
                 return console.log(err);
             }
+            console.log(JSON.stringify(users));
             var userid=users[0]._id;
             var now=new Date();
             var year=now.getFullYear();

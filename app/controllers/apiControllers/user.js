@@ -26,6 +26,7 @@ exports.signin=function(req,res){
                 res.json({success: 0, msg: '用户名不存在'});
             }
             else {
+                console.log('验证密码');
                 user.comparePassword(password, user.password, function (err, isMatch) {
                     if (err) {
                         res.setHeader('Access-Control-Allow-Origin', '*');
@@ -33,6 +34,7 @@ exports.signin=function(req,res){
                         return console.log(err);
                     }
                     if (isMatch) {
+                        console.log('验证密码通过');
                         //生成token时，只取有用的user信息来签名，否则token会很长
                         var _tokenUser={
                             name:user.name,
@@ -42,6 +44,7 @@ exports.signin=function(req,res){
                         var token=jwt.sign(_tokenUser,config.secret,{
                             expiresIn:'30 days'
                         });
+                        console.log('生成的token是'+token);
                         user.token=token;
                         var date=new Date();
                         date.setDate(date.getDate()+1);
@@ -52,12 +55,14 @@ exports.signin=function(req,res){
                                 res.json({success: 0, msg: '数据库访问失败3'+err});
                                 return console.log(err);
                             }
+                            console.log('修改token成功');
                             res.setHeader('Access-Control-Allow-Origin', '*');
                             res.json({success: 1,msg:'登录成功',user:user});
                         });
                         //req.session.user = user
                     }
                     else {
+                        console.log('验证密码不通过');
                         res.setHeader('Access-Control-Allow-Origin', '*');
                         res.json({success: 0, msg: '用户名和密码不匹配'});
                     }

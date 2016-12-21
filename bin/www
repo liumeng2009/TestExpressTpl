@@ -262,6 +262,7 @@ io.on('connection',function(socketio){
               if(onlineUsers[p]._id.toString()===from.toString()){
                 //向fromuser发送消息，说明服务器收到了
                 console.log('服务器收到了，告诉客户端');
+                //onlineUsers[p].socket.emit('reciveMessage', {from:from,to:to,timeid:timeid,message:chat});
                 onlineUsers[p].socket.emit('reciveMessage', {from:from,to:to,timeid:timeid,message:chat});
               }
             }
