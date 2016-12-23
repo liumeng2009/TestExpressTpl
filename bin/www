@@ -257,7 +257,7 @@ io.on('connection',function(socketio){
             return console.log(err);
           }
           if(chat){
-            console.log('这条信息已经存在了，给客户端返消息，不存');
+            console.log('这条信息已经存在了，给客户端返消息，不存'+JSON.stringify(chat));
             for(var p in onlineUsers){
               if(onlineUsers[p]._id.toString()===from.toString()){
                 //向fromuser发送消息，说明服务器收到了
