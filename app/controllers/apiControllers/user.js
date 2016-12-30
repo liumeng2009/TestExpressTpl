@@ -303,12 +303,13 @@ exports.setDeviceId=function(req,res){
     switch(deviceType) {
         case "phone":
             User.find()
-                .update({token:token},{$set:{phoneId:deviceid}},function(error,user){
+                .update({token:token},{$set:{phoneId:deviceid}},function(error,result){
                     if(error){
                         res.setHeader('Access-Control-Allow-Origin', '*');
                         res.json({success: 0, msg:config.msg.db});
-                        return console.log(err);
+                        return console.log(error);
                     }
+                    console.log('同步用户deviceid成功');
                     res.setHeader('Access-Control-Allow-Origin', '*');
                     res.json({success: 1, msg:config.msg.success});
                 });

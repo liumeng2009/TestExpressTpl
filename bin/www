@@ -106,7 +106,7 @@ io.on('connection',function(socketio){
   console.log('222222222'+socketio.id);
 
   socketio.on('login',function(obj){
-    console.log(JSON.stringify(obj));
+    //console.log(JSON.stringify(obj));
     socketio.name=obj.name+'-'+obj.type;
     User.findOne({status:true,_id:obj._id},function(err,user){
       if(err){
@@ -123,14 +123,13 @@ io.on('connection',function(socketio){
             type:obj.type
           };
           onlineCount++;
-          console.log(obj.name+'登录成功'+'ansuserlist'+obj._id+socketio.id+'当前用户数目是'+onlineCount);
+          console.log(obj.name+'登录成功'+'。用户名和socketid是：'+obj.name+socketio.id);
         }
-        /*
         else{
           onlineUsers[obj.name+'-'+obj.type].socket=socketio;
           console.log(obj.name+'登录成功,重连的情况'+'ansuserlist'+obj._id+socketio.id+'当前用户数目是'+onlineCount);
         }
-        */
+
       }
       else{
 
@@ -174,45 +173,12 @@ io.on('connection',function(socketio){
     console.log('触发了关闭连接事件，为什么呢'+socketio.id+socketio.name);
 
     if(onlineUsers.hasOwnProperty(socketio.name)){
-      console.log(socketio.name+'下线了！');
+      //console.log(socketio.name+'下线了！');
       //说明是这个人触发了disconnect，把他从在线列表中删除
-      delete onlineUsers[socketio.name];
-      onlineCount--;
+      //delete onlineUsers[socketio.name];
+      //onlineCount--;
     }
-
-
-
-
-    /*
-     if(onlineUsers.hasOwnProperty(socketio.name)) {
-     //发送下线
-     //socketio.broadcast.emit('ansuserlist'+onlineUsers[socketio.name]._id,{_id:onlineUsers[socketio.name]._id,online:false});
-     io.sockets.emit('logout',{numUsers:onlineCount,mUsername:socketio.name});
-     User.find()
-     .setOptions({multi:true})
-     .update({_id:onlineUsers[socketio.name]._id},{$set:{online:false}},function(){
-     });
-     console.log(socketio.name+'下线了111。。。。。。。。');
-     }
-     else{
-     console.log('下线了222。。。。。。。。');
-     }
-     */
   });
-
-  //obj是数组
-  socketio.on('askuserlist',function(obj){
-    console.log(JSON.stringify(obj));
-    for(var i=0;i<obj.length;i++){
-      for(var m in onlineUsers){
-        if(obj[i].toString()===onlineUsers[m]._id.toString()){
-          console.log('ansuserlist'+obj[i]);
-          socketio.broadcast.emit('ansuserlist'+obj[i].toString(),1);
-          break;
-        }
-      }
-    }
-  })
 
   socketio.on('logout',function(obj){
     for(var p in onlineUsers){
@@ -318,20 +284,12 @@ io.on('connection',function(socketio){
         });
   });
 
-  socketio.on('send',function(data)
-  {
-    console.log(data);
-//this what you sent to client(Android)
-    socketio.emit('send_response',"i got you");
-//this will generate push notification
-    socketio.emit('notification',data);
-  });
-  socketio.on('send_all',function(data)
-  {
-//this is what you send to all connected clients
-    socketio.broadcast.emit('notification',data);
-    console.log("broadcast"+data);
-  });
+  socketio.on('reconnect',function(obj){
+    console.log('reconnect事件'+JSON.stringify(obj));
+  })
+  socketio.on('reconnect_attempt',function(obj){
+    console.log('reconnect_attempt事件'+JSON.stringify(obj));
+  })
 
 
 
