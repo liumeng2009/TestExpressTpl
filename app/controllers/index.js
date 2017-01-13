@@ -3,6 +3,13 @@
  */
 var fs=require('fs');
 var path=require('path');
+
+exports.adminIndex=function(req,res){
+    res.render('./index',{
+        title:'欢迎'
+    });
+}
+
 exports.index=function(req,res){
     res.render('./pages/front/index',{
         title:'欢迎'

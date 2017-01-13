@@ -11,7 +11,7 @@ var functionController=require('../app/controllers/function');
 var studentController=require('../app/controllers/student');
 var apiAdminController=require('../app/controllers/api_admin');
 
-router.get('/',adminUserController.signinRequired ,schoolController.school_list_allpage,indexController.index);
+router.get('/',adminUserController.signinRequired ,schoolController.school_list_allpage,indexController.adminIndex);
 router.get('/login',adminUserController.showSignIn);
 router.get('/admin/list',adminUserController.signinRequired ,adminUserController.admin_user_list);
 router.post('/admin/new',adminUserController.signinRequired ,adminUserController.new);
