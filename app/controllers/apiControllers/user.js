@@ -144,7 +144,12 @@ exports.signup=function(req,res){
 
 exports.baseInfo=function(req,res){
     var token=req.query.token;
+    var regid;
+    if(req.query.regId){
+        regid=req.query.regId;
+    }
     console.log('请求的token是：'+token);
+    console.log('请求的regid是：'+regid);
     User.findOne({token:token,status:true})
         .populate('schools')
         .exec(function(err,user){
@@ -155,8 +160,29 @@ exports.baseInfo=function(req,res){
             }
             console.log(user);
             if(user){
-                res.setHeader('Access-Control-Allow-Origin', '*');
-                res.json({success:1,user:user});
+                //如果存在regid，就把regid更新进去
+                if(regid&&regid!=""){
+                    User.update({miPushRegId:regid},{$set:{miPushRegId:''}},function(err){
+                        if(err){
+                            res.setHeader('Access-Control-Allow-Origin', '*');
+                            res.json({ success: 0,msg:config.msg.db });
+                            return console.log(err);
+                        }
+                        User.update({token:token},{$set:{miPushRegId:regid}},function(err){
+                            if(err){
+                                res.setHeader('Access-Control-Allow-Origin', '*');
+                                res.json({ success: 0,msg:config.msg.db });
+                                return console.log(err);
+                            }
+                            res.setHeader('Access-Control-Allow-Origin', '*');
+                            res.json({success:1,user:user});
+                        });
+                    })
+                }
+                else{
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    res.json({success:1,user:user});
+                }
             }
             else{
                 res.setHeader('Access-Control-Allow-Origin', '*');

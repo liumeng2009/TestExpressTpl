@@ -244,7 +244,7 @@ exports.chat_list=function(req,res){
                                 res.json({success:0,msg:config.msg.db});
                                 return console.log(err);
                             }
-                            console.log(users);
+                            console.log('users是：'+users);
                             for(var m=0;m<users.length;m++){
                                 //处理一下user的role 和这个班级无关的role删除
                                 for(var i=0;i<users[m].roles.length;i++){

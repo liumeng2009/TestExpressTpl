@@ -61,7 +61,9 @@ var UserSchema = new mongoose.Schema({
     expiresIn:Date,
     online:Boolean,
     //app登录的标示 设备uuid和日期的组合
-    phoneId:String
+    phoneId:String,
+    //用于mipush的regid
+    miPushRegId:String
 })
 
 UserSchema.pre('save', function(next) {

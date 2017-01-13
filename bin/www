@@ -13,6 +13,8 @@ var mongoose=require('mongoose');
 var User=require('../app/models/user');
 var Chat=require('../app/models/chat');
 
+var config=require('../config');
+
 
 /**
  * Get port from environment and store in Express.
@@ -244,6 +246,45 @@ io.on('connection',function(socketio){
               //保存成功
               User.findOne({_id:from})
                   .exec(function(err,fromuser){
+                    //向java服务器发送push请求
+                    User.findOne({_id:to,status:true})
+                        .exec(function(err,touser){
+                          console.log('888888888888'+touser.miPushRegId);
+                          if(touser.miPushRegId&&touser.miPushRegId!=''){
+                            //有regId，说明这个用户处于登录状态下,可以发送java push
+                            var url=config.miPushUrl+'?title='+fromuser.name+'&content='+encodeURI(msg)+'&regId='+touser.miPushRegId;
+                            console.log('http的请求url是：'+url);
+                            /*
+                            var options={
+                              method:'GET',
+                              socketPath:config.miPushUrl,
+                              path:'?title='+fromuser.name+'&content='+encodeURI(msg)+'&regId='+touser.miPushRegId
+                            };
+
+                            var req=http.request(options,function(res){
+                              res.on('data',function(data){
+                                console.log('http 成功 返回值是：'+data);
+                              });
+                            });
+                            req.on('error',function(e){
+                              console.log(e.message);
+                            })
+                            req.end();
+*/
+
+                            http.get(url,function(res){
+                              //console.log(res);
+                              res.on('data',function(data){
+                                console.log('http 成功 返回值是：'+data);
+                              });
+                              res.on('error',function(err){
+                                console.log('http 错误：'+err)
+                              });
+                            })
+
+                          }
+                        })
+
                     for(var p in onlineUsers){
                       console.log('遍历在线的人'+p+onlineUsers[p]._id.toString());
                       console.log('发送的人是'+from);
@@ -255,12 +296,8 @@ io.on('connection',function(socketio){
                           console.log(p);
                           console.log(onlineUsers[p].socket.name);
                           console.log(onlineUsers[p].socket.id);
-                          //这里行不通，因为重新连接后，不知道如何把新的连接对象放进
-                          //将
                           //向touser发送消息
                           onlineUsers[p].socket.emit('message', {message:chat,from:fromuser});
-                          //用于main页面
-                          //onlineUsers[p].socket.broadcast.emit('to' + to, {message: chat,from:fromuser});
                         }
                       }
                       if(onlineUsers[p]._id.toString()===from.toString()){
